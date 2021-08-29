@@ -22,6 +22,9 @@ namespace Prefabrikator
             public abstract void Revert();
         }
 
+        protected Queue<ICommand> CommandQueue => _commandQueue;
+        private Queue<ICommand> _commandQueue = new Queue<ICommand>();
+
         protected GameObject _target = null;
 
         public GameObject TargetProxy

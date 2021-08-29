@@ -45,7 +45,7 @@ namespace Prefabrikator
 
                 if (ArrayToolExtensions.DisplayCountField(ref _targetCount))
                 {
-                    _needsRefresh = true;
+                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, _targetCount));
                 }
             }
             EditorGUILayout.EndVertical();
@@ -55,7 +55,7 @@ namespace Prefabrikator
         {
             if (_target != null)
             {
-                if (_needsRefresh)
+                if (_needsRefresh || CommandQueue.Count > 0)
                 {
                     Refresh();
                 }
@@ -73,6 +73,13 @@ namespace Prefabrikator
 
         public override void Refresh(bool hardRefresh = false, bool useDefaultData = false)
         {
+            ICommand nextCommand = null;
+            while (CommandQueue.Count > 0)
+            {
+                nextCommand = CommandQueue.Dequeue();
+                ExecuteCommand(nextCommand);
+            }
+
             if (hardRefresh)
             {
                 DestroyAll();
@@ -133,8 +140,6 @@ namespace Prefabrikator
 
         private void OnCountChange()
         {
-            // #DG: Turn this into command Queue. Currently there is a bug where this is also called when calling undo which is wrong
-            ExecuteCommand(new CountChangeCommand(this, _createdObjects.Count, _targetCount));
             Refresh();
         }
 
