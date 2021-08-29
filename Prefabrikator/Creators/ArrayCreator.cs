@@ -6,6 +6,22 @@ namespace Prefabrikator
 {
     public abstract class ArrayCreator
     {
+        public event System.Action<ICommand> OnCommandExecuted = null;
+
+        public abstract class CreatorCommand : ICommand
+        {
+            protected ArrayCreator Creator => _creator;
+            private ArrayCreator _creator = null;
+
+            public CreatorCommand(ArrayCreator creator)
+            {
+                _creator = creator;
+            }
+
+            public abstract void Execute();
+            public abstract void Revert();
+        }
+
         protected GameObject _target = null;
 
         public GameObject TargetProxy
@@ -48,6 +64,7 @@ namespace Prefabrikator
 
         public virtual void Teardown()
         {
+            OnCommandExecuted = null;
             DestroyAll();
         }
 
@@ -228,6 +245,39 @@ namespace Prefabrikator
                     _createdObjects.Add(child.gameObject);
                 }
             }
+        }
+
+        protected virtual void SetTargetCount(int targetCount)
+        {
+            _targetCount = targetCount;
+        }
+
+        public class CountChangeCommand : CreatorCommand
+        {
+            private int PreviousCount { get; }
+            private int NextCount { get; }
+
+            public CountChangeCommand(ArrayCreator creator, int previousCount, int nextCount)
+                : base(creator)
+            {
+                PreviousCount = previousCount;
+                NextCount = nextCount;
+            }
+
+            public override void Execute()
+            {
+                Creator.SetTargetCount(NextCount);
+            }
+
+            public override void Revert()
+            {
+                Creator.SetTargetCount(PreviousCount);
+            }
+        }
+
+        protected void ExecuteCommand(ICommand command)
+        {
+            OnCommandExecuted(command);
         }
     }
 }

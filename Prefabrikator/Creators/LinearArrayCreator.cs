@@ -133,6 +133,8 @@ namespace Prefabrikator
 
         private void OnCountChange()
         {
+            // #DG: Turn this into command Queue. Currently there is a bug where this is also called when calling undo which is wrong
+            ExecuteCommand(new CountChangeCommand(this, _createdObjects.Count, _targetCount));
             Refresh();
         }
 

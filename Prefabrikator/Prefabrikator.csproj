@@ -19,4 +19,8 @@
     </Reference>
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(OutDir)Prefabrikator.dll&quot;  &quot;E:\Documents\Unity Projects\UnityToolbox\Assets\Plugins&quot; /y" />
+  </Target>
+
 </Project>

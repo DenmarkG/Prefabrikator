@@ -21,6 +21,8 @@ namespace Prefabrikator
 
         private bool _isSaving = false;
 
+        private UndoStack _undoStack = null;
+
         [MenuItem("Tools/Array Tool &a")]
         static void ArrayToolWindow()
         {
@@ -47,6 +49,8 @@ namespace Prefabrikator
             }
 
             _window._loadedContainer = container;
+            
+            _window._undoStack = new UndoStack();
         }
 
         private void SaveAndClose()
@@ -145,6 +149,28 @@ namespace Prefabrikator
 
                 EditorGUILayout.BeginHorizontal(ArrayToolExtensions.BoxedHeaderStyle);
                 {
+                    EditorGUI.BeginDisabledGroup(_undoStack.UndoOperationsAvailable == 0);
+                    {
+                        if (GUILayout.Button("Undo"))
+                        {
+                            Undo();
+                        }
+                    }
+                    EditorGUI.EndDisabledGroup();
+
+                    EditorGUI.BeginDisabledGroup(_undoStack.RedoOperationsAvailable == 0);
+                    {
+                        if (GUILayout.Button("Redo"))
+                        {
+                            Redo();
+                        }
+                    }
+                    EditorGUI.EndDisabledGroup();
+                }
+                EditorGUILayout.EndHorizontal();
+                
+                EditorGUILayout.BeginHorizontal(ArrayToolExtensions.BoxedHeaderStyle);
+                {
                     if (GUILayout.Button("Cancel"))
                     {
                         Cancel();
@@ -223,6 +249,7 @@ namespace Prefabrikator
             }
 
             ResizeWindow(creator);
+            creator.OnCommandExecuted += OnCommandExecuted;
             return creator;
         }
 
@@ -235,6 +262,21 @@ namespace Prefabrikator
                 _creator = GetCreator(_arrayType, container.Data.Prefab);
                 _creator.PopulateFromExistingContainer(container);
             }
+        }
+
+        private void OnCommandExecuted(ICommand command)
+        {
+            _undoStack.OnCommandExecuted(command);
+        }
+
+        private void Undo()
+        {
+            _undoStack.Undo();
+        }
+
+        private void Redo()
+        {
+            _undoStack.Redo();
         }
     }
 }
