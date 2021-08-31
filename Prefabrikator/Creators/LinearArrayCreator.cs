@@ -33,19 +33,21 @@ namespace Prefabrikator
             {
                 EditorGUILayout.BeginHorizontal(_boxedHeaderStyle);
                 {
+                    EditorGUI.BeginChangeCheck();
                     EditorGUILayout.LabelField("Offset", GUILayout.Width(ArrayToolExtensions.LabelWidth));
                     Vector3 offset = EditorGUILayout.Vector3Field(string.Empty, _offset, null);
-                    if (offset != _offset)
+                    if (EditorGUI.EndChangeCheck())
                     {
-                        _offset = offset;
-                        _needsRefresh = true;
+                        // #DG: Triggers infinitely. Only update after a change has finished occuring
+                        CommandQueue.Enqueue(new OnOffsetChangeCommand(this, _offset, offset));
                     }
                 }
                 EditorGUILayout.EndHorizontal();
 
-                if (ArrayToolExtensions.DisplayCountField(ref _targetCount))
+                int currentTargetCount = _targetCount;
+                if (ArrayToolExtensions.DisplayCountField(ref currentTargetCount))
                 {
-                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, _targetCount));
+                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, currentTargetCount));
                 }
             }
             EditorGUILayout.EndVertical();
@@ -58,12 +60,6 @@ namespace Prefabrikator
                 if (_needsRefresh || CommandQueue.Count > 0)
                 {
                     Refresh();
-                }
-
-                // Update Counts
-                if (_createdObjects.Count != _targetCount)
-                {
-                    OnCountChange();
                 }
 
                 // Update positions
@@ -138,11 +134,6 @@ namespace Prefabrikator
             UpdatePositions();
         }
 
-        private void OnCountChange()
-        {
-            Refresh();
-        }
-
         private void CreateClone()
         {
             GameObject clone = GameObject.Instantiate(_target, _target.transform.position, _target.transform.rotation, _target.transform.parent);
@@ -182,5 +173,36 @@ namespace Prefabrikator
                 _targetRotation = lineData.TargetRotation;
             }
         }
+
+        #region Commands
+        internal class OnOffsetChangeCommand : CreatorCommand
+        {
+            private Vector3 PreviousOffset { get; }
+            private Vector3 NextOffset { get; }
+
+            public OnOffsetChangeCommand(ArrayCreator creator, Vector3 previousOffset, Vector3 nextOffset)
+                : base(creator)
+            {
+                PreviousOffset = previousOffset;
+                NextOffset = nextOffset;
+            }
+
+            public override void Execute()
+            {
+                if (Creator is LinearArrayCreator linearCreator)
+                {
+                    linearCreator._offset = NextOffset;
+                }
+            }
+
+            public override void Revert()
+            {
+                if (Creator is LinearArrayCreator linearCreator)
+                {
+                    linearCreator._offset = PreviousOffset;
+                }
+            }
+        }
     }
+    #endregion // Commands
 }

@@ -8,20 +8,6 @@ namespace Prefabrikator
     {
         public event System.Action<ICommand> OnCommandExecuted = null;
 
-        public abstract class CreatorCommand : ICommand
-        {
-            protected ArrayCreator Creator => _creator;
-            private ArrayCreator _creator = null;
-
-            public CreatorCommand(ArrayCreator creator)
-            {
-                _creator = creator;
-            }
-
-            public abstract void Execute();
-            public abstract void Revert();
-        }
-
         protected Queue<ICommand> CommandQueue => _commandQueue;
         private Queue<ICommand> _commandQueue = new Queue<ICommand>();
 
@@ -63,6 +49,8 @@ namespace Prefabrikator
             int h = Mathf.CeilToInt(EditorGUIUtility.singleLineHeight);
             int v = Mathf.CeilToInt(EditorGUIUtility.singleLineHeight * .3f);
             _boxedHeaderStyle.padding = new RectOffset(h, h, v, v);
+
+            _needsRefresh = true;
         }
 
         public virtual void Teardown()
@@ -250,36 +238,14 @@ namespace Prefabrikator
             }
         }
 
-        protected virtual void SetTargetCount(int targetCount)
+        public virtual void SetTargetCount(int targetCount)
         {
             _targetCount = targetCount;
         }
 
-        public class CountChangeCommand : CreatorCommand
-        {
-            private int PreviousCount { get; }
-            private int NextCount { get; }
-
-            public CountChangeCommand(ArrayCreator creator, int previousCount, int nextCount)
-                : base(creator)
-            {
-                PreviousCount = previousCount;
-                NextCount = nextCount;
-            }
-
-            public override void Execute()
-            {
-                Creator.SetTargetCount(NextCount);
-            }
-
-            public override void Revert()
-            {
-                Creator.SetTargetCount(PreviousCount);
-            }
-        }
-
         protected void ExecuteCommand(ICommand command)
         {
+            command.Execute();
             OnCommandExecuted(command);
         }
     }
