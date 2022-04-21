@@ -17,30 +17,75 @@ namespace Prefabrikator
     // #DG: TODO - Add Bidirectional option
     public class LinearArrayCreator : ArrayCreator
     {
+        public static readonly int MinCount = 2;
+
         public override float MaxWindowHeight => 300f;
         public override string Name => "Line";
         private Vector3 _offset = new Vector3(2, 0, 0);
 
+        private PropertyExtensions.Vector3Property _offsetProperty = null;
+
         public LinearArrayCreator(GameObject target)
             : base(target)
         {
-            //
+            _targetCount = MinCount;
+            _needsRefresh = true;
+
+            _offsetProperty = new PropertyExtensions.Vector3Property("Offset", _offset);
         }
+
+        private bool _changeStarted = false;
 
         public override void DrawEditor()
         {
             EditorGUILayout.BeginVertical();
             {
+                // #DG: add a popup that can update this value
+                // only update when the popup apply button is pressed
+                // if cancel is pressed, don't apply changes
                 EditorGUILayout.BeginHorizontal(_boxedHeaderStyle);
                 {
-                    EditorGUI.BeginChangeCheck();
-                    EditorGUILayout.LabelField("Offset", GUILayout.Width(ArrayToolExtensions.LabelWidth));
-                    Vector3 offset = EditorGUILayout.Vector3Field(string.Empty, _offset, null);
-                    if (EditorGUI.EndChangeCheck())
+                    Vector3 offset = _offsetProperty.Update();
+                    if (offset != _offset)
                     {
-                        // #DG: Triggers infinitely. Only update after a change has finished occuring
                         CommandQueue.Enqueue(new OnOffsetChangeCommand(this, _offset, offset));
                     }
+
+
+                    //EditorGUI.BeginChangeCheck();
+                    //EditorGUILayout.LabelField("Offset", GUILayout.Width(ArrayToolExtensions.LabelWidth));
+                    //Vector3 offset = EditorGUILayout.Vector3Field(string.Empty, _offset, null);
+                    //if (EditorGUI.EndChangeCheck())
+                    //{
+                    //    CommandQueue.Enqueue(new OnOffsetChangeCommand(this, _offset, offset));
+
+                    //    //OnOffsetChangeCommand offsetChange = null;
+                    //    //if (!_changeStarted)
+                    //    //{
+                    //    //    _changeStarted = true;
+                    //    //    offsetChange = new OnOffsetChangeCommand(this, _offset, offset);
+                    //    //}
+                    //    //else
+                    //    //{
+                    //    //    if (CommandQueue != null && CommandQueue.Count > 0)
+                    //    //    {
+                    //    //        if (CommandQueue.Peek() is OnOffsetChangeCommand command)
+                    //    //        {
+                    //    //            offsetChange = command;
+                    //    //            offsetChange.NextOffset = offset;
+                    //    //        }
+                    //    //    }
+                    //    //}
+
+                    //    //CommandQueue.Enqueue(offsetChange);
+                    //}
+                    //else
+                    //{
+                    //    if (!_changeStarted)
+                    //    {
+                    //        _changeStarted = false;
+                    //    }
+                    //}
                 }
                 EditorGUILayout.EndHorizontal();
 
@@ -69,54 +114,59 @@ namespace Prefabrikator
 
         public override void Refresh(bool hardRefresh = false, bool useDefaultData = false)
         {
-            ICommand nextCommand = null;
-            while (CommandQueue.Count > 0)
+            if (!_changeStarted)
             {
-                nextCommand = CommandQueue.Dequeue();
-                ExecuteCommand(nextCommand);
-            }
-
-            if (hardRefresh)
-            {
-                DestroyAll();
-            }
-
-            EstablishHelper(useDefaultData);
-
-            if (_targetCount < _createdObjects.Count)
-            {
-                while (_createdObjects.Count > _targetCount)
+                ICommand nextCommand = null;
+                while (CommandQueue.Count > 0)
                 {
-                    int index = _createdObjects.Count - 1;
-                    if (index >= 0)
+                    nextCommand = CommandQueue.Dequeue();
+                    ExecuteCommand(nextCommand);
+                }
+
+                if (hardRefresh)
+                {
+                    DestroyAll();
+                }
+
+                EstablishHelper(useDefaultData);
+
+                if (_targetCount < _createdObjects.Count)
+                {
+                    while (_createdObjects.Count > _targetCount)
                     {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
+                        int index = _createdObjects.Count - 1;
+                        if (index >= 0)
+                        {
+                            DestroyClone(_createdObjects[_createdObjects.Count - 1]);
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
-            }
-            else
-            {
-                while (_targetCount > _createdObjects.Count)
+                else
                 {
-                    CreateClone();
+                    while (_targetCount > _createdObjects.Count)
+                    {
+                        CreateClone();
+                    }
                 }
+
+                UpdatePositions();
+                UpdateLocalScales();
+                UpdateLocalRotations();
+
+                _needsRefresh = false;
             }
-
-            UpdatePositions();
-            UpdateLocalScales();
-            UpdateLocalRotations();
-
-            _needsRefresh = false;
         }
 
         private void UpdatePositions()
         {
+            
             if (_createdObjects.Count > 0)
             {
+                Undo.RecordObjects(_createdObjects.ToArray(), "Changed offset");
                 GameObject currentObj = null;
 
                 for (int i = 0; i < _createdObjects.Count; ++i)
@@ -177,8 +227,8 @@ namespace Prefabrikator
         #region Commands
         internal class OnOffsetChangeCommand : CreatorCommand
         {
-            private Vector3 PreviousOffset { get; }
-            private Vector3 NextOffset { get; }
+            public Vector3 PreviousOffset { get; set;  }
+            public Vector3 NextOffset { get; set; }
 
             public OnOffsetChangeCommand(ArrayCreator creator, Vector3 previousOffset, Vector3 nextOffset)
                 : base(creator)

@@ -148,16 +148,20 @@ namespace Prefabrikator
             {
                 float t = angle * i;
                 float x = Mathf.Cos(t) * _radius;
+                Vector3 right = Mathf.Cos(t) * _radius * _targetProxy.transform.right;
+
                 float z = Mathf.Sin(t) * _radius;
+                Vector3 forward = Mathf.Sin(t) * _radius * _targetProxy.transform.forward;
 
                 Vector3 position = new Vector3(x, _targetProxy.transform.position.y, z);
+                //Vector3 position = right + forward;
 
                 _createdObjects[i].transform.localPosition = position + _center;
 
                 if (_orientation == OrientationType.FollowCircle)
                 {
-                    Vector3 cross = Vector3.Cross(_center - position, _target.transform.up);
-                    _createdObjects[i].transform.localRotation = Quaternion.LookRotation(cross);
+                    Vector3 cross = Vector3.Cross((position - _center).normalized, _targetProxy.transform.up);
+                    _createdObjects[i].transform.rotation = Quaternion.LookRotation(cross);
                 }
             }
         }

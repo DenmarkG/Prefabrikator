@@ -5,7 +5,7 @@ namespace Prefabrikator
 {
     public class ArcArrayData : ArrayData
     {
-        public float FillPercent = ArcArrayCreator.DefaulFillPercent;
+        public float FillPercent = ArcArrayCreator.DefaultFillPercent;
         public bool CapEnd = false;
         public float Radius = CircularArrayCreator.DefaultRadius;
         public CircularArrayCreator.OrientationType Orientation = CircularArrayCreator.OrientationType.Original;
@@ -23,8 +23,8 @@ namespace Prefabrikator
         public override string Name => "Arc";
 
         // how much of circle to fill; makes arcs possible
-        public static readonly float DefaulFillPercent = .5f;
-        private float _fillPercent = DefaulFillPercent;
+        public static readonly float DefaultFillPercent = .5f;
+        private float _fillPercent = DefaultFillPercent;
 
         public ArcArrayCreator(GameObject target)
             : base(target)
