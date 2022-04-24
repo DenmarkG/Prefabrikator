@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace Prefabrikator
 {
     // #DG: rename this tool
-    public class ArrayTool : EditorWindow
+    public class PrefabrikatorTool : EditorWindow
     {
         private static readonly string WindowName = "Prefabrikator";
         private ArrayCreator _creator = null;
@@ -18,7 +18,7 @@ namespace Prefabrikator
         private const float MaxWidth = 350f;
         private const float MaxHeght = 250;
 
-        private static ArrayTool _window = null;
+        private static PrefabrikatorTool _window = null;
 
         private GameObject _selectedPrefab = null;
         private ArrayContainer _loadedContainer = null;
@@ -40,7 +40,7 @@ namespace Prefabrikator
 
         public static void Open(ArrayContainer container = null)
         {
-            _window = ScriptableObject.CreateInstance<ArrayTool>();
+            _window = ScriptableObject.CreateInstance<PrefabrikatorTool>();
             _window.maxSize = new Vector2(MaxWidth, MaxHeght);
             _window.minSize = _window.maxSize;
             _window.titleContent = new GUIContent(WindowName);

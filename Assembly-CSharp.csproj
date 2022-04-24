@@ -73,7 +73,7 @@
     <Compile Include="Assets\Code\Util\UndoRedo\Commands.cs" />
     <Compile Include="Assets\Code\Runtime\ArrayData.cs" />
     <Compile Include="Assets\Code\Modifiers\Scale\RandomScaleModifier.cs" />
-    <Compile Include="Assets\Code\ArrayTool.cs" />
+    <Compile Include="Assets\Code\PrefabrikatorTool.cs" />
     <Compile Include="Assets\Code\ArrayTypes.cs" />
     <Compile Include="Assets\Code\Bezier\BezierPoint.cs" />
     <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
