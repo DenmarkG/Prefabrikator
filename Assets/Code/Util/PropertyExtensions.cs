@@ -40,7 +40,7 @@ namespace Prefabrikator
             {
                 EditorGUILayout.BeginHorizontal();
                 {
-                    EditorGUILayout.LabelField(_label, GUILayout.Width(ArrayToolExtensions.LabelWidth));
+                    EditorGUILayout.LabelField(_label, GUILayout.Width(Extensions.LabelWidth));
                     if (_editMode == EditMode.Enabled)
                     {
                         _workingValue = EditorGUILayout.Vector3Field(string.Empty, _workingValue, null);

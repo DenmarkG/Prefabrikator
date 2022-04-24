@@ -1,0 +1,5 @@
+Automate the process for calling the modifier update and process calls
+    - should not need to be called manually by each createor
+
+- replace existing transform fields with mods that can be added/removed
+- allow Undo/Redo of Add/Remove modifiers

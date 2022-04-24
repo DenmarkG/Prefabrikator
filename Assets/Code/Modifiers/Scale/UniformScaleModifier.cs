@@ -6,12 +6,15 @@ namespace Prefabrikator
 {
     public class UniformScaleModifier : Modifier
     {
+        protected override string DisplayName => "Uniform Scale";
+
         public GameObject[] Targets => _targets;
         private GameObject[] _targets = null;
         private Vector3 _targetScale = new Vector3(1, 1, 1);
         private PropertyExtensions.Vector3Property _displayField = null;
 
-        public UniformScaleModifier()
+        public UniformScaleModifier(ArrayCreator owner)
+            : base(owner)
         {
             _displayField = new PropertyExtensions.Vector3Property("Scale", new Vector3(1, 1, 1), OnValueChanged);
         }
@@ -30,14 +33,14 @@ namespace Prefabrikator
             }
         }
 
-        public override void UpdateInspector()
+        protected override void OnInspectorUpdate()
         {
-            //_targetScale = _displayField.Update();
+            _targetScale = _displayField.Update();
         }
 
         public void OnValueChanged(Vector3 current, Vector3 previous)
         {
-            CommandQueue.Enqueue(new OnUniformScaleChangeCommand(this, previous, current));
+            Owner.CommandQueue.Enqueue(new OnUniformScaleChangeCommand(this, previous, current));
         }
 
         private class OnUniformScaleChangeCommand : ModifierCommand

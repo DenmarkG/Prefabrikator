@@ -8,7 +8,7 @@ namespace Prefabrikator
     {
         public event System.Action<ICommand> OnCommandExecuted = null;
 
-        protected Queue<ICommand> CommandQueue => _commandQueue;
+        public Queue<ICommand> CommandQueue => _commandQueue;
         private Queue<ICommand> _commandQueue = new Queue<ICommand>();
 
         protected GameObject _target = null;
@@ -35,6 +35,8 @@ namespace Prefabrikator
         protected bool _showRotationControls = true;
         protected Quaternion _targetRotation = Quaternion.identity;
         protected Vector3 _targetScale = Vector3.one;
+
+        private List<Modifier> _modifierStack = new List<Modifier>();
 
         protected ArrayData _defaultData = null;
 
@@ -189,13 +191,13 @@ namespace Prefabrikator
             {
                 if (_showRotationControls)
                 {
-                    if (ArrayToolExtensions.DisplayRotationField(ref _targetRotation))
+                    if (Extensions.DisplayRotationField(ref _targetRotation))
                     {
                         _needsRefresh = true;
                     }
                 }
 
-                if (ArrayToolExtensions.DisplayScaleField(ref _targetScale))
+                if (Extensions.DisplayScaleField(ref _targetScale))
                 {
                     _needsRefresh = true;
                 }
@@ -247,6 +249,64 @@ namespace Prefabrikator
         {
             command.Execute();
             OnCommandExecuted(command);
+        }
+
+        public void DrawModifiers()
+        {
+            int numMods = _modifierStack.Count;
+            for (int i = 0; i < numMods; ++i)
+            {
+                _modifierStack[i].UpdateInspector();
+            }
+
+            EditorGUILayout.BeginHorizontal();
+            {
+                ModifierType selection = (ModifierType)EditorGUILayout.EnumPopup(ModifierType.ScaleUniform);
+                if (GUILayout.Button("Add", GUILayout.MaxWidth(100)))
+                {
+                    AddModifier(selection);
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
+        protected void ProcessModifiers()
+        {
+            int numMods = _modifierStack.Count;
+            for (int i = 0; i < numMods; ++i)
+            {
+                _modifierStack[i].Process(_createdObjects.ToArray());
+            }
+        }
+
+        private void AddModifier(ModifierType modifierType)
+        {
+            switch (modifierType)
+            {
+                case ModifierType.ScaleRandom:
+                    AddModifier(new RandomScaleModifier(this));
+                    break;
+                case ModifierType.ScaleUniform:
+                    AddModifier(new UniformScaleModifier(this));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void AddModifier(Modifier modifier)
+        {
+            _modifierStack.Add(modifier);
+        }
+
+        public void RemoveModifier(int index)
+        {
+            _modifierStack.RemoveAt(index);
+        }
+
+        public void RemoveModifier(Modifier modifier)
+        {
+            RemoveModifier(_modifierStack.IndexOf(modifier));
         }
     }
 }

@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{34CF6211-3760-1726-EB97-CBA07E5C184B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -66,7 +67,7 @@
     <Compile Include="Assets\Code\Modifiers\Scale\UniformScaleModifier.cs" />
     <Compile Include="Assets\Code\Runtime\ArrayContainer.cs" />
     <Compile Include="Assets\Code\Util\PropertyExtensions.cs" />
-    <Compile Include="Assets\Code\Util\ArrayToolExtensions.cs" />
+    <Compile Include="Assets\Code\Util\Extensions.cs" />
     <Compile Include="Assets\Code\Bezier\CubicBezierCurve.cs" />
     <Compile Include="Assets\Code\Creators\LinearArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\SphereArrayCreator.cs" />

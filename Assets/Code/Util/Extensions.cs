@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-public static class ArrayToolExtensions
+public static class Extensions
 {
     public const float LabelWidth = 50f;
 

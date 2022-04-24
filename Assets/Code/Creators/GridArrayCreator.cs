@@ -62,7 +62,7 @@ namespace Prefabrikator
                 if (ShouldShowX())
                 {
                     int countX = _countVector.x;
-                    if (ArrayToolExtensions.DisplayCountField(ref countX, "Rows"))
+                    if (Extensions.DisplayCountField(ref countX, "Rows"))
                     {
                         _countVector.x = Mathf.Max(countX, 0);
                         _needsRefresh = true;
@@ -74,7 +74,7 @@ namespace Prefabrikator
                 if (ShouldShowY())
                 {
                     int countY = _countVector.y;
-                    if (ArrayToolExtensions.DisplayCountField(ref countY, "Columns"))
+                    if (Extensions.DisplayCountField(ref countY, "Columns"))
                     {
                         _countVector.y = Mathf.Max(countY, 0);
                         _needsRefresh = true;
@@ -86,7 +86,7 @@ namespace Prefabrikator
                 if (ShouldShowZ())
                 {
                     int countZ = _countVector.z;
-                    if (ArrayToolExtensions.DisplayCountField(ref countZ, "Depth"))
+                    if (Extensions.DisplayCountField(ref countZ, "Depth"))
                     {
                         _countVector.z = Mathf.Max(countZ, 0);
                         _needsRefresh = true;

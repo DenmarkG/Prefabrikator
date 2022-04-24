@@ -73,13 +73,13 @@ namespace Prefabrikator
         {
             EditorGUILayout.BeginVertical();
             {
-                if (ArrayToolExtensions.DisplayCountField(ref _targetCount))
+                if (Extensions.DisplayCountField(ref _targetCount))
                 {
                     _targetCount = Mathf.Max(_targetCount, MinCount);
                     _needsRefresh = true;
                 }
 
-                EditorGUILayout.BeginHorizontal(ArrayToolExtensions.BoxedHeaderStyle);
+                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                 {
                     OrientationType orientation = (OrientationType)EditorGUILayout.EnumPopup("Rotation", _orientation);
                     if (orientation != _orientation)
@@ -91,7 +91,7 @@ namespace Prefabrikator
                 }
                 EditorGUILayout.EndHorizontal();
 
-                EditorGUILayout.BeginHorizontal(ArrayToolExtensions.BoxedHeaderStyle);
+                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                 {
                     Vector3 endRotation = EditorGUILayout.Vector3Field("Goal Rotation", _endRotation);
                     if (endRotation != _endRotation)
@@ -102,7 +102,7 @@ namespace Prefabrikator
                 }
                 EditorGUILayout.EndHorizontal();
 
-                EditorGUILayout.BeginVertical(ArrayToolExtensions.BoxedHeaderStyle);
+                EditorGUILayout.BeginVertical(Extensions.BoxedHeaderStyle);
                 {
                     _showControlPoints = EditorGUILayout.Foldout(_showControlPoints, "Control Points");
                     if (_showControlPoints)

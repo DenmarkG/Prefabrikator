@@ -52,7 +52,7 @@ namespace Prefabrikator
                 EditorGUILayout.EndHorizontal();
 
                 int currentTargetCount = _targetCount;
-                if (ArrayToolExtensions.DisplayCountField(ref currentTargetCount))
+                if (Extensions.DisplayCountField(ref currentTargetCount))
                 {
                     CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, currentTargetCount));
                 }
@@ -118,6 +118,8 @@ namespace Prefabrikator
                 UpdatePositions();
                 UpdateLocalScales();
                 UpdateLocalRotations();
+
+                ProcessModifiers();
 
                 _needsRefresh = false;
             }

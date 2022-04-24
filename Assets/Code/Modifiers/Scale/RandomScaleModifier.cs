@@ -6,10 +6,18 @@ namespace Prefabrikator
 {
     public class RandomScaleModifier : Modifier
     {
+        protected override string DisplayName => "Random Scale";
+
         private Vector3[] _scales = null;
-        private ArrayToolExtensions.MinMax _xRange = null;
-        private ArrayToolExtensions.MinMax _yRange = null;
-        private ArrayToolExtensions.MinMax _zRange = null;
+        private Extensions.MinMax _xRange = null;
+        private Extensions.MinMax _yRange = null;
+        private Extensions.MinMax _zRange = null;
+
+        public RandomScaleModifier(ArrayCreator owner)
+            : base(owner)
+        {
+            //
+        }
 
         public override void Process(GameObject[] objs)
         {
@@ -20,7 +28,7 @@ namespace Prefabrikator
                 _scales = new Vector3[numObjs];
                 for (int i = 0; i < numObjs; i++)
                 {
-                    _scales[i] = ArrayToolExtensions.GetRandomUnitVector(_xRange, _yRange, _zRange);
+                    _scales[i] = Extensions.GetRandomUnitVector(_xRange, _yRange, _zRange);
                 }
             }
 
@@ -30,7 +38,7 @@ namespace Prefabrikator
             }
         }
 
-        public override void UpdateInspector()
+        protected override void OnInspectorUpdate()
         {
             //
         }

@@ -30,8 +30,6 @@ namespace Prefabrikator
 
         private UndoStack _undoStack = null;
 
-        private List<Modifier> _modifierStack = new List<Modifier>();
-
         [MenuItem("Tools/Prefabikator &a")]
         static void ArrayToolWindow()
         {
@@ -108,7 +106,7 @@ namespace Prefabrikator
             {
                 if (!IsInEditMode)
                 {
-                    EditorGUILayout.BeginHorizontal(ArrayToolExtensions.BoxedHeaderStyle);
+                    EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                     {
                         ArrayType type = (ArrayType)EditorGUILayout.EnumPopup("Array Type", _arrayType);
                         if (type != _arrayType)
@@ -131,7 +129,7 @@ namespace Prefabrikator
 
                 // Selection Field
                 {
-                    EditorGUILayout.BeginHorizontal(ArrayToolExtensions.BoxedHeaderStyle);
+                    EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                     {
                         EditorGUILayout.LabelField("Prefab", GUILayout.MaxWidth(100f));
                         GUILayout.FlexibleSpace();
@@ -155,9 +153,10 @@ namespace Prefabrikator
                 {
                     _creator.DrawTransformControls();
                     _creator.DrawEditor();
+                    _creator.DrawModifiers();
                 }
 
-                EditorGUILayout.BeginHorizontal(ArrayToolExtensions.BoxedHeaderStyle);
+                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                 {
                     EditorGUI.BeginDisabledGroup(_undoStack.UndoOperationsAvailable == 0);
                     {
@@ -179,7 +178,7 @@ namespace Prefabrikator
                 }
                 EditorGUILayout.EndHorizontal();
 
-                EditorGUILayout.BeginHorizontal(ArrayToolExtensions.BoxedHeaderStyle);
+                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                 {
                     if (GUILayout.Button("Cancel"))
                     {
@@ -193,17 +192,6 @@ namespace Prefabrikator
                     {
                         SaveAndContinue();
                     }
-
-                    // #DG: TOOO: Make this a menu
-                    if (GUILayout.Button("Add Scale Modifier"))
-                    {
-                        //Event evt = Event.current;
-                        //Vector2 mousePos = evt.mousePosition;
-                        //GUI.ModalWindow(-1, new Rect(mousePos.x, mousePos.y, 100, 300), ShowModifierOptions, GUIContent.none);
-
-                        _modifierStack.Add(new UniformScaleModifier());
-                    }
-
                 }
                 EditorGUILayout.EndHorizontal();
             }
@@ -215,15 +203,6 @@ namespace Prefabrikator
             if (_creator != null)
             {
                 _creator.UpdateEditor();
-
-                int numMods = _modifierStack.Count;
-                for (int i = 0; i < numMods; ++i)
-                {
-                    _modifierStack[i].UpdateInspector();
-
-                    // #DG: This needs a home
-                    //_modifierStack[i].Process();
-                }
             }
 
             Repaint();
@@ -316,16 +295,6 @@ namespace Prefabrikator
         private void ShowModifierOptions(int windowId)
         {
             //
-        }
-
-        public void AddModifier(Modifier modifier)
-        {
-            _modifierStack.Add(modifier);
-        }
-
-        private void RemoveModifier(int index)
-        {
-            _modifierStack.RemoveAt(index);
         }
     }
 }

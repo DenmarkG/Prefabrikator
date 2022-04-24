@@ -75,7 +75,7 @@ namespace Prefabrikator
                 }
                 EditorGUILayout.EndHorizontal();
 
-                if (ArrayToolExtensions.DisplayCountField(ref _targetCount))
+                if (Extensions.DisplayCountField(ref _targetCount))
                 {
                     _targetCount = Mathf.Max(_targetCount, MinCount);
                     _needsRefresh = true;

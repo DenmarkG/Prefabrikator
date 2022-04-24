@@ -65,13 +65,13 @@ namespace Prefabrikator
                 }
                 EditorGUILayout.EndHorizontal();
 
-                if (ArrayToolExtensions.DisplayCountField(ref _sectorCount, "Segments"))
+                if (Extensions.DisplayCountField(ref _sectorCount, "Segments"))
                 {
                     _sectorCount = Mathf.Max(_sectorCount, MinCount);
                     _needsRefresh = true;
                 }
 
-                if (ArrayToolExtensions.DisplayCountField(ref _stackCount, "Rings"))
+                if (Extensions.DisplayCountField(ref _stackCount, "Rings"))
                 {
                     _stackCount = Mathf.Max(_stackCount, MinCount);
                     _needsRefresh = true;
