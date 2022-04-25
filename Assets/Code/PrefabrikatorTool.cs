@@ -15,8 +15,8 @@ namespace Prefabrikator
         private ArrayCreator _creator = null;
         private ArrayType _arrayType = ArrayType.Line;
 
-        private const float MaxWidth = 350f;
-        private const float MaxHeght = 250;
+        public const float MaxWidth = 350f;
+        public const float MaxHeght = 250;
 
         private static PrefabrikatorTool _window = null;
 
@@ -30,6 +30,9 @@ namespace Prefabrikator
 
         private UndoStack _undoStack = null;
 
+        // #DG: make this work as another option
+        //private bool _keepOriginal = true;
+
         [MenuItem("Tools/Prefabikator &a")]
         static void ArrayToolWindow()
         {
@@ -39,8 +42,8 @@ namespace Prefabrikator
         public static void Open(ArrayContainer container = null)
         {
             _window = ScriptableObject.CreateInstance<PrefabrikatorTool>();
-            _window.maxSize = new Vector2(MaxWidth, MaxHeght);
-            _window.minSize = _window.maxSize;
+            //_window.maxSize = new Vector2(MaxWidth, MaxHeght);
+            //_window.minSize = _window.maxSize;
             _window.titleContent = new GUIContent(WindowName);
 
             if (Selection.activeObject is GameObject targetObj)
@@ -49,7 +52,9 @@ namespace Prefabrikator
                 _window._creator = _window.GetCreator(_window._arrayType, targetObj);
             }
 
-            _window.ShowUtility();
+            //_window.ShowUtility();
+            _window.Show();
+
 
             if (container != null)
             {
@@ -216,11 +221,11 @@ namespace Prefabrikator
             }
         }
 
-        private void ResizeWindow(ArrayCreator creator)
-        {
-            _window.maxSize = new Vector2(MaxWidth, creator.MaxWindowHeight);
-            _window.minSize = _window.maxSize;
-        }
+        //private void ResizeWindow(ArrayCreator creator)
+        //{
+        //    _window.maxSize = new Vector2(MaxWidth, creator.MaxWindowHeight);
+        //    _window.minSize = _window.maxSize;
+        //}
 
         // #DG: Make this Generic
         // then it can be used at runtime by passing params
@@ -256,7 +261,7 @@ namespace Prefabrikator
                     break;
             }
 
-            ResizeWindow(creator);
+            //ResizeWindow(creator);
             creator.OnCommandExecuted += OnCommandExecuted;
             return creator;
         }

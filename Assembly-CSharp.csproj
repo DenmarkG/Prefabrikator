@@ -8,8 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{34CF6211-3760-1726-EB97-CBA07E5C184B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -60,14 +59,15 @@
     <Compile Include="Assets\Code\Creators\ArcArrayCreator.cs" />
     <Compile Include="Assets\Code\Modifiers\Modifier.cs" />
     <Compile Include="Assets\Code\Util\GlobalEnums.cs" />
+    <Compile Include="Assets\Code\Util\Properties\MinMaxProperty.cs" />
     <Compile Include="Assets\Code\Util\UndoRedo\Command.cs" />
     <Compile Include="Assets\Code\Util\ArrayHelper.cs" />
     <Compile Include="Assets\Code\Creators\CircularArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\ArrayCreator.cs" />
+    <Compile Include="Assets\Code\Util\Extensions.cs" />
     <Compile Include="Assets\Code\Modifiers\Scale\UniformScaleModifier.cs" />
     <Compile Include="Assets\Code\Runtime\ArrayContainer.cs" />
     <Compile Include="Assets\Code\Util\PropertyExtensions.cs" />
-    <Compile Include="Assets\Code\Util\Extensions.cs" />
     <Compile Include="Assets\Code\Bezier\CubicBezierCurve.cs" />
     <Compile Include="Assets\Code\Creators\LinearArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\SphereArrayCreator.cs" />
@@ -75,11 +75,17 @@
     <Compile Include="Assets\Code\Runtime\ArrayData.cs" />
     <Compile Include="Assets\Code\Modifiers\Scale\RandomScaleModifier.cs" />
     <Compile Include="Assets\Code\PrefabrikatorTool.cs" />
+    <Compile Include="Assets\Code\Util\MinMax.cs" />
     <Compile Include="Assets\Code\ArrayTypes.cs" />
     <Compile Include="Assets\Code\Bezier\BezierPoint.cs" />
     <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\GridArrayCreator.cs" />
     <Compile Include="Assets\Code\Util\UndoRedo\UndoStack.cs" />
+    <Compile Include="Assets\Code\Util\Properties\CustomProperty.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\UI\Prefabrikator.uxml" />
+    <None Include="Assets\UI\PrefabrikatorEditor.uss" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

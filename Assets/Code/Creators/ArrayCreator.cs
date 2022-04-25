@@ -20,6 +20,8 @@ namespace Prefabrikator
         }
 
         protected GameObject _targetProxy = null;
+
+        public List<GameObject> CreatedObjects => _createdObjects;
         protected List<GameObject> _createdObjects = null;
 
         protected int _targetCount = 1;
@@ -39,6 +41,8 @@ namespace Prefabrikator
         private List<Modifier> _modifierStack = new List<Modifier>();
 
         protected ArrayData _defaultData = null;
+
+        ModifierType _selectedModifier = ModifierType.ScaleRandom;
 
         public ArrayCreator(GameObject target)
         {
@@ -259,12 +263,12 @@ namespace Prefabrikator
                 _modifierStack[i].UpdateInspector();
             }
 
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal(GUILayout.MaxWidth(PrefabrikatorTool.MaxWidth));
             {
-                ModifierType selection = (ModifierType)EditorGUILayout.EnumPopup(ModifierType.ScaleUniform);
-                if (GUILayout.Button("Add", GUILayout.MaxWidth(100)))
+                _selectedModifier = (ModifierType)EditorGUILayout.EnumPopup(_selectedModifier);
+                if (GUILayout.Button("Add"))
                 {
-                    AddModifier(selection);
+                    AddModifier(_selectedModifier);
                 }
             }
             EditorGUILayout.EndHorizontal();

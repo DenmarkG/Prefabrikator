@@ -53,4 +53,30 @@ namespace Prefabrikator
             Creator.Refresh();
         }
     }
+
+    internal class ValueChangedCommand<T> : ICommand
+    {
+        private T _previous = default(T);
+        private T _next = default(T);
+
+        private System.Action<T> OnValueChanged = null;
+
+        public ValueChangedCommand(T previous, T next, System.Action<T> onValueChanged)
+        {
+            _previous = previous;
+            _next = next;
+
+            OnValueChanged = onValueChanged;
+        }
+
+        public void Execute()
+        {
+            OnValueChanged(_next);
+        }
+
+        public void Revert()
+        {
+            OnValueChanged(_previous);
+        }
+    }
 }

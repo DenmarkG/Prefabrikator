@@ -17,6 +17,8 @@ namespace Prefabrikator
 
         protected abstract string DisplayName { get; }
 
+        private bool _isExpanded = false;
+
         public Modifier(ArrayCreator owner)
         {
             _owner = owner;
@@ -24,18 +26,16 @@ namespace Prefabrikator
 
         public void UpdateInspector()
         {
-            EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
+            _isExpanded = EditorGUILayout.Foldout(_isExpanded, DisplayName);
+            if (_isExpanded)
             {
-                GUILayout.Label(DisplayName);
-                GUILayout.FlexibleSpace();
                 if (GUILayout.Button("-"))
                 {
                     _owner.RemoveModifier(this);
                 }
-            }
-            EditorGUILayout.EndHorizontal();
 
-            OnInspectorUpdate();
+                OnInspectorUpdate();
+            }            
         }
 
         protected abstract void OnInspectorUpdate();

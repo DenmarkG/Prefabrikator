@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/UI/PrefabrikatorEditor.uss?fileID=7433441132597879392&amp;guid=07ce91c5e82e23b42a566ec4e27dc3f5&amp;type=3#PrefabrikatorEditor" />
+    <ui:ScrollView name="ScrollView" />
+    <uie:Toolbar>
+        <uie:ToolbarMenu display-tooltip-when-elided="true" name="FileMenu" text="File" />
+        <uie:ToolbarSpacer style="width: 268px;" />
+        <uie:ToolbarButton text="Save" display-tooltip-when-elided="true" name="Save" style="white-space: nowrap; flex-direction: column; justify-content: flex-start;" />
+    </uie:Toolbar>
+</ui:UXML>
