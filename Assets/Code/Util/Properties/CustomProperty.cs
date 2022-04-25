@@ -35,7 +35,7 @@ namespace Prefabrikator
 
         public T Update()
         {
-            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.BeginHorizontal(GUILayout.Width(PrefabrikatorTool.MaxWidth));
             {
                 EditorGUILayout.LabelField(_label, GUILayout.Width(Extensions.LabelWidth));
                 if (_editMode == EditMode.Enabled)

@@ -8,7 +8,6 @@ using System.Collections.Generic;
 
 namespace Prefabrikator
 {
-    // #DG: rename this tool
     public class PrefabrikatorTool : EditorWindow
     {
         private static readonly string WindowName = "Prefabrikator";
@@ -285,11 +284,13 @@ namespace Prefabrikator
         private void Undo()
         {
             _undoStack.Undo();
+            RefreshArray();
         }
 
         private void Redo()
         {
             _undoStack.Redo();
+            RefreshArray();
         }
 
         private class ModidifierOptionsPopup : EditorWindow

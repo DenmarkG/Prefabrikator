@@ -54,6 +54,28 @@ namespace Prefabrikator
         }
     }
 
+    internal class ModifierAddCommand : ICommand
+    {
+        private Modifier _modifier = null;
+        private ArrayCreator _creator = null;
+
+        public ModifierAddCommand(Modifier modifier, ArrayCreator creator)
+        {
+            _creator = creator;
+            _modifier = modifier;
+        }
+
+        public void Execute()
+        {
+            _creator.AddModifier(_modifier);
+        }
+
+        public void Revert()
+        {
+            _creator.RemoveModifier(_modifier);
+        }
+    }
+
     internal class ValueChangedCommand<T> : ICommand
     {
         private T _previous = default(T);

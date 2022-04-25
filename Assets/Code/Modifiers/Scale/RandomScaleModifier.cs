@@ -9,12 +9,12 @@ namespace Prefabrikator
 
         private Vector3[] _scales = null;
         private MinMax _xRange = null;
+        private MinMax _yRange = null;
+        private MinMax _zRange = null;
+
         private MinMaxProperty _xRangeProperty = null;
         private MinMaxProperty _yRangeProperty = null;
         private MinMaxProperty _zRangeProperty = null;
-
-        private MinMax _yRange = null;
-        private MinMax _zRange = null;
 
         public RandomScaleModifier(ArrayCreator owner)
             : base(owner)
@@ -35,7 +35,7 @@ namespace Prefabrikator
         {
             int numObjs = objs.Length;
 
-            if (_scales == null || numObjs != _scales.Length)
+            if (_scales == null)
             {
                 _scales = new Vector3[numObjs];
                 for (int i = 0; i < numObjs; ++i)
@@ -44,6 +44,20 @@ namespace Prefabrikator
                 }
 
                 Randomize();
+            }
+            else if (numObjs != _scales.Length)
+            {
+                // #DG: add special case for when target array is not long enough
+                Vector3[] temp = new Vector3[numObjs];
+                int startingIndex = 0;
+                if (_scales.Length < numObjs)
+                {
+                    startingIndex = _scales.Length;
+                }
+                _scales.CopyTo(temp, 0);
+                _scales = temp;
+
+                Randomize(startingIndex);
             }
 
             for (int i = 0; i < numObjs; ++i)
@@ -55,6 +69,8 @@ namespace Prefabrikator
         protected override void OnInspectorUpdate()
         {
             _xRangeProperty.Update();
+            _yRangeProperty.Update();
+            _zRangeProperty.Update();
 
             if (GUILayout.Button("Randomize"))
             {
@@ -62,12 +78,12 @@ namespace Prefabrikator
             }
         }
 
-        private void Randomize()
+        private void Randomize(int startingIndex = 0)
         {
             int numOjbs = _scales.Length;
             Vector3[] previousValues = new Vector3[_scales.Length];
 
-            for (int i = 0; i < numOjbs; ++i)
+            for (int i = startingIndex; i < numOjbs; ++i)
             {
                 previousValues[i] = _scales[i];
                 Extensions.Randomize(ref _scales[i], _xRange, _yRange, _zRange);
@@ -79,7 +95,7 @@ namespace Prefabrikator
             }
 
             var valueChanged = new ValueChangedCommand<Vector3[]>(previousValues, _scales, ApplyScales);
-            Owner.CommandQueue.Enqueue(valueChanged);            
+            Owner.CommandQueue.Enqueue(valueChanged);           
         }
 
         private void SetupRangeProperties()
@@ -108,7 +124,7 @@ namespace Prefabrikator
                 });
                 Owner.CommandQueue.Enqueue(valueCommand);
             };
-            _yRangeProperty = new MinMaxProperty("X Range", _xRange, OnYChanged);
+            _yRangeProperty = new MinMaxProperty("Y Range", _xRange, OnYChanged);
 
             // Z
             _zRange = new MinMax(0, 5);
@@ -121,7 +137,7 @@ namespace Prefabrikator
                 });
                 Owner.CommandQueue.Enqueue(valueCommand);
             };
-            _zRangeProperty = new MinMaxProperty("X Range", _xRange, OnZChanged);
+            _zRangeProperty = new MinMaxProperty("Z Range", _xRange, OnZChanged);
         }
     }
 }

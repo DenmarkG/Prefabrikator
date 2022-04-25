@@ -17,9 +17,9 @@ namespace Prefabrikator
 
             EditorGUILayout.BeginHorizontal();
             {
-                float width = PrefabrikatorTool.MaxWidth / 3;
-                temp.Min = EditorGUILayout.FloatField("Min", temp.Min, GUILayout.MaxWidth(width));
-                temp.Max = EditorGUILayout.FloatField("Max", temp.Max/*, GUILayout.MaxWidth(75)*/);
+                EditorGUIUtility.labelWidth = 50;
+                temp.Min = EditorGUILayout.FloatField("Min", temp.Min, GUILayout.Width(150));
+                temp.Max = EditorGUILayout.FloatField("Max", temp.Max, GUILayout.Width(150));
             }
             EditorGUILayout.EndHorizontal();
 

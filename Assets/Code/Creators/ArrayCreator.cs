@@ -268,7 +268,7 @@ namespace Prefabrikator
                 _selectedModifier = (ModifierType)EditorGUILayout.EnumPopup(_selectedModifier);
                 if (GUILayout.Button("Add"))
                 {
-                    AddModifier(_selectedModifier);
+                    CommandQueue.Enqueue(new ModifierAddCommand(GetModifierFromType(_selectedModifier), this));
                 }
             }
             EditorGUILayout.EndHorizontal();
@@ -285,16 +285,24 @@ namespace Prefabrikator
 
         private void AddModifier(ModifierType modifierType)
         {
+            Modifier mod = GetModifierFromType(modifierType);
+
+            if (mod != null)
+            {
+                AddModifier(mod);
+            }
+        }
+
+        private Modifier GetModifierFromType(ModifierType modifierType)
+        {
             switch (modifierType)
             {
                 case ModifierType.ScaleRandom:
-                    AddModifier(new RandomScaleModifier(this));
-                    break;
+                    return new RandomScaleModifier(this);
                 case ModifierType.ScaleUniform:
-                    AddModifier(new UniformScaleModifier(this));
-                    break;
+                    return new UniformScaleModifier(this);
                 default:
-                    break;
+                    return null;
             }
         }
 
