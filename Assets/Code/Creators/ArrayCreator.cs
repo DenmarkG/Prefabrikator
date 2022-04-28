@@ -25,7 +25,7 @@ namespace Prefabrikator
         protected List<GameObject> _createdObjects = null;
 
         protected int _targetCount = 1;
-        protected bool _needsRefresh = false;
+        protected bool NeedsRefresh => CommandQueue.Count > 0;
 
         protected GUIStyle _boxedHeaderStyle = null;
         private readonly string _boxStyle = "toolbar";
@@ -36,12 +36,12 @@ namespace Prefabrikator
         bool _showTransformControls = false;
         protected bool _showRotationControls = true;
         protected Quaternion _targetRotation = Quaternion.identity;
-        protected Vector3 _targetScale = Vector3.one;
-
-        private List<Modifier> _modifierStack = new List<Modifier>();
+        private QuaternionProperty _rotationProperty = null;
 
         protected ArrayData _defaultData = null;
 
+
+        private List<Modifier> _modifierStack = new List<Modifier>();
         ModifierType _selectedModifier = ModifierType.ScaleRandom;
 
         public ArrayCreator(GameObject target)
@@ -56,7 +56,9 @@ namespace Prefabrikator
             int v = Mathf.CeilToInt(EditorGUIUtility.singleLineHeight * .3f);
             _boxedHeaderStyle.padding = new RectOffset(h, h, v, v);
 
-            _needsRefresh = true;
+            _rotationProperty = new QuaternionProperty("Rotation", _targetRotation, OnRotationChanged);
+
+            Refresh();
         }
 
         public virtual void Teardown()
@@ -69,7 +71,13 @@ namespace Prefabrikator
 
         public abstract void DrawEditor();
         public abstract void UpdateEditor();
-        public abstract void Refresh(bool hardRefresh = false, bool useDefaultData = false);
+        protected abstract void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false);
+
+        public void Refresh(bool hardRefresh = false, bool useDefaultData = false)
+        {
+            OnRefreshStart(hardRefresh, useDefaultData);
+            ProcessModifiers();
+        }
 
         protected void DestroyAll()
         {
@@ -178,15 +186,6 @@ namespace Prefabrikator
             }
         }
 
-        protected virtual void UpdateLocalScales()
-        {
-            for (int i = 0; i < _createdObjects.Count; ++i)
-            {
-                _createdObjects[i].transform.localScale = _targetScale;
-            }
-        }
-
-
         public void DrawTransformControls()
         {
             _showTransformControls = EditorGUILayout.Foldout(_showTransformControls, "Original Transform");
@@ -195,15 +194,7 @@ namespace Prefabrikator
             {
                 if (_showRotationControls)
                 {
-                    if (Extensions.DisplayRotationField(ref _targetRotation))
-                    {
-                        _needsRefresh = true;
-                    }
-                }
-
-                if (Extensions.DisplayScaleField(ref _targetScale))
-                {
-                    _needsRefresh = true;
+                    _targetRotation = _rotationProperty.Update();
                 }
             }
         }
@@ -255,6 +246,17 @@ namespace Prefabrikator
             OnCommandExecuted(command);
         }
 
+        private void OnRotationChanged(Quaternion current, Quaternion previous)
+        {
+            void SetRotation(Quaternion rotation)
+            {
+                _targetRotation = rotation;
+            }
+            CommandQueue.Enqueue(new ValueChangedCommand<Quaternion>(current, previous, SetRotation));
+        }
+
+        //
+        // Modifiers
         public void DrawModifiers()
         {
             int numMods = _modifierStack.Count;

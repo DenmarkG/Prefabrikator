@@ -10,8 +10,8 @@ namespace Prefabrikator
         public int SectorCount = SphereArrayCreator.DefaultSectorCount;
         public int StackCount = SphereArrayCreator.DefaultStackCount;
 
-        public SphereArrayData(GameObject prefab, Vector3 targetScale, Quaternion targetRotation)
-            : base(ArrayType.Sphere, prefab, targetScale, targetRotation)
+        public SphereArrayData(GameObject prefab, Quaternion targetRotation)
+            : base(ArrayType.Sphere, prefab, targetRotation)
         {
             //
         }
@@ -24,12 +24,16 @@ namespace Prefabrikator
 
         public static readonly int DefaultSectorCount = 16;
         private int _sectorCount = DefaultSectorCount;
+        private CountProperty _sectorCountProperty = null;
 
         public static readonly int DefaultStackCount = 8;
         private int _stackCount = DefaultStackCount;
+        private CountProperty _stackCountProperty = null;
 
         private const float PiOverTwo = Mathf.PI / 2f;
         private const float TwoPi = Mathf.PI * 2f; // 360
+
+        
 
         public SphereArrayCreator(GameObject target)
             : base(target)
@@ -48,7 +52,7 @@ namespace Prefabrikator
                     if (radius != _radius)
                     {
                         _radius = Mathf.Abs(radius);
-                        _needsRefresh = true;
+                        //_needsRefresh = true;
                     }
                 }
                 EditorGUILayout.EndHorizontal();
@@ -60,7 +64,7 @@ namespace Prefabrikator
                     {
                         _orientation = orientation;
                         OnOrientationChanged();
-                        _needsRefresh = true;
+                        //_needsRefresh = true;
                     }
                 }
                 EditorGUILayout.EndHorizontal();
@@ -68,13 +72,13 @@ namespace Prefabrikator
                 if (Extensions.DisplayCountField(ref _sectorCount, "Segments"))
                 {
                     _sectorCount = Mathf.Max(_sectorCount, MinCount);
-                    _needsRefresh = true;
+                    //_needsRefresh = true;
                 }
 
                 if (Extensions.DisplayCountField(ref _stackCount, "Rings"))
                 {
                     _stackCount = Mathf.Max(_stackCount, MinCount);
-                    _needsRefresh = true;
+                    //_needsRefresh = true;
                 }
 
                 _targetCount = GetTargetCount();
@@ -86,7 +90,7 @@ namespace Prefabrikator
         {
             if (_target != null)
             {
-                if (_needsRefresh)
+                if (NeedsRefresh)
                 {
                     Refresh();
                 }
@@ -171,7 +175,7 @@ namespace Prefabrikator
 
         protected override ArrayData GetContainerData()
         {
-            SphereArrayData data = new SphereArrayData(_target, _targetScale, _targetRotation);
+            SphereArrayData data = new SphereArrayData(_target, _targetRotation);
             data.Count = _targetCount;
             data.Radius = _radius;
             data.Orientation = _orientation;
@@ -189,7 +193,6 @@ namespace Prefabrikator
                 _targetCount = sphereData.Count;
                 _radius = sphereData.Radius;
                 _orientation = sphereData.Orientation;
-                _targetScale = sphereData.TargetScale;
                 _targetRotation = sphereData.TargetRotation;
 
                 _stackCount = sphereData.StackCount;

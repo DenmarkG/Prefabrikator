@@ -42,11 +42,10 @@ namespace Prefabrikator
         }
         [SerializeField] private Quaternion _targetRotation = Quaternion.identity;
 
-        public ArrayData(ArrayType type, GameObject prefab, Vector3 targetScale, Quaternion targetRotation)
+        public ArrayData(ArrayType type, GameObject prefab, Quaternion targetRotation)
         {
             _type = type;
             _prefab = prefab;
-            _targetScale = targetScale;
             _targetRotation = targetRotation;
         }
     }

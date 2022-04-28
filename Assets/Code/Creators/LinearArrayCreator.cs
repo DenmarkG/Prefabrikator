@@ -7,8 +7,8 @@ namespace Prefabrikator
     {
         public Vector3 Offset;
 
-        public LinearArrayData(GameObject prefab, Vector3 targetScale, Quaternion targetRotation)
-            : base(ArrayType.Line, prefab, targetScale, targetRotation)
+        public LinearArrayData(GameObject prefab, Quaternion targetRotation)
+            : base(ArrayType.Line, prefab, targetRotation)
         {
             //
         }
@@ -23,20 +23,21 @@ namespace Prefabrikator
         public override string Name => "Line";
         private Vector3 _offset = new Vector3(2, 0, 0);
 
-        private PropertyExtensions.Vector3Property _offsetProperty = null;
+        private Vector3Property _offsetProperty = null;
 
         public LinearArrayCreator(GameObject target)
             : base(target)
         {
             _targetCount = MinCount;
-            _needsRefresh = true;
 
             void OnValueSet(Vector3 current, Vector3 previous)
             {
                 CommandQueue.Enqueue(new OnOffsetChangeCommand(this, previous, current));
             };
 
-            _offsetProperty = new PropertyExtensions.Vector3Property("Offset", _offset, OnValueSet);
+            _offsetProperty = new Vector3Property("Offset", _offset, OnValueSet);
+
+            Refresh();
         }
 
         private bool _changeStarted = false;
@@ -64,7 +65,7 @@ namespace Prefabrikator
         {
             if (_target != null)
             {
-                if (_needsRefresh || CommandQueue.Count > 0)
+                if (NeedsRefresh)
                 {
                     Refresh();
                 }
@@ -74,7 +75,7 @@ namespace Prefabrikator
             }
         }
 
-        public override void Refresh(bool hardRefresh = false, bool useDefaultData = false)
+        protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
         {
             if (!_changeStarted)
             {
@@ -116,12 +117,9 @@ namespace Prefabrikator
                 }
 
                 UpdatePositions();
-                UpdateLocalScales();
                 UpdateLocalRotations();
 
                 ProcessModifiers();
-
-                _needsRefresh = false;
             }
         }
 
@@ -171,7 +169,7 @@ namespace Prefabrikator
 
         protected override ArrayData GetContainerData()
         {
-            LinearArrayData data = new LinearArrayData(_target, _targetScale, _targetRotation);
+            LinearArrayData data = new LinearArrayData(_target, _targetRotation);
             data.Count = _targetCount;
             data.Offset = _offset;
             return data;
@@ -183,7 +181,6 @@ namespace Prefabrikator
             {
                 _targetCount = lineData.Count;
                 _offset = lineData.Offset;
-                _targetScale = lineData.TargetScale;
                 _targetRotation = lineData.TargetRotation;
             }
         }

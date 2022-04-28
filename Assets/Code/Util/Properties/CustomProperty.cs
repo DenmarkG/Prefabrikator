@@ -17,7 +17,11 @@ namespace Prefabrikator
         protected T SetValue => _setValue;
         private T _setValue = default(T);
 
-        protected T WorkingValue => _workingValue;
+        protected T WorkingValue
+        {
+            get { return _workingValue; }
+            set { _workingValue = value; }
+        }
         private T _workingValue = default(T);
 
         private EditMode _editMode = EditMode.Disabled;

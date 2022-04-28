@@ -3,6 +3,7 @@ using UnityEditor;
 
 namespace Prefabrikator
 {
+    // #DG: store the scales as normalized vectors that can be visualized as the range changes
     public class RandomScaleModifier : Modifier
     {
         protected override string DisplayName => "Random Scale";
@@ -47,17 +48,25 @@ namespace Prefabrikator
             }
             else if (numObjs != _scales.Length)
             {
-                // #DG: add special case for when target array is not long enough
+                // #DG: This breaks undo
                 Vector3[] temp = new Vector3[numObjs];
                 int startingIndex = 0;
                 if (_scales.Length < numObjs)
                 {
                     startingIndex = _scales.Length;
+                    _scales.CopyTo(temp, 0);
+                    _scales = temp;
+                    Randomize(startingIndex);
                 }
-                _scales.CopyTo(temp, 0);
-                _scales = temp;
+                else if (_scales.Length > numObjs)
+                {
+                    for (int i = 0; i < numObjs; ++i)
+                    {
+                        temp[i] = _scales[i];
+                    }
 
-                Randomize(startingIndex);
+                    _scales = temp;
+                }
             }
 
             for (int i = 0; i < numObjs; ++i)
@@ -101,7 +110,7 @@ namespace Prefabrikator
         private void SetupRangeProperties()
         {
             // X
-            _xRange = new MinMax(0, 5);
+            _xRange = new MinMax(1, 5);
             void OnXChanged(MinMax current, MinMax previous)
             {
                 var valueCommand = new ValueChangedCommand<MinMax>(previous, current, (x) =>
@@ -114,7 +123,7 @@ namespace Prefabrikator
             _xRangeProperty = new MinMaxProperty("X Range", _xRange, OnXChanged);
 
             // Y 
-            _yRange = new MinMax(0, 5);
+            _yRange = new MinMax(1, 5);
             void OnYChanged(MinMax current, MinMax previous)
             {
                 var valueCommand = new ValueChangedCommand<MinMax>(previous, current, (y) =>
@@ -124,10 +133,10 @@ namespace Prefabrikator
                 });
                 Owner.CommandQueue.Enqueue(valueCommand);
             };
-            _yRangeProperty = new MinMaxProperty("Y Range", _xRange, OnYChanged);
+            _yRangeProperty = new MinMaxProperty("Y Range", _yRange, OnYChanged);
 
             // Z
-            _zRange = new MinMax(0, 5);
+            _zRange = new MinMax(1, 5);
             void OnZChanged(MinMax current, MinMax previous)
             {
                 var valueCommand = new ValueChangedCommand<MinMax>(previous, current, (z) =>
@@ -137,7 +146,7 @@ namespace Prefabrikator
                 });
                 Owner.CommandQueue.Enqueue(valueCommand);
             };
-            _zRangeProperty = new MinMaxProperty("Z Range", _xRange, OnZChanged);
+            _zRangeProperty = new MinMaxProperty("Z Range", _zRange, OnZChanged);
         }
     }
 }

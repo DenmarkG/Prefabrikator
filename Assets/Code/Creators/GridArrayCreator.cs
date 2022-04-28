@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace Prefabrikator
 {
@@ -9,8 +10,8 @@ namespace Prefabrikator
         public Vector3 OffsetVector = GridArrayCreator.DefaultOffset;
         public Vector3Int CountVector = GridArrayCreator.DefaultCount;
 
-        public GridArrayData(GameObject prefab, Vector3 targetScale, Quaternion targetRotation)
-            : base(ArrayType.Grid, prefab, targetScale, targetRotation)
+        public GridArrayData(GameObject prefab, Quaternion targetRotation)
+            : base(ArrayType.Grid, prefab, targetRotation)
         {
             //
         }
@@ -39,10 +40,19 @@ namespace Prefabrikator
 
         private bool _needsPositionRefresh = false;
 
+        private CountProperty _xCountProperty = null;
+        private CountProperty _yCountProperty = null;
+        private CountProperty _zCountProperty = null;
+
+        private FloatProperty _xOffset = null;
+        private FloatProperty _yOffset = null;
+        private FloatProperty _zOffset = null;
+
         public GridArrayCreator(GameObject target)
             : base(target)
         {
-            //
+            SetupCountProperties();
+            SetupOffsetProperties();
         }
 
         public override void DrawEditor()
@@ -53,7 +63,8 @@ namespace Prefabrikator
                 if (dimension != _dimension)
                 {
                     _dimension = dimension;
-                    _needsRefresh = true;
+                    // #DG: Fix this 
+                    //_needsRefresh = true;
                     _needsPositionRefresh = true;
                 }
 
@@ -61,56 +72,34 @@ namespace Prefabrikator
 
                 if (ShouldShowX())
                 {
-                    int countX = _countVector.x;
-                    if (Extensions.DisplayCountField(ref countX, "Rows"))
-                    {
-                        _countVector.x = Mathf.Max(countX, 0);
-                        _needsRefresh = true;
-                        _needsPositionRefresh = true;
-                    }
+                    _countVector.x = _xCountProperty.Update();
                     targetCount *= (_countVector.x > 0) ? _countVector.x : 1;
                 }
 
                 if (ShouldShowY())
                 {
-                    int countY = _countVector.y;
-                    if (Extensions.DisplayCountField(ref countY, "Columns"))
-                    {
-                        _countVector.y = Mathf.Max(countY, 0);
-                        _needsRefresh = true;
-                        _needsPositionRefresh = true;
-                    }
+                    _countVector.y = _yCountProperty.Update();
                     targetCount *= (_countVector.y > 0) ? _countVector.y : 1;
                 }
 
                 if (ShouldShowZ())
                 {
-                    int countZ = _countVector.z;
-                    if (Extensions.DisplayCountField(ref countZ, "Depth"))
-                    {
-                        _countVector.z = Mathf.Max(countZ, 0);
-                        _needsRefresh = true;
-                        _needsPositionRefresh = true;
-                    }
+                    _countVector.z = _zCountProperty.Update();
                     targetCount *= (_countVector.z > 0) ? _countVector.z : 1;
                 }
 
                 if (targetCount != _targetCount)
                 {
                     _targetCount = targetCount;
-                    _needsRefresh = true;
                 }
 
+
+                EditorGUILayout.LabelField("Offsets");
                 if (ShouldShowX())
                 {
                     using (new EditorGUI.DisabledGroupScope(_countVector.x == 0))
                     {
-                        float offsetX = EditorGUILayout.FloatField("Offset X", _offsetVector.x);
-                        if (offsetX != _offsetVector.x)
-                        {
-                            _offsetVector.x = offsetX;
-                            _needsRefresh = true;
-                        }
+                        _offsetVector.x = _xOffset.Update();
                     }
                 }
 
@@ -118,12 +107,7 @@ namespace Prefabrikator
                 {
                     using (new EditorGUI.DisabledGroupScope(_countVector.y == 0))
                     {
-                        float offsetY = EditorGUILayout.FloatField("Offset Y", _offsetVector.y);
-                        if (offsetY != _offsetVector.y)
-                        {
-                            _offsetVector.y = offsetY;
-                            _needsRefresh = true;
-                        }
+                        _offsetVector.y = _yOffset.Update();
                     }
                 }
 
@@ -131,12 +115,7 @@ namespace Prefabrikator
                 {
                     using (new EditorGUI.DisabledScope(_countVector.z == 0))
                     {
-                        float offsetZ = EditorGUILayout.FloatField("Offset Z", _offsetVector.z);
-                        if (offsetZ != _offsetVector.z)
-                        {
-                            _offsetVector.z = offsetZ;
-                            _needsRefresh = true;
-                        }
+                        _offsetVector.z = _zOffset.Update();
                     }
                 }
             }
@@ -147,7 +126,7 @@ namespace Prefabrikator
         private bool ShouldShowY() => _dimension != Dimension.XZ;
         private bool ShouldShowZ() => _dimension != Dimension.XY;
 
-        public override void Refresh(bool hardRefresh = false, bool useDefaultData = false)
+        protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
         {
             if (hardRefresh)
             {
@@ -196,16 +175,14 @@ namespace Prefabrikator
             }
 
             UpdatePositions();
-            UpdateLocalScales();
             UpdateLocalRotations();
-            _needsRefresh = false;
         }
 
         public override void UpdateEditor()
         {
             if (_target != null)
             {
-                if (_needsRefresh)
+                if (NeedsRefresh)
                 {
                     Refresh();
                 }
@@ -308,6 +285,78 @@ namespace Prefabrikator
             return targetCount;
         }
 
+        private void SetupCountProperties()
+        {
+            void OnXChanged(int current, int previous)
+            {
+                var valueCommand = new ValueChangedCommand<int>(previous, current, (x) =>
+                {
+                    _countVector.x = x;
+                });
+
+                CommandQueue.Enqueue(valueCommand);
+            }
+            _xCountProperty = new CountProperty("Rows", _countVector.x, OnXChanged);
+
+            void OnYChanged(int current, int previous)
+            {
+                var valueCommand = new ValueChangedCommand<int>(previous, current, (y) =>
+                {
+                    _countVector.y = y;
+                });
+
+                CommandQueue.Enqueue(valueCommand);
+            }
+            _yCountProperty = new CountProperty("Columns", _countVector.y, OnYChanged);
+
+            void OnZChanged(int current, int previous)
+            {
+                var valueCommand = new ValueChangedCommand<int>(previous, current, (z) =>
+                {
+                    _countVector.z = z;
+                });
+
+                CommandQueue.Enqueue(valueCommand);
+            }
+            _zCountProperty = new CountProperty("Depth", _countVector.z, OnZChanged);
+        }
+
+        private void SetupOffsetProperties()
+        {
+            void OnXChanged(float current, float previous)
+            {
+                var valueCommand = new ValueChangedCommand<float>(previous, current, (x) =>
+                {
+                    _offsetVector.x = x;
+                });
+
+                CommandQueue.Enqueue(valueCommand);
+            }
+            _xOffset = new FloatProperty("X", _offsetVector.x, OnXChanged);
+
+            void OnYChanged(float current, float previous)
+            {
+                var valueCommand = new ValueChangedCommand<float>(previous, current, (y) =>
+                {
+                    _offsetVector.y = y;
+                });
+
+                CommandQueue.Enqueue(valueCommand);
+            }
+            _xOffset = new FloatProperty("Y", _offsetVector.z, OnYChanged);
+
+            void OnZChanged(float current, float previous)
+            {
+                var valueCommand = new ValueChangedCommand<float>(previous, current, (z) =>
+                {
+                    _offsetVector.z = z;
+                });
+
+                CommandQueue.Enqueue(valueCommand);
+            }
+            _xOffset = new FloatProperty("Z", _offsetVector.z, OnZChanged);
+        }
+
         private void CreateClone()
         {
             GameObject clone = GameObject.Instantiate(_target, _target.transform.position, _target.transform.rotation, _target.transform.parent);
@@ -317,7 +366,7 @@ namespace Prefabrikator
 
         protected override ArrayData GetContainerData()
         {
-            GridArrayData data = new GridArrayData(_target, _targetScale, _targetRotation);
+            GridArrayData data = new GridArrayData(_target, _targetRotation);
             data.Count = GetCount();
             data.CountVector = _countVector;
             data.Dimension = _dimension;
@@ -333,7 +382,6 @@ namespace Prefabrikator
                 _countVector = gridData.CountVector;
                 _dimension = gridData.Dimension;
                 _offsetVector = gridData.OffsetVector;
-                _targetScale = gridData.TargetScale;
                 _targetRotation = gridData.TargetRotation;
                 _targetCount = gridData.Count;
             }

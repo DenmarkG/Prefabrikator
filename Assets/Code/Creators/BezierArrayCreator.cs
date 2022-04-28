@@ -12,8 +12,8 @@ namespace Prefabrikator
         public BezierArrayCreator.OrientationType Orientation = BezierArrayCreator.OrientationType.Original;
         public Vector3 EndRotation = new Vector3(0f, 90f, 0f);
 
-        public BezierArrayData(GameObject prefab, Vector3 targetScale, Quaternion targetRotation)
-            : base(ArrayType.Path, prefab, targetScale, targetRotation)
+        public BezierArrayData(GameObject prefab, Quaternion targetRotation)
+            : base(ArrayType.Path, prefab, targetRotation)
         {
             //
         }
@@ -43,7 +43,6 @@ namespace Prefabrikator
             : base(target)
         {
             SceneView.duringSceneGui += OnSceneGUI;
-            _needsRefresh = true;
             _targetCount = MinCount;
         }
 
@@ -76,7 +75,7 @@ namespace Prefabrikator
                 if (Extensions.DisplayCountField(ref _targetCount))
                 {
                     _targetCount = Mathf.Max(_targetCount, MinCount);
-                    _needsRefresh = true;
+                    //_needsRefresh = true;
                 }
 
                 EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
@@ -86,7 +85,7 @@ namespace Prefabrikator
                     {
                         _orientation = orientation;
                         OnOrientationChanged();
-                        _needsRefresh = true;
+                        //_needsRefresh = true;
                     }
                 }
                 EditorGUILayout.EndHorizontal();
@@ -97,7 +96,7 @@ namespace Prefabrikator
                     if (endRotation != _endRotation)
                     {
                         _endRotation = endRotation;
-                        _needsRefresh = true;
+                        //_needsRefresh = true;
                     }
                 }
                 EditorGUILayout.EndHorizontal();
@@ -111,28 +110,28 @@ namespace Prefabrikator
                         if (p0 != _curve.Start.Position)
                         {
                             _curve.Start.Position = p0;
-                            _needsRefresh = true;
+                            //_needsRefresh = true;
                         }
 
                         Vector3 p1 = EditorGUILayout.Vector3Field("P1", _curve.Start.Tangent);
                         if (p1 != _curve.Start.Tangent)
                         {
                             _curve.Start.Tangent = p1;
-                            _needsRefresh = true;
+                            //_needsRefresh = true;
                         }
 
                         Vector3 p2 = EditorGUILayout.Vector3Field("P2", _curve.End.Tangent);
                         if (p2 != _curve.End.Tangent)
                         {
                             _curve.End.Tangent = p2;
-                            _needsRefresh = true;
+                            //_needsRefresh = true;
                         }
 
                         Vector3 p3 = EditorGUILayout.Vector3Field("P3", _curve.End.Position);
                         if (p3 != _curve.End.Position)
                         {
                             _curve.End.Position = p3;
-                            _needsRefresh = true;
+                            //_needsRefresh = true;
                         }
                     }
                 }
@@ -141,7 +140,7 @@ namespace Prefabrikator
             EditorGUILayout.EndVertical();
         }
 
-        public override void Refresh(bool hardRefresh = false, bool useDefaultData = false)
+        protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
         {
             EstablishHelper();
 
@@ -176,17 +175,13 @@ namespace Prefabrikator
             {
                 UpdateLocalRotations();
             }
-
-            UpdateLocalScales();
-
-            _needsRefresh = false;
         }
 
         public override void UpdateEditor()
         {
             if (_target != null)
             {
-                if (_needsRefresh)
+                if (NeedsRefresh)
                 {
                     Refresh();
                 }
@@ -281,7 +276,7 @@ namespace Prefabrikator
 
         protected override ArrayData GetContainerData()
         {
-            BezierArrayData data = new BezierArrayData(_target, _targetScale, _targetRotation);
+            BezierArrayData data = new BezierArrayData(_target, _targetRotation);
             data.Count = _targetCount;
             data.Curve = _curve;
             data.Orientation = _orientation;
@@ -297,7 +292,6 @@ namespace Prefabrikator
                 _targetCount = curveData.Count;
                 _orientation = curveData.Orientation;
                 _targetRotation = curveData.TargetRotation;
-                _targetScale = curveData.TargetScale;
                 _curve = curveData.Curve;
                 _endRotation = curveData.EndRotation;
             }
@@ -310,14 +304,14 @@ namespace Prefabrikator
             if (p0 != start.Position)
             {
                 start.Position = p0;
-                _needsRefresh = true;
+                //_needsRefresh = true;
             }
 
             Vector3 p1 = Handles.PositionHandle(start.Tangent, Quaternion.identity);
             if (p1 != start.Tangent)
             {
                 start.Tangent = p1;
-                _needsRefresh = true;
+                //_needsRefresh = true;
             }
 
             Handles.color = Color.cyan;
@@ -329,14 +323,14 @@ namespace Prefabrikator
             if (p2 != end.Tangent)
             {
                 end.Tangent = p2;
-                _needsRefresh = true;
+                //_needsRefresh = true;
             }
 
             Vector3 p3 = Handles.PositionHandle(end.Position, Quaternion.identity);
             if (p3 != end.Position)
             {
                 end.Position = p3;
-                _needsRefresh = true;
+                //_needsRefresh = true;
             }
 
             Handles.DrawLine(end.Position, end.Tangent);

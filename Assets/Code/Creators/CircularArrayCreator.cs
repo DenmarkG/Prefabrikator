@@ -10,8 +10,8 @@ namespace Prefabrikator
         public float Radius = CircularArrayCreator.DefaultRadius;
         public CircularArrayCreator.OrientationType Orientation = CircularArrayCreator.OrientationType.Original;
 
-        public CircleArrayData(GameObject prefab, Vector3 targetScale, Quaternion targetRotation)
-            : base(ArrayType.Circle, prefab, targetScale, targetRotation)
+        public CircleArrayData(GameObject prefab, Quaternion targetRotation)
+            : base(ArrayType.Circle, prefab, targetRotation)
         {
             Count = CircularArrayCreator.MinCount;
         }
@@ -33,6 +33,7 @@ namespace Prefabrikator
 
         public static readonly float DefaultRadius = 5f;
         protected float _radius = DefaultRadius;
+        protected FloatProperty _radiusProperty = null;
 
         protected Vector3 _center = Vector3.zero;
 
@@ -46,31 +47,24 @@ namespace Prefabrikator
         {
             _center = _target.transform.position;
             _targetCount = MinCirlceCount;
+
+            _radiusProperty = new FloatProperty("Radius", _radius, OnRadiusSet);
         }
 
         public override void DrawEditor()
         {
             EditorGUILayout.BeginVertical();
             {
-                EditorGUILayout.BeginHorizontal(_boxedHeaderStyle);
-                {
-                    float radius = EditorGUILayout.FloatField("Radius", _radius);
-                    if (radius != _radius)
-                    {
-                        _radius = Mathf.Abs(radius);
-                        _needsRefresh = true;
-                    }
-                }
-                EditorGUILayout.EndHorizontal();
+                float radius = Mathf.Abs(_radiusProperty.Update());
 
                 EditorGUILayout.BeginHorizontal(_boxedHeaderStyle);
                 {
+                    // #DG: convert this to modifier
                     OrientationType orientation = (OrientationType)EditorGUILayout.EnumPopup("Rotation", _orientation);
                     if (orientation != _orientation)
                     {
                         _orientation = orientation;
                         OnOrientationChanged();
-                        _needsRefresh = true;
                     }
                 }
                 EditorGUILayout.EndHorizontal();
@@ -78,13 +72,13 @@ namespace Prefabrikator
                 if (Extensions.DisplayCountField(ref _targetCount))
                 {
                     _targetCount = Mathf.Max(_targetCount, MinCount);
-                    _needsRefresh = true;
+                    //_needsRefresh = true;
                 }
             }
             EditorGUILayout.EndVertical();
         }
 
-        public override void Refresh(bool hardRefresh = false, bool useDefaultData = false)
+        protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
         {
             if (hardRefresh)
             {
@@ -122,17 +116,13 @@ namespace Prefabrikator
             {
                 UpdateLocalRotations();
             }
-
-            UpdateLocalScales();
-
-            _needsRefresh = false;
         }
 
         public override void UpdateEditor()
         {
             if (_target != null)
             {
-                if (_needsRefresh)
+                if (NeedsRefresh)
                 {
                     Refresh();
                 }
@@ -226,7 +216,7 @@ namespace Prefabrikator
 
         protected override ArrayData GetContainerData()
         {
-            CircleArrayData data = new CircleArrayData(_target, _targetScale, _targetRotation);
+            CircleArrayData data = new CircleArrayData(_target, _targetRotation);
             data.Count = _targetCount;
             data.Radius = _radius;
             data.Orientation = _orientation;
@@ -241,7 +231,6 @@ namespace Prefabrikator
                 _targetCount = circleData.Count;
                 _radius = circleData.Radius;
                 _orientation = circleData.Orientation;
-                _targetScale = circleData.TargetScale;
                 _targetRotation = circleData.TargetRotation;
             }
         }
@@ -252,8 +241,17 @@ namespace Prefabrikator
             if (center != _center)
             {
                 _center = center;
-                _needsRefresh = true;
             }
+        }
+
+        private void OnRadiusSet(float previous, float current)
+        {
+            ValueChangedCommand<float> radiusChanged = new ValueChangedCommand<float>(previous, current, (radius) =>
+            {
+                _radius = radius;
+            });
+
+            CommandQueue.Enqueue(radiusChanged);
         }
     }
 }

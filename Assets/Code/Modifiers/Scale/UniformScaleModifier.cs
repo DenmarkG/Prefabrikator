@@ -11,12 +11,12 @@ namespace Prefabrikator
         public GameObject[] Targets => _targets;
         private GameObject[] _targets = null;
         private Vector3 _targetScale = new Vector3(1, 1, 1);
-        private PropertyExtensions.Vector3Property _displayField = null;
+        private Vector3Property _displayField = null;
 
         public UniformScaleModifier(ArrayCreator owner)
             : base(owner)
         {
-            _displayField = new PropertyExtensions.Vector3Property("Scale", new Vector3(1, 1, 1), OnValueChanged);
+            _displayField = new Vector3Property("Scale", new Vector3(1, 1, 1), OnValueChanged);
         }
 
         public override void Process(GameObject[] objs)

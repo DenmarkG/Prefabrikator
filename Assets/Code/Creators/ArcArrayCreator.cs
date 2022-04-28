@@ -10,8 +10,8 @@ namespace Prefabrikator
         public float Radius = CircularArrayCreator.DefaultRadius;
         public CircularArrayCreator.OrientationType Orientation = CircularArrayCreator.OrientationType.Original;
 
-        public ArcArrayData(GameObject prefab, Vector3 targetScale, Quaternion targetRotation)
-            : base(ArrayType.Arc, prefab, targetScale, targetRotation)
+        public ArcArrayData(GameObject prefab, Quaternion targetRotation)
+            : base(ArrayType.Arc, prefab, targetRotation)
         {
             Count = CircularArrayCreator.MinCount;
         }
@@ -41,7 +41,7 @@ namespace Prefabrikator
                 if (fillPercent != _fillPercent)
                 {
                     _fillPercent = fillPercent;
-                    _needsRefresh = true;
+                    //_needsRefresh = true;
                 }
             }
             EditorGUILayout.EndHorizontal();
@@ -75,7 +75,7 @@ namespace Prefabrikator
 
         protected override ArrayData GetContainerData()
         {
-            ArcArrayData data = new ArcArrayData(_target, _targetScale, _targetRotation);
+            ArcArrayData data = new ArcArrayData(_target, _targetRotation);
             data.Count = _targetCount;
             data.Radius = _radius;
             data.Orientation = _orientation;
@@ -92,7 +92,6 @@ namespace Prefabrikator
                 _radius = arcData.Radius;
                 _orientation = arcData.Orientation;
                 _fillPercent = arcData.FillPercent;
-                _targetScale = arcData.TargetScale;
                 _targetRotation = arcData.TargetRotation;
             }
         }
