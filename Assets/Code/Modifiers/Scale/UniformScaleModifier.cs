@@ -35,7 +35,7 @@ namespace Prefabrikator
 
         protected override void OnInspectorUpdate()
         {
-            _targetScale.Set(_targetScaleProperty.Update());
+            _targetScaleProperty.Update();
         }
 
         public void OnValueChanged(Vector3 current, Vector3 previous)

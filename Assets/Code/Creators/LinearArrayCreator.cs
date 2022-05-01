@@ -14,7 +14,6 @@ namespace Prefabrikator
         }
     }
 
-    // #DG: TODO - Add Bidirectional option
     public class LinearArrayCreator : ArrayCreator
     {
         public static readonly int MinCount = 2;
@@ -39,8 +38,6 @@ namespace Prefabrikator
 
             Refresh();
         }
-
-        private bool _changeStarted = false;
 
         public override void DrawEditor()
         {
@@ -78,50 +75,38 @@ namespace Prefabrikator
 
         protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
         {
-            if (!_changeStarted)
+            if (hardRefresh)
             {
-                ICommand nextCommand = null;
-                while (CommandQueue.Count > 0)
-                {
-                    nextCommand = CommandQueue.Dequeue();
-                    ExecuteCommand(nextCommand);
-                }
-
-                if (hardRefresh)
-                {
-                    DestroyAll();
-                }
-
-                EstablishHelper(useDefaultData);
-
-                if (_targetCount < _createdObjects.Count)
-                {
-                    while (_createdObjects.Count > _targetCount)
-                    {
-                        int index = _createdObjects.Count - 1;
-                        if (index >= 0)
-                        {
-                            DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    while (_targetCount > _createdObjects.Count)
-                    {
-                        CreateClone();
-                    }
-                }
-
-                UpdatePositions();
-                UpdateLocalRotations();
-
-                ProcessModifiers();
+                DestroyAll();
             }
+
+            EstablishHelper(useDefaultData);
+
+            if (_targetCount < _createdObjects.Count)
+            {
+                while (_createdObjects.Count > _targetCount)
+                {
+                    int index = _createdObjects.Count - 1;
+                    if (index >= 0)
+                    {
+                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                while (_targetCount > _createdObjects.Count)
+                {
+                    CreateClone();
+                }
+            }
+
+            UpdatePositions();
+            UpdateLocalRotations();
         }
 
         private void UpdatePositions()

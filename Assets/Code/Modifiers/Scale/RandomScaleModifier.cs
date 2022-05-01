@@ -4,6 +4,7 @@ using UnityEditor;
 namespace Prefabrikator
 {
     // #DG: store the scales as normalized vectors that can be visualized as the range changes
+    // Also store max and min as two vectors for simplicity
     public class RandomScaleModifier : Modifier
     {
         protected override string DisplayName => "Random Scale";

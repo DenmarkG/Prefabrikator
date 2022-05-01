@@ -75,8 +75,19 @@ namespace Prefabrikator
 
         public void Refresh(bool hardRefresh = false, bool useDefaultData = false)
         {
+            ExecuteAllCommands();
             OnRefreshStart(hardRefresh, useDefaultData);
             ProcessModifiers();
+        }
+
+        private void ExecuteAllCommands()
+        {
+            ICommand nextCommand = null;
+            while (CommandQueue.Count > 0)
+            {
+                nextCommand = CommandQueue.Dequeue();
+                ExecuteCommand(nextCommand);
+            }
         }
 
         protected void DestroyAll()

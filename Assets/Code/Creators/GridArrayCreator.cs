@@ -353,7 +353,7 @@ namespace Prefabrikator
 
                 CommandQueue.Enqueue(valueCommand);
             }
-            _xOffset = new FloatProperty("Y", _offsetVector.Get().z, OnYChanged);
+            _yOffset = new FloatProperty("Y", _offsetVector.Get().z, OnYChanged);
 
             void OnZChanged(float current, float previous)
             {
@@ -366,7 +366,7 @@ namespace Prefabrikator
 
                 CommandQueue.Enqueue(valueCommand);
             }
-            _xOffset = new FloatProperty("Z", _offsetVector.Get().z, OnZChanged);
+            _zOffset = new FloatProperty("Z", _offsetVector.Get().z, OnZChanged);
         }
 
         private void CreateClone()
