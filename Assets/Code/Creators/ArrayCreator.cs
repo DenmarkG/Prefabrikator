@@ -255,6 +255,27 @@ namespace Prefabrikator
             CommandQueue.Enqueue(new ValueChangedCommand<Quaternion>(current, previous, SetRotation));
         }
 
+        public Vector3 GetDefaultScale()
+        {
+            if (_target != null)
+            {
+                return _target.transform.localScale;
+            }
+
+            return new Vector3(1f, 1f, 1f);
+        }
+
+        public delegate void ApplicatorDelegate(GameObject go);
+
+        public void ApplyToAll(ApplicatorDelegate applicator)
+        {
+            int numObjs = _createdObjects.Count;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                applicator(_createdObjects[i]);
+            }
+        }
+
         //
         // Modifiers
         public void DrawModifiers()
@@ -270,13 +291,13 @@ namespace Prefabrikator
                 _selectedModifier = (ModifierType)EditorGUILayout.EnumPopup(_selectedModifier);
                 if (GUILayout.Button("Add"))
                 {
-                    CommandQueue.Enqueue(new ModifierAddCommand(GetModifierFromType(_selectedModifier), this));
+                    AddModifier(_selectedModifier);
                 }
             }
             EditorGUILayout.EndHorizontal();
         }
 
-        protected void ProcessModifiers()
+        public void ProcessModifiers()
         {
             int numMods = _modifierStack.Count;
             for (int i = 0; i < numMods; ++i)
@@ -291,7 +312,7 @@ namespace Prefabrikator
 
             if (mod != null)
             {
-                AddModifier(mod);
+                CommandQueue.Enqueue(new ModifierAddCommand(mod, this));
             }
         }
 
@@ -315,7 +336,11 @@ namespace Prefabrikator
 
         public void RemoveModifier(int index)
         {
+            // #DG: TODO: add some bounds checking here
+            Modifier mod = _modifierStack[index];
             _modifierStack.RemoveAt(index);
+
+            mod.OnRemoved();
         }
 
         public void RemoveModifier(Modifier modifier)

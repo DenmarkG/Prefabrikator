@@ -75,6 +75,12 @@ namespace Prefabrikator
             }
         }
 
+        public override void OnRemoved()
+        {
+            Vector3 defaultScale = Owner.GetDefaultScale();
+            Owner.ApplyToAll((go) => { go.transform.localScale = defaultScale; });
+        }
+
         protected override void OnInspectorUpdate()
         {
             _xRangeProperty.Update();

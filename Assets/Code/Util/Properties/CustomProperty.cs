@@ -14,8 +14,9 @@ namespace Prefabrikator
 
         private string _label = string.Empty;
 
-        protected T SetValue => _setValue;
-        private T _setValue = default(T);
+        protected Shared<T> SetValue => _setValue;
+        private Shared<T> _setValue = new Shared<T>();
+        private T _setValueCopy = default(T);
 
         protected T WorkingValue
         {
@@ -31,10 +32,24 @@ namespace Prefabrikator
 
         public CustomProperty(string label, T startValue, OnValueSetDelegate onValueSet)
         {
-            _label = label;
+            _setValue.Set(startValue);
+            Init(label, _setValue, onValueSet);
+        }
+
+        public CustomProperty(string label, Shared<T> startValue, OnValueSetDelegate onValueSet)
+        {
             _setValue = startValue;
+            Init(label, _setValue, onValueSet);
+        }
+
+        private void Init(string label, T startValue, OnValueSetDelegate onValueSet)
+        {
+            _label = label;
             _workingValue = _setValue;
             OnValueSet = onValueSet;
+            _setValueCopy = startValue;
+
+            _setValue.OnValueChanged += OnValueChanged;
         }
 
         public T Update()
@@ -47,13 +62,13 @@ namespace Prefabrikator
                     _workingValue = ShowPropertyField();
                     if (GUILayout.Button("O"))
                     {
-                        OnValueSet(_workingValue, _setValue);
-                        _setValue = _workingValue;
+                        OnValueSet(_workingValue, _setValueCopy);
+                        _setValue.Set(_workingValue);
                         _editMode = EditMode.Disabled;
                     }
                     if (GUILayout.Button("X"))
                     {
-                        _workingValue = _setValue;
+                        _workingValue = _setValueCopy;
                         _editMode = EditMode.Disabled;
                     }
                 }
@@ -67,6 +82,7 @@ namespace Prefabrikator
                     if (GUILayout.Button("..."))
                     {
                         _editMode = EditMode.Enabled;
+                        _setValueCopy = _setValue;
                     }
                 }
             }
@@ -77,8 +93,16 @@ namespace Prefabrikator
 
         public void SetDefaultValue(T defaultValue)
         {
-            _setValue = defaultValue;
+            _setValue.Set(defaultValue);
             _workingValue = _setValue;
+        }
+
+        private void OnValueChanged(T newSetValue)
+        {
+            if (newSetValue.Equals(_workingValue) == false)
+            {
+                _workingValue = newSetValue;
+            }
         }
 
         protected abstract T ShowPropertyField();

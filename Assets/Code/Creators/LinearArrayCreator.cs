@@ -21,7 +21,7 @@ namespace Prefabrikator
 
         public override float MaxWindowHeight => 300f;
         public override string Name => "Line";
-        private Vector3 _offset = new Vector3(2, 0, 0);
+        private Shared<Vector3> _offset = new Shared<Vector3>(new Vector3(2f, 0f, 0f));
 
         private Vector3Property _offsetProperty = null;
 
@@ -32,7 +32,7 @@ namespace Prefabrikator
 
             void OnValueSet(Vector3 current, Vector3 previous)
             {
-                CommandQueue.Enqueue(new OnOffsetChangeCommand(this, previous, current));
+                CommandQueue.Enqueue(new GenericCommand<Vector3>(_offset, previous, current));
             };
 
             _offsetProperty = new Vector3Property("Offset", _offset, OnValueSet);
@@ -48,7 +48,8 @@ namespace Prefabrikator
             {
                 EditorGUILayout.BeginHorizontal(_boxedHeaderStyle);
                 {
-                    _offset = _offsetProperty.Update();
+                    //_offset = _offsetProperty.Update();
+                    _offset.Set(_offsetProperty.Update());
                 }
                 EditorGUILayout.EndHorizontal();
 
@@ -125,7 +126,7 @@ namespace Prefabrikator
 
         private void UpdatePositions()
         {
-            
+
             if (_createdObjects.Count > 0)
             {
                 Undo.RecordObjects(_createdObjects.ToArray(), "Changed offset");
@@ -133,7 +134,7 @@ namespace Prefabrikator
 
                 for (int i = 0; i < _createdObjects.Count; ++i)
                 {
-                    Vector3 offset = _offset * i;
+                    Vector3 offset = (Vector3)_offset * i;
 
                     currentObj = _createdObjects[i];
                     currentObj.transform.position = _targetProxy.transform.position + offset;
@@ -180,42 +181,9 @@ namespace Prefabrikator
             if (data is LinearArrayData lineData)
             {
                 _targetCount = lineData.Count;
-                _offset = lineData.Offset;
+                _offset.Set(lineData.Offset);
                 _targetRotation = lineData.TargetRotation;
             }
         }
-
-        #region Commands
-        internal class OnOffsetChangeCommand : CreatorCommand
-        {
-            public Vector3 PreviousOffset { get; set;  }
-            public Vector3 NextOffset { get; set; }
-
-            public OnOffsetChangeCommand(ArrayCreator creator, Vector3 previousOffset, Vector3 nextOffset)
-                : base(creator)
-            {
-                PreviousOffset = previousOffset;
-                NextOffset = nextOffset;
-            }
-
-            public override void Execute()
-            {
-                if (Creator is LinearArrayCreator linearCreator)
-                {
-                    linearCreator._offset = NextOffset;
-                    linearCreator._offsetProperty.SetDefaultValue(linearCreator._offset);
-                }
-            }
-
-            public override void Revert()
-            {
-                if (Creator is LinearArrayCreator linearCreator)
-                {
-                    linearCreator._offset = PreviousOffset;
-                    linearCreator._offsetProperty.SetDefaultValue(linearCreator._offset);
-                }
-            }
-        }
     }
-    #endregion // Commands
 }

@@ -39,7 +39,7 @@ namespace Prefabrikator
             : base(target)
         {
             _targetCount = GetTargetCount();
-            _radius = 10f;
+            _radius.Set(10f);
         }
 
         public override void DrawEditor()
@@ -51,7 +51,7 @@ namespace Prefabrikator
                     float radius = EditorGUILayout.FloatField("Radius", _radius);
                     if (radius != _radius)
                     {
-                        _radius = Mathf.Abs(radius);
+                        _radius.Set(Mathf.Abs(radius));
                         //_needsRefresh = true;
                     }
                 }
@@ -191,7 +191,7 @@ namespace Prefabrikator
             if (data is SphereArrayData sphereData)
             {
                 _targetCount = sphereData.Count;
-                _radius = sphereData.Radius;
+                _radius.Set(sphereData.Radius);
                 _orientation = sphereData.Orientation;
                 _targetRotation = sphereData.TargetRotation;
 

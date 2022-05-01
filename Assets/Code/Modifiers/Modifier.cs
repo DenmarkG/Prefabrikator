@@ -31,7 +31,7 @@ namespace Prefabrikator
             {
                 if (GUILayout.Button("-"))
                 {
-                    _owner.RemoveModifier(this);
+                    _owner.CommandQueue.Enqueue(new ModifierRemoveCommand(this, _owner));
                 }
 
                 OnInspectorUpdate();
@@ -40,5 +40,7 @@ namespace Prefabrikator
 
         protected abstract void OnInspectorUpdate();
         public abstract void Process(GameObject[] objs);
+
+        public abstract void OnRemoved();
     }
 }

@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Code\ArrayTypes.cs" />
+    <Compile Include="Assets\Code\Util\SharedValue.cs" />
     <Compile Include="Assets\Code\Util\Properties\MinMaxProperty.cs" />
     <Compile Include="Assets\Code\Modifiers\Scale\RandomScaleModifier.cs" />
     <Compile Include="Assets\Code\Util\MinMax.cs" />
@@ -82,7 +83,6 @@
     <Compile Include="Assets\Code\Creators\ArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\SphereArrayCreator.cs" />
-    <Compile Include="Assets\Code\Util\SharedValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UI\PrefabrikatorEditor.uss" />

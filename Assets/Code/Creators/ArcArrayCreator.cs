@@ -89,7 +89,7 @@ namespace Prefabrikator
             if (data is ArcArrayData arcData)
             {
                 _targetCount = arcData.Count;
-                _radius = arcData.Radius;
+                _radius.Set(arcData.Radius);
                 _orientation = arcData.Orientation;
                 _fillPercent = arcData.FillPercent;
                 _targetRotation = arcData.TargetRotation;

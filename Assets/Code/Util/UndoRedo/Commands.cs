@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace Prefabrikator
 {
@@ -14,6 +15,36 @@ namespace Prefabrikator
 
         public abstract void Execute();
         public abstract void Revert();
+    }
+
+    internal class GenericCommand<T> : ICommand
+    {
+        private Shared<T> _watchedValue = new Shared<T>();
+        private T _previousValue = default(T);
+        private T _nextValue = default(T);
+
+        public GenericCommand(Shared<T> watchedValue, T previous, T next)
+        {
+            _watchedValue = watchedValue;
+            _previousValue = previous;
+            _nextValue = next;
+        }
+
+        public void Execute()
+        {
+            if (_watchedValue != null)
+            {
+                _watchedValue.Set(_nextValue);
+            }
+        }
+
+        public void Revert()
+        {
+            if (_watchedValue != null)
+            {
+                _watchedValue.Set(_previousValue);
+            }
+        }
     }
 
     internal abstract class ModifierCommand : ICommand
@@ -68,11 +99,37 @@ namespace Prefabrikator
         public void Execute()
         {
             _creator.AddModifier(_modifier);
+            _creator.ProcessModifiers();
         }
 
         public void Revert()
         {
             _creator.RemoveModifier(_modifier);
+            _creator.ProcessModifiers();
+        }
+    }
+
+    internal class ModifierRemoveCommand : ICommand
+    {
+        private Modifier _modifier = null;
+        private ArrayCreator _creator = null;
+
+        public ModifierRemoveCommand(Modifier modifier, ArrayCreator creator)
+        {
+            _creator = creator;
+            _modifier = modifier;
+        }
+
+        public void Execute()
+        {
+            _creator.RemoveModifier(_modifier);
+            _creator.ProcessModifiers();
+        }
+
+        public void Revert()
+        {
+            _creator.AddModifier(_modifier);
+            _creator.ProcessModifiers();
         }
     }
 

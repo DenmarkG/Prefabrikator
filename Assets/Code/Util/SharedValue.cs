@@ -19,9 +19,17 @@ public class Shared<T>
     }
 
     public static implicit operator T(Shared<T> t) => t._value;
+
     public void Set(T t)
     {
         _value = t;
         OnValueChanged?.Invoke(_value);
+    }
+
+    // #DG: this is dangerous and may need a better solution
+    // if T is ref type, can still be changed w/o callback
+    public T Get()
+    {
+        return _value;
     }
 }

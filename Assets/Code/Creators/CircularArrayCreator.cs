@@ -32,7 +32,7 @@ namespace Prefabrikator
         public override string Name => "Circle";
 
         public static readonly float DefaultRadius = 5f;
-        protected float _radius = DefaultRadius;
+        protected Shared<float> _radius = new Shared<float>(DefaultRadius);
         protected FloatProperty _radiusProperty = null;
 
         protected Vector3 _center = Vector3.zero;
@@ -229,7 +229,7 @@ namespace Prefabrikator
             if (data is CircleArrayData circleData)
             {
                 _targetCount = circleData.Count;
-                _radius = circleData.Radius;
+                _radius.Set(circleData.Radius);
                 _orientation = circleData.Orientation;
                 _targetRotation = circleData.TargetRotation;
             }
@@ -248,7 +248,7 @@ namespace Prefabrikator
         {
             ValueChangedCommand<float> radiusChanged = new ValueChangedCommand<float>(previous, current, (radius) =>
             {
-                _radius = radius;
+                _radius.Set(radius);
             });
 
             CommandQueue.Enqueue(radiusChanged);

@@ -10,13 +10,13 @@ namespace Prefabrikator
 
         public GameObject[] Targets => _targets;
         private GameObject[] _targets = null;
-        private Vector3 _targetScale = new Vector3(1, 1, 1);
-        private Vector3Property _displayField = null;
+        private Shared<Vector3> _targetScale = new Shared<Vector3>(new Vector3(1f, 1f, 1f));
+        private Vector3Property _targetScaleProperty = null;
 
         public UniformScaleModifier(ArrayCreator owner)
             : base(owner)
         {
-            _displayField = new Vector3Property("Scale", new Vector3(1, 1, 1), OnValueChanged);
+            _targetScaleProperty = new Vector3Property("Scale", _targetScale, OnValueChanged);
         }
 
         public override void Process(GameObject[] objs)
@@ -35,12 +35,18 @@ namespace Prefabrikator
 
         protected override void OnInspectorUpdate()
         {
-            _targetScale = _displayField.Update();
+            _targetScale.Set(_targetScaleProperty.Update());
         }
 
         public void OnValueChanged(Vector3 current, Vector3 previous)
         {
             Owner.CommandQueue.Enqueue(new OnUniformScaleChangeCommand(this, previous, current));
+        }
+
+        public override void OnRemoved()
+        {
+            Vector3 defaultScale = Owner.GetDefaultScale();
+            Owner.ApplyToAll((go) => { go.transform.localScale = defaultScale; });
         }
 
         private class OnUniformScaleChangeCommand : ModifierCommand
@@ -69,7 +75,7 @@ namespace Prefabrikator
                         }
                     }
 
-                    scaleMod._displayField.SetDefaultValue(NextScale);
+                    scaleMod._targetScaleProperty.SetDefaultValue(NextScale);
                 }
             }
 
@@ -87,7 +93,7 @@ namespace Prefabrikator
                         }
                     }
 
-                    scaleMod._displayField.SetDefaultValue(PreviousScale);
+                    scaleMod._targetScaleProperty.SetDefaultValue(PreviousScale);
                 }
             }
         }

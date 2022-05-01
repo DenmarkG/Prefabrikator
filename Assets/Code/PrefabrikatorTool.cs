@@ -280,7 +280,8 @@ namespace Prefabrikator
         {
             _undoStack.OnCommandExecuted(command);
         }
-
+        // #DG: Undo does not currently work for Add/Remove Modifiers. 
+        // Need to add proccessor to when undo/redo is performed
         private void Undo()
         {
             _undoStack.Undo();

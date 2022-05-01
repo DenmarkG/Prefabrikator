@@ -5,7 +5,7 @@ namespace Prefabrikator
 {
     public class Vector3Property : CustomProperty<Vector3>
     {
-        public Vector3Property(string label, Vector3 startValue, OnValueSetDelegate onValueSet)
+        public Vector3Property(string label, Shared<Vector3> startValue, OnValueSetDelegate onValueSet)
             : base(label, startValue, onValueSet)
         {
             //
@@ -76,6 +76,12 @@ namespace Prefabrikator
     public class FloatProperty : CustomProperty<float>
     {
         public FloatProperty(string label, float startValue, OnValueSetDelegate onValueSet)
+            : base(label, startValue, onValueSet)
+        {
+            //
+        }
+
+        public FloatProperty(string label, Shared<float> startValue, OnValueSetDelegate onValueSet)
             : base(label, startValue, onValueSet)
         {
             //
