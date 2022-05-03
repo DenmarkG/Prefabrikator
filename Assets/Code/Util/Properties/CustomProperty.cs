@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Prefabrikator
 {
 
-    public abstract class CustomProperty<T>
+    public abstract class CustomProperty<T> where T : struct
     {
         public enum EditMode
         {

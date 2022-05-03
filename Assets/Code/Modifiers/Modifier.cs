@@ -34,7 +34,9 @@ namespace Prefabrikator
                     _owner.CommandQueue.Enqueue(new ModifierRemoveCommand(this, _owner));
                 }
 
+                EditorGUI.indentLevel++;
                 OnInspectorUpdate();
+                EditorGUI.indentLevel--;
             }            
         }
 

@@ -48,6 +48,10 @@ namespace Prefabrikator
             _center = _target.transform.position;
             _targetCount = MinCirlceCount;
 
+            void OnRadiusSet(float current, float previous)
+            {
+                CommandQueue.Enqueue(new GenericCommand<float>(_radius, previous, current));
+            }
             _radiusProperty = new FloatProperty("Radius", _radius, OnRadiusSet);
         }
 
@@ -55,9 +59,9 @@ namespace Prefabrikator
         {
             EditorGUILayout.BeginVertical();
             {
-                float radius = Mathf.Abs(_radiusProperty.Update());
+                _radius.Set(Mathf.Abs(_radiusProperty.Update()));
 
-                EditorGUILayout.BeginHorizontal(_boxedHeaderStyle);
+                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                 {
                     // #DG: convert this to modifier
                     OrientationType orientation = (OrientationType)EditorGUILayout.EnumPopup("Rotation", _orientation);
@@ -69,9 +73,10 @@ namespace Prefabrikator
                 }
                 EditorGUILayout.EndHorizontal();
 
-                if (Extensions.DisplayCountField(ref _targetCount))
+                int currentCount = _targetCount;
+                if (Extensions.DisplayCountField(ref currentCount))
                 {
-                    _targetCount = Mathf.Max(_targetCount, MinCount);
+                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, Mathf.Max(currentCount, MinCount)));
                     //_needsRefresh = true;
                 }
             }
@@ -122,10 +127,7 @@ namespace Prefabrikator
         {
             if (_target != null)
             {
-                if (NeedsRefresh)
-                {
-                    Refresh();
-                }
+                Refresh();
             }
         }
 
@@ -242,16 +244,6 @@ namespace Prefabrikator
             {
                 _center = center;
             }
-        }
-
-        private void OnRadiusSet(float previous, float current)
-        {
-            ValueChangedCommand<float> radiusChanged = new ValueChangedCommand<float>(previous, current, (radius) =>
-            {
-                _radius.Set(radius);
-            });
-
-            CommandQueue.Enqueue(radiusChanged);
         }
     }
 }

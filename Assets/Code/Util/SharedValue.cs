@@ -1,6 +1,6 @@
 using System;
 
-public class Shared<T>
+public class Shared<T> where T : struct
 {
     public T Value => _value;
     private T _value = default(T);
@@ -26,8 +26,6 @@ public class Shared<T>
         OnValueChanged?.Invoke(_value);
     }
 
-    // #DG: this is dangerous and may need a better solution
-    // if T is ref type, can still be changed w/o callback
     public T Get()
     {
         return _value;

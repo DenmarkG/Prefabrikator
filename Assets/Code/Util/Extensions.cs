@@ -115,21 +115,21 @@ namespace Prefabrikator
             return needsRefresh;
         }
 
-        public static void Randomize(ref Vector3 vect, MinMax xRange = null, MinMax yRange = null, MinMax zRange = null)
+        public static void Randomize(ref Vector3 vect, MinMax? xRange = null, MinMax? yRange = null, MinMax? zRange = null)
         {
             if (xRange != null)
             {
-                vect.x = Random.Range(xRange.Min, xRange.Max);
+                vect.x = Random.Range(xRange.Value.Min, xRange.Value.Max);
             }
 
             if (yRange != null)
             {
-                vect.y = Random.Range(yRange.Min, yRange.Max);
+                vect.y = Random.Range(yRange.Value.Min, yRange.Value.Max);
             }
 
             if (zRange != null)
             {
-                vect.z = Random.Range(zRange.Min, zRange.Max);
+                vect.z = Random.Range(zRange.Value.Min, zRange.Value.Max);
             }
         }
     }

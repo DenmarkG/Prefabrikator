@@ -2,14 +2,8 @@ using System;
 
 namespace Prefabrikator
 {
-    public class MinMax
+    public struct MinMax
     {
-        public MinMax()
-        {
-            Min = 0;
-            Max = 0;
-        }
-
         public MinMax(float min, float max)
         {
             Min = min;

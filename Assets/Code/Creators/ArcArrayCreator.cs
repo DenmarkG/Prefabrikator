@@ -34,7 +34,7 @@ namespace Prefabrikator
 
         public override void DrawEditor()
         {
-            EditorGUILayout.BeginHorizontal(_boxedHeaderStyle);
+            EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
             {
                 EditorGUILayout.LabelField("Fill", GUILayout.Width(Extensions.LabelWidth));
                 float fillPercent = EditorGUILayout.Slider(_fillPercent, 0f, .9999f, null);

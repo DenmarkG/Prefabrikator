@@ -43,7 +43,7 @@ namespace Prefabrikator
         {
             EditorGUILayout.BeginVertical();
             {
-                EditorGUILayout.BeginHorizontal(_boxedHeaderStyle);
+                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                 {
                     _offset.Set(_offsetProperty.Update());
                 }

@@ -55,7 +55,7 @@ namespace Prefabrikator
 
         public override void DrawEditor()
         {
-            EditorGUILayout.BeginVertical(_boxedHeaderStyle);
+            EditorGUILayout.BeginVertical(Extensions.BoxedHeaderStyle);
             {
                 Dimension dimension = (Dimension)EditorGUILayout.EnumPopup(_dimension);
                 if (dimension != _dimension)

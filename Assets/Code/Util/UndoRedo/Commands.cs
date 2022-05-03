@@ -17,7 +17,7 @@ namespace Prefabrikator
         public abstract void Revert();
     }
 
-    internal class GenericCommand<T> : ICommand
+    internal class GenericCommand<T> : ICommand where T : struct
     {
         private Shared<T> _watchedValue = new Shared<T>();
         private T _previousValue = default(T);

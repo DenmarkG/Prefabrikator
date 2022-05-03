@@ -46,7 +46,7 @@ namespace Prefabrikator
         {
             EditorGUILayout.BeginVertical();
             {
-                EditorGUILayout.BeginHorizontal(_boxedHeaderStyle);
+                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                 {
                     float radius = EditorGUILayout.FloatField("Radius", _radius);
                     if (radius != _radius)
@@ -57,7 +57,7 @@ namespace Prefabrikator
                 }
                 EditorGUILayout.EndHorizontal();
 
-                EditorGUILayout.BeginHorizontal(_boxedHeaderStyle);
+                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                 {
                     OrientationType orientation = (OrientationType)EditorGUILayout.EnumPopup("Rotation", _orientation);
                     if (orientation != _orientation)

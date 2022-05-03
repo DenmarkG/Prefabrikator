@@ -10,9 +10,9 @@ namespace Prefabrikator
         protected override string DisplayName => "Random Scale";
 
         private Vector3[] _scales = null;
-        private MinMax _xRange = null;
-        private MinMax _yRange = null;
-        private MinMax _zRange = null;
+        private MinMax _xRange;
+        private MinMax _yRange;
+        private MinMax _zRange;
 
         private MinMaxProperty _xRangeProperty = null;
         private MinMaxProperty _yRangeProperty = null;

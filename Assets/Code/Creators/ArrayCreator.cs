@@ -27,9 +27,6 @@ namespace Prefabrikator
         protected int _targetCount = 1;
         protected bool NeedsRefresh => CommandQueue.Count > 0;
 
-        protected GUIStyle _boxedHeaderStyle = null;
-        private readonly string _boxStyle = "toolbar";
-
         public abstract float MaxWindowHeight { get; }
         public abstract string Name { get; }
 
@@ -48,13 +45,6 @@ namespace Prefabrikator
         {
             _target = target;
             _createdObjects = new List<GameObject>();
-
-            _boxedHeaderStyle = new GUIStyle(_boxStyle);
-            _boxedHeaderStyle.fixedHeight = 0;
-            _boxedHeaderStyle.fontSize = EditorStyles.label.fontSize;
-            int h = Mathf.CeilToInt(EditorGUIUtility.singleLineHeight);
-            int v = Mathf.CeilToInt(EditorGUIUtility.singleLineHeight * .3f);
-            _boxedHeaderStyle.padding = new RectOffset(h, h, v, v);
 
             _rotationProperty = new QuaternionProperty("Rotation", _targetRotation, OnRotationChanged);
 
