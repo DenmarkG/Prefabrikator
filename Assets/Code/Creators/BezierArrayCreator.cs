@@ -13,7 +13,7 @@ namespace Prefabrikator
         public Vector3 EndRotation = new Vector3(0f, 90f, 0f);
 
         public BezierArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ArrayType.Path, prefab, targetRotation)
+            : base(ShapeType.Path, prefab, targetRotation)
         {
             //
         }

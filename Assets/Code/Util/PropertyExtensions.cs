@@ -75,21 +75,15 @@ namespace Prefabrikator
 
     public class FloatProperty : CustomProperty<float>
     {
-        public FloatProperty(string label, float startValue, OnValueSetDelegate onValueSet)
-            : base(label, startValue, onValueSet)
-        {
-            //
-        }
-
         public FloatProperty(string label, Shared<float> startValue, OnValueSetDelegate onValueSet)
             : base(label, startValue, onValueSet)
         {
-            //
+            _shouldShowLabel = false;
         }
 
         protected override float ShowPropertyField()
         {
-            return EditorGUILayout.FloatField(WorkingValue);
+            return EditorGUILayout.FloatField(Label, WorkingValue);
         }
     }
 }

@@ -7,11 +7,10 @@ namespace Prefabrikator
     public class GridArrayData : ArrayData
     {
         public GridArrayCreator.Dimension Dimension = GridArrayCreator.Dimension.XY;
-        public Vector3 OffsetVector = GridArrayCreator.DefaultOffset;
-        public Vector3Int CountVector = GridArrayCreator.DefaultCount;
+        //public Vector3 OffsetVector = GridArrayCreator.DefaultOffset;
 
         public GridArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ArrayType.Grid, prefab, targetRotation)
+            : base(ShapeType.Grid, prefab, targetRotation)
         {
             //
         }
@@ -30,28 +29,27 @@ namespace Prefabrikator
         public override float MaxWindowHeight => 300f;
         public override string Name => "Grid";
 
-        public static readonly Vector3 DefaultOffset = new Vector3(2, 2, 2);
-        private Shared<Vector3> _offsetVector = new Shared<Vector3>(DefaultOffset);
+        public static readonly float DefaultOffset = 2f;
+        private Shared<float> _offsetX = new Shared<float>(DefaultOffset);
+        private Shared<float> _offsetY = new Shared<float>(DefaultOffset);
+        private Shared<float> _offsetZ = new Shared<float>(DefaultOffset);
 
-        public static readonly Vector3Int DefaultCount = new Vector3Int(3, 3, 3);
-        private Vector3Int _countVector = DefaultCount;
+        private const int DefaultCount = 3;
+        private Shared<int> _countX = new Shared<int>(DefaultCount);
+        private Shared<int> _countY = new Shared<int>(DefaultCount);
+        private Shared<int> _countZ = new Shared<int>(DefaultCount);
 
-        private Dimension _dimension = Dimension.XY;
+        private Shared<Dimension> _dimension = new Shared<Dimension>(Dimension.XY);
 
         private bool _needsPositionRefresh = false;
 
-        private CountProperty _xCountProperty = null;
-        private CountProperty _yCountProperty = null;
-        private CountProperty _zCountProperty = null;
-
-        private FloatProperty _xOffset = null;
-        private FloatProperty _yOffset = null;
-        private FloatProperty _zOffset = null;
+        private FloatProperty _xOffsetProperty = null;
+        private FloatProperty _yOffsetProperty = null;
+        private FloatProperty _zOffsetProperty = null;
 
         public GridArrayCreator(GameObject target)
             : base(target)
         {
-            SetupCountProperties();
             SetupOffsetProperties();
         }
 
@@ -62,7 +60,7 @@ namespace Prefabrikator
                 Dimension dimension = (Dimension)EditorGUILayout.EnumPopup(_dimension);
                 if (dimension != _dimension)
                 {
-                    _dimension = dimension;
+                    CommandQueue.Enqueue(new GenericCommand<Dimension>(_dimension, _dimension.Get(), dimension));
                     // #DG: Fix this 
                     //_needsRefresh = true;
                     _needsPositionRefresh = true;
@@ -72,20 +70,32 @@ namespace Prefabrikator
 
                 if (ShouldShowX())
                 {
-                    _countVector.x = _xCountProperty.Update();
-                    targetCount *= (_countVector.x > 0) ? _countVector.x : 1;
+                    int countX = _countX;
+                    if (Extensions.DisplayCountField(ref countX))
+                    {
+                        CommandQueue.Enqueue(new GenericCommand<int>(_countX, _countX, countX));
+                    }
+                    targetCount *= (_countX > 0) ? _countX : 1;
                 }
 
                 if (ShouldShowY())
                 {
-                    _countVector.y = _yCountProperty.Update();
-                    targetCount *= (_countVector.y > 0) ? _countVector.y : 1;
+                    int countY = _countY;
+                    if (Extensions.DisplayCountField(ref countY))
+                    {
+                        CommandQueue.Enqueue(new GenericCommand<int>(_countY, _countY, countY));
+                    }
+                    targetCount *= (_countY > 0) ? _countY : 1;
                 }
 
                 if (ShouldShowZ())
                 {
-                    _countVector.z = _zCountProperty.Update();
-                    targetCount *= (_countVector.z > 0) ? _countVector.z : 1;
+                    int countZ = _countZ;
+                    if (Extensions.DisplayCountField(ref countZ))
+                    {
+                        CommandQueue.Enqueue(new GenericCommand<int>(_countZ, _countZ, countZ));
+                    }
+                    targetCount *= (_countZ > 0) ? _countZ : 1;
                 }
 
                 if (targetCount != _targetCount)
@@ -97,31 +107,25 @@ namespace Prefabrikator
                 EditorGUILayout.LabelField("Offsets");
                 if (ShouldShowX())
                 {
-                    using (new EditorGUI.DisabledGroupScope(_countVector.x == 0))
+                    using (new EditorGUI.DisabledGroupScope(_countX == 0))
                     {
-                        Vector3 offset = _offsetVector.Get();
-                        offset.x = _xOffset.Update();
-                        _offsetVector.Set(offset);
+                        _offsetX.Set(_xOffsetProperty.Update());
                     }
                 }
 
                 if (ShouldShowY())
                 {
-                    using (new EditorGUI.DisabledGroupScope(_countVector.y == 0))
+                    using (new EditorGUI.DisabledGroupScope(_countY == 0))
                     {
-                        Vector3 offset = _offsetVector.Get();
-                        offset.y = _yOffset.Update();
-                        _offsetVector.Set(offset);
+                        _offsetY.Set(_yOffsetProperty.Update());
                     }
                 }
 
                 if (ShouldShowZ())
                 {
-                    using (new EditorGUI.DisabledScope(_countVector.z == 0))
+                    using (new EditorGUI.DisabledScope(_countZ == 0))
                     {
-                        Vector3 offset = _offsetVector.Get();
-                        offset.z = _zOffset.Update();
-                        _offsetVector.Set(offset);
+                        _offsetZ.Set(_zOffsetProperty.Update());
                     }
                 }
             }
@@ -142,7 +146,6 @@ namespace Prefabrikator
             // Update the target count
             {
                 int targetCount = GetCount();
-
 
                 if (targetCount != _targetCount)
                 {
@@ -226,19 +229,22 @@ namespace Prefabrikator
                     Vector3 rowVector = _dimension == Dimension.YZ ? Vector3.forward : Vector3.right;
                     Vector3 colVector = _dimension == Dimension.XZ ? Vector3.forward : Vector3.up;
 
-                    int rowCount = _dimension == Dimension.YZ ? _countVector.z : _countVector.x;
-                    int colCount = _dimension == Dimension.XZ ? _countVector.z : _countVector.y;
+                    int rowCount = _dimension == Dimension.YZ ? _countZ : _countX;
+                    int colCount = _dimension == Dimension.XZ ? _countZ : _countY;
+
+                    float rowOffset = _dimension == Dimension.YZ ? _offsetZ : _offsetX;
+                    float colOffset = _dimension == Dimension.XZ ? _offsetZ: _offsetY;
 
                     for (int x = 0; x < rowCount; ++x)
                     {
-                        Vector3 offsetX = rowVector * (((Vector3)_offsetVector).x * x);
+                        Vector3 offsetX = rowVector * (rowOffset * x);
                         currentObj = _createdObjects[index];
                         currentObj.transform.position = _targetProxy.transform.position + offsetX;
                         ++index;
 
                         for (int y = 1; y < colCount; ++y)
                         {
-                            Vector3 offsetY = (colVector * (((Vector3)_offsetVector).y * y)) + offsetX;
+                            Vector3 offsetY = (colVector * (colOffset * y)) + offsetX;
                             currentObj = _createdObjects[index];
                             currentObj.transform.position = _targetProxy.transform.position + offsetY;
                             ++index;
@@ -247,20 +253,20 @@ namespace Prefabrikator
                 }
                 else
                 {
-                    for (int z = 0; z < _countVector.z; ++z)
+                    for (int z = 0; z < _countZ; ++z)
                     {
-                        Vector3 offsetZ = Vector3.forward * (((Vector3)_offsetVector).z * z);
+                        Vector3 offsetZ = Vector3.forward * (_offsetZ * z);
 
-                        for (int x = 0; x < _countVector.x; ++x)
+                        for (int x = 0; x < _countX; ++x)
                         {
-                            Vector3 offsetX = (Vector3.right * (((Vector3)_offsetVector).x * x)) + offsetZ;
+                            Vector3 offsetX = (Vector3.right * (_offsetX * x)) + offsetZ;
                             currentObj = _createdObjects[index];
                             currentObj.transform.position = _targetProxy.transform.position + offsetX;
                             ++index;
 
-                            for (int y = 1; y < _countVector.y; ++y)
+                            for (int y = 1; y < _countY; ++y)
                             {
-                                Vector3 offsetY = (Vector3.up * (((Vector3)_offsetVector).y * y)) + offsetX;
+                                Vector3 offsetY = (Vector3.up * (_offsetY * y)) + offsetX;
                                 currentObj = _createdObjects[index];
                                 currentObj.transform.position = _targetProxy.transform.position + offsetY;
                                 ++index;
@@ -284,89 +290,32 @@ namespace Prefabrikator
         private int GetCount()
         {
             int targetCount = 1;
-            targetCount *= (_countVector.x > 0) ? _countVector.x : 1;
-            targetCount *= (_countVector.y > 0) ? _countVector.y : 1;
-            targetCount *= (_countVector.z > 0) ? _countVector.z : 1;
+            targetCount *= (_countX > 0) ? _countX : 1;
+            targetCount *= (_countY > 0) ? _countY : 1;
+            targetCount *= (_countZ > 0) ? _countZ : 1;
 
             return targetCount;
-        }
-
-        private void SetupCountProperties()
-        {
-            void OnXChanged(int current, int previous)
-            {
-                var valueCommand = new ValueChangedCommand<int>(previous, current, (x) =>
-                {
-                    _countVector.x = x;
-                });
-
-                CommandQueue.Enqueue(valueCommand);
-            }
-            _xCountProperty = new CountProperty("Rows", _countVector.x, OnXChanged);
-
-            void OnYChanged(int current, int previous)
-            {
-                var valueCommand = new ValueChangedCommand<int>(previous, current, (y) =>
-                {
-                    _countVector.y = y;
-                });
-
-                CommandQueue.Enqueue(valueCommand);
-            }
-            _yCountProperty = new CountProperty("Columns", _countVector.y, OnYChanged);
-
-            void OnZChanged(int current, int previous)
-            {
-                var valueCommand = new ValueChangedCommand<int>(previous, current, (z) =>
-                {
-                    _countVector.z = z;
-                });
-
-                CommandQueue.Enqueue(valueCommand);
-            }
-            _zCountProperty = new CountProperty("Depth", _countVector.z, OnZChanged);
         }
 
         private void SetupOffsetProperties()
         {
             void OnXChanged(float current, float previous)
             {
-                var valueCommand = new ValueChangedCommand<float>(previous, current, (x) =>
-                {
-                    Vector3 offset = _offsetVector.Get();
-                    offset.x = x;
-                    _offsetVector.Set(offset);
-                });
-
-                CommandQueue.Enqueue(valueCommand);
+                CommandQueue.Enqueue(new GenericCommand<float>(_offsetX, previous, current));
             }
-            _xOffset = new FloatProperty("X", ((Vector3)_offsetVector).x, OnXChanged);
+            _xOffsetProperty = new FloatProperty("X", _offsetX, OnXChanged);
 
             void OnYChanged(float current, float previous)
             {
-                var valueCommand = new ValueChangedCommand<float>(previous, current, (y) =>
-                {
-                    Vector3 offset = _offsetVector.Get();
-                    offset.y = y;
-                    _offsetVector.Set(offset);
-                });
-
-                CommandQueue.Enqueue(valueCommand);
+                CommandQueue.Enqueue(new GenericCommand<float>(_offsetY, previous, current));
             }
-            _yOffset = new FloatProperty("Y", _offsetVector.Get().z, OnYChanged);
+            _yOffsetProperty = new FloatProperty("Y", _offsetY, OnYChanged);
 
             void OnZChanged(float current, float previous)
             {
-                var valueCommand = new ValueChangedCommand<float>(previous, current, (z) =>
-                {
-                    Vector3 offset = _offsetVector.Get();
-                    offset.z = z;
-                    _offsetVector.Set(offset);
-                });
-
-                CommandQueue.Enqueue(valueCommand);
+                CommandQueue.Enqueue(new GenericCommand<float>(_offsetZ, previous, current));
             }
-            _zOffset = new FloatProperty("Z", _offsetVector.Get().z, OnZChanged);
+            _zOffsetProperty = new FloatProperty("Z", _offsetZ, OnZChanged);
         }
 
         private void CreateClone()
@@ -380,9 +329,9 @@ namespace Prefabrikator
         {
             GridArrayData data = new GridArrayData(_target, _targetRotation);
             data.Count = GetCount();
-            data.CountVector = _countVector;
+            //data.CountVector = _countVector;
             data.Dimension = _dimension;
-            data.OffsetVector = _offsetVector;
+            //data.OffsetVector = _offsetVector;
 
             return data;
         }
@@ -391,9 +340,9 @@ namespace Prefabrikator
         {
             if (data is GridArrayData gridData)
             {
-                _countVector = gridData.CountVector;
-                _dimension = gridData.Dimension;
-                _offsetVector.Set(gridData.OffsetVector);
+                //_countVector = gridData.CountVector;
+                //_dimension = gridData.Dimension;
+                //_offsetVector.Set(gridData.OffsetVector);
                 _targetRotation = gridData.TargetRotation;
                 _targetCount = gridData.Count;
             }

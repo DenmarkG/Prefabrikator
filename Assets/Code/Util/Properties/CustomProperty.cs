@@ -12,6 +12,7 @@ namespace Prefabrikator
             Disabled
         }
 
+        protected string Label => _label;
         private string _label = string.Empty;
 
         protected Shared<T> SetValue => _setValue;
@@ -29,6 +30,8 @@ namespace Prefabrikator
 
         public delegate void OnValueSetDelegate(T current, T previous);
         private OnValueSetDelegate OnValueSet = null;
+
+        protected bool _shouldShowLabel = true;
 
         public CustomProperty(string label, T startValue, OnValueSetDelegate onValueSet)
         {
@@ -56,7 +59,11 @@ namespace Prefabrikator
         {
             EditorGUILayout.BeginHorizontal(GUILayout.Width(PrefabrikatorTool.MaxWidth));
             {
-                EditorGUILayout.LabelField(_label, GUILayout.Width(Extensions.LabelWidth));
+                if (_shouldShowLabel)
+                {
+                    EditorGUILayout.LabelField(_label, GUILayout.Width(Extensions.LabelWidth));
+                }
+
                 if (_editMode == EditMode.Enabled)
                 {
                     _workingValue = ShowPropertyField();

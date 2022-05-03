@@ -1,7 +1,7 @@
 ﻿
 namespace Prefabrikator
 {
-    public enum ArrayType
+    public enum ShapeType
     {
         Line,
         Grid,

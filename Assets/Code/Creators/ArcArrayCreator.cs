@@ -11,7 +11,7 @@ namespace Prefabrikator
         public CircularArrayCreator.OrientationType Orientation = CircularArrayCreator.OrientationType.Original;
 
         public ArcArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ArrayType.Arc, prefab, targetRotation)
+            : base(ShapeType.Arc, prefab, targetRotation)
         {
             Count = CircularArrayCreator.MinCount;
         }

@@ -8,7 +8,7 @@ namespace Prefabrikator
         public Vector3 Offset;
 
         public LinearArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ArrayType.Line, prefab, targetRotation)
+            : base(ShapeType.Line, prefab, targetRotation)
         {
             //
         }
@@ -45,7 +45,6 @@ namespace Prefabrikator
             {
                 EditorGUILayout.BeginHorizontal(_boxedHeaderStyle);
                 {
-                    //_offset = _offsetProperty.Update();
                     _offset.Set(_offsetProperty.Update());
                 }
                 EditorGUILayout.EndHorizontal();

@@ -12,7 +12,7 @@ namespace Prefabrikator
     {
         private static readonly string WindowName = "Prefabrikator";
         private ArrayCreator _creator = null;
-        private ArrayType _arrayType = ArrayType.Line;
+        private ShapeType _shapeType = ShapeType.Line;
 
         public const float MaxWidth = 350f;
         public const float MaxHeght = 250;
@@ -48,7 +48,7 @@ namespace Prefabrikator
             if (Selection.activeObject is GameObject targetObj)
             {
                 _window._selectedPrefab = targetObj;
-                _window._creator = _window.GetCreator(_window._arrayType, targetObj);
+                _window._creator = _window.GetCreator(_window._shapeType, targetObj);
             }
 
             //_window.ShowUtility();
@@ -112,14 +112,14 @@ namespace Prefabrikator
                 {
                     EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                     {
-                        ArrayType type = (ArrayType)EditorGUILayout.EnumPopup("Array Type", _arrayType);
-                        if (type != _arrayType)
+                        ShapeType type = (ShapeType)EditorGUILayout.EnumPopup("Shape", _shapeType);
+                        if (type != _shapeType)
                         {
-                            _arrayType = type;
+                            _shapeType = type;
 
                             if (_selectedPrefab != null)
                             {
-                                _creator = GetCreator(_arrayType, _selectedPrefab);
+                                _creator = GetCreator(_shapeType, _selectedPrefab);
                             }
 
                             if (_creator != null)
@@ -144,7 +144,7 @@ namespace Prefabrikator
 
                             if (_creator == null)
                             {
-                                _creator = GetCreator(_arrayType, _selectedPrefab);
+                                _creator = GetCreator(_shapeType, _selectedPrefab);
                             }
 
                             _creator.SetTarget(_selectedPrefab);
@@ -228,7 +228,7 @@ namespace Prefabrikator
 
         // #DG: Make this Generic
         // then it can be used at runtime by passing params
-        private ArrayCreator GetCreator(ArrayType type, GameObject target)
+        private ArrayCreator GetCreator(ShapeType type, GameObject target)
         {
             if (_creator != null)
             {
@@ -239,22 +239,22 @@ namespace Prefabrikator
 
             switch (type)
             {
-                case ArrayType.Circle:
+                case ShapeType.Circle:
                     creator = new CircularArrayCreator(target);
                     break;
-                case ArrayType.Arc:
+                case ShapeType.Arc:
                     creator = new ArcArrayCreator(target);
                     break;
-                case ArrayType.Sphere:
+                case ShapeType.Sphere:
                     creator = new SphereArrayCreator(target);
                     break;
-                case ArrayType.Grid:
+                case ShapeType.Grid:
                     creator = new GridArrayCreator(target);
                     break;
-                case ArrayType.Path:
+                case ShapeType.Path:
                     creator = new BezierArrayCreator(target);
                     break;
-                case ArrayType.Line:
+                case ShapeType.Line:
                 default:
                     creator = new LinearArrayCreator(target);
                     break;
@@ -269,9 +269,9 @@ namespace Prefabrikator
         {
             if (container.Data != null)
             {
-                _arrayType = container.Data.Type;
+                _shapeType = container.Data.Type;
                 _selectedPrefab = container.Data.Prefab;
-                _creator = GetCreator(_arrayType, container.Data.Prefab);
+                _creator = GetCreator(_shapeType, container.Data.Prefab);
                 _creator.PopulateFromExistingContainer(container);
             }
         }

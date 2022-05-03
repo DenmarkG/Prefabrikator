@@ -7,12 +7,12 @@ namespace Prefabrikator
     [System.Serializable]
     public abstract class ArrayData
     {
-        public ArrayType Type
+        public ShapeType Type
         {
             get { return _type; }
             set { _type = value; }
         }
-        [SerializeField] private ArrayType _type;
+        [SerializeField] private ShapeType _type;
 
         public int Count
         {
@@ -42,7 +42,7 @@ namespace Prefabrikator
         }
         [SerializeField] private Quaternion _targetRotation = Quaternion.identity;
 
-        public ArrayData(ArrayType type, GameObject prefab, Quaternion targetRotation)
+        public ArrayData(ShapeType type, GameObject prefab, Quaternion targetRotation)
         {
             _type = type;
             _prefab = prefab;

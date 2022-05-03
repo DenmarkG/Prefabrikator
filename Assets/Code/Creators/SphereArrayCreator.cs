@@ -11,7 +11,7 @@ namespace Prefabrikator
         public int StackCount = SphereArrayCreator.DefaultStackCount;
 
         public SphereArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ArrayType.Sphere, prefab, targetRotation)
+            : base(ShapeType.Sphere, prefab, targetRotation)
         {
             //
         }
