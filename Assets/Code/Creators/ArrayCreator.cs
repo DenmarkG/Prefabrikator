@@ -266,6 +266,16 @@ namespace Prefabrikator
             return new Vector3(1f, 1f, 1f);
         }
 
+        public Quaternion GetDefaultRotation()
+        {
+            if (_target != null)
+            {
+                return _target.transform.rotation;
+            }
+
+            return Quaternion.identity;
+        }
+
         public delegate void ApplicatorDelegate(GameObject go);
 
         public void ApplyToAll(ApplicatorDelegate applicator)

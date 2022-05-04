@@ -2,7 +2,6 @@ using System;
 
 public class Shared<T> where T : struct
 {
-    public T Value => _value;
     private T _value = default(T);
 
     public event Action<T> OnValueChanged = null;
