@@ -26,76 +26,24 @@ namespace Prefabrikator
                 _targets = objs;
             }
 
-            int numObjs = objs.Length;
-            for (int i = 0; i < numObjs; ++i)
-            {
-                objs[i].transform.localScale = _targetScale;
-            }
+            Vector3 scale = _targetScale;
+            Owner.ApplyToAll((go) => { go.transform.localScale = scale; });
         }
 
         protected override void OnInspectorUpdate()
         {
-            _targetScaleProperty.Update();
+            _targetScale.Set(_targetScaleProperty.Update());
         }
 
         public void OnValueChanged(Vector3 current, Vector3 previous)
         {
-            Owner.CommandQueue.Enqueue(new OnUniformScaleChangeCommand(this, previous, current));
+            Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_targetScale, previous, current));
         }
 
         public override void OnRemoved()
         {
             Vector3 defaultScale = Owner.GetDefaultScale();
             Owner.ApplyToAll((go) => { go.transform.localScale = defaultScale; });
-        }
-
-        private class OnUniformScaleChangeCommand : ModifierCommand
-        {
-            public Vector3 PreviousScale { get; set; }
-            public Vector3 NextScale { get; set; }
-
-            public OnUniformScaleChangeCommand(Modifier modifier, Vector3 previousScale, Vector3 nextScale)
-                : base(modifier)
-            {
-                PreviousScale = previousScale;
-                NextScale = nextScale;
-            }
-
-            public override void Execute()
-            {
-                if (TargetModifier is UniformScaleModifier scaleMod)
-                {
-                    if (scaleMod.Targets != null)
-                    {
-                        GameObject[] targets = scaleMod.Targets;
-                        int count = targets.Length;
-                        for (int i = 0; i < count; ++i)
-                        {
-                            targets[i].transform.localScale = NextScale;
-                        }
-                    }
-
-                    scaleMod._targetScaleProperty.SetDefaultValue(NextScale);
-                }
-            }
-
-            public override void Revert()
-            {
-                if (TargetModifier is UniformScaleModifier scaleMod)
-                {
-                    if (scaleMod.Targets != null)
-                    {
-                        GameObject[] targets = scaleMod.Targets;
-                        int count = targets.Length;
-                        for (int i = 0; i < count; ++i)
-                        {
-                            targets[i].transform.localScale = PreviousScale;
-                        }
-                    }
-
-                    scaleMod._targetScaleProperty.SetDefaultValue(PreviousScale);
-                }
-            }
         }
     }
 }

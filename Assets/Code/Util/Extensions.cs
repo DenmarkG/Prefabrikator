@@ -132,6 +132,15 @@ namespace Prefabrikator
                 vect.z = Random.Range(zRange.Value.Min, zRange.Value.Max);
             }
         }
+
+        public static Vector3 Clamp(Vector3 vect, Vector3 min, Vector3 max)
+        {
+            vect.x = Mathf.Clamp(vect.x, min.x, max.x);
+            vect.y = Mathf.Clamp(vect.y, min.y, max.y);
+            vect.z = Mathf.Clamp(vect.z, min.z, max.z);
+
+            return vect;
+        }
     }
     /*EditorStyles.helpBox*/
 }

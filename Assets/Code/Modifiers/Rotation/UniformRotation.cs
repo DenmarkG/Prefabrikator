@@ -10,13 +10,13 @@ namespace Prefabrikator
 
         public GameObject[] Targets => _targets;
         private GameObject[] _targets = null;
-        private Shared<Vector3> _targetRotation = new Shared<Vector3>(new Vector3(1f, 1f, 1f));
+        private Shared<Vector3> _targetRotation = new Shared<Vector3>(new Vector3());
         private Vector3Property _targetRotationProperty = null;
 
         public UniformRotation(ArrayCreator owner)
             : base(owner)
         {
-            //_targetRotationProperty = new Vector3Property("Rotation", _targetRotation, OnValueChange);
+            _targetRotationProperty = new Vector3Property("Rotation", _targetRotation, OnValueChanged);
         }
 
         public override void OnRemoved()
@@ -27,17 +27,23 @@ namespace Prefabrikator
 
         public override void Process(GameObject[] objs)
         {
-            throw new System.NotImplementedException();
+            if (_targets == null || objs.Length != _targets.Length)
+            {
+                _targets = objs;
+            }
+
+            Quaternion rotation = Quaternion.Euler(_targetRotation);
+            Owner.ApplyToAll((go) => { go.transform.rotation = rotation; });
         }
 
         protected override void OnInspectorUpdate()
         {
-            throw new System.NotImplementedException();
+            _targetRotation.Set(_targetRotationProperty.Update());
         }
 
         public void OnValueChanged(Vector3 current, Vector3 previous)
         {
-            //Owner.CommandQueue.Enqueue(new OnUniformScaleChangeCommand(this, previous, current));
+            Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_targetRotation, previous, current));
         }
     }
 }

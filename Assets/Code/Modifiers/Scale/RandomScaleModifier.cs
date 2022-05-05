@@ -96,10 +96,10 @@ namespace Prefabrikator
 
         private void Randomize(int startingIndex = 0)
         {
-            int numOjbs = _scales.Length;
+            int numObjs = _scales.Length;
             Vector3[] previousValues = new Vector3[_scales.Length];
 
-            for (int i = startingIndex; i < numOjbs; ++i)
+            for (int i = startingIndex; i < numObjs; ++i)
             {
                 previousValues[i] = _scales[i];
                 Extensions.Randomize(ref _scales[i], _xRange, _yRange, _zRange);

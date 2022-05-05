@@ -335,6 +335,10 @@ namespace Prefabrikator
                     return new RandomScaleModifier(this);
                 case ModifierType.ScaleUniform:
                     return new UniformScaleModifier(this);
+                case ModifierType.RotationUniform:
+                    return new UniformRotation(this);
+                case ModifierType.RotationRandom:
+                    return new RandomRotation(this);
                 default:
                     return null;
             }

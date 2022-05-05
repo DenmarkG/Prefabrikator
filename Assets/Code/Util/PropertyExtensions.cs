@@ -8,12 +8,12 @@ namespace Prefabrikator
         public Vector3Property(string label, Shared<Vector3> startValue, OnValueSetDelegate onValueSet)
             : base(label, startValue, onValueSet)
         {
-            //
+            _shouldShowLabel = false;
         }
 
         protected override Vector3 ShowPropertyField()
         {
-            return EditorGUILayout.Vector3Field(string.Empty, WorkingValue, null);
+            return EditorGUILayout.Vector3Field(Label, WorkingValue, null);
         }
     }
 

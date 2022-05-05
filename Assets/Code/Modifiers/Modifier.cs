@@ -7,7 +7,9 @@ namespace Prefabrikator
     public enum ModifierType
     {
         ScaleRandom,
-        ScaleUniform
+        ScaleUniform,
+        RotationUniform,
+        RotationRandom,
     }
 
     public abstract class Modifier

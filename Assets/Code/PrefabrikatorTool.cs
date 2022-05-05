@@ -207,6 +207,7 @@ namespace Prefabrikator
             if (_creator != null)
             {
                 _creator.UpdateEditor();
+                _creator.ProcessModifiers();
             }
 
             Repaint();

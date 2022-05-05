@@ -74,6 +74,7 @@
     <Compile Include="Assets\Code\Creators\ArcArrayCreator.cs" />
     <Compile Include="Assets\Code\Bezier\CubicBezierCurve.cs" />
     <Compile Include="Assets\Code\PrefabrikatorTool.cs" />
+    <Compile Include="Assets\Code\Modifiers\Rotation\UniformRotation.cs" />
     <Compile Include="Assets\Code\Creators\GridArrayCreator.cs" />
     <Compile Include="Assets\Code\Util\ArrayHelper.cs" />
     <Compile Include="Assets\Code\Bezier\BezierPoint.cs" />
@@ -83,7 +84,7 @@
     <Compile Include="Assets\Code\Creators\ArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\SphereArrayCreator.cs" />
-    <Compile Include="Assets\Code\Modifiers\Rotation\UniformRotation.cs" />
+    <Compile Include="Assets\Code\Modifiers\Rotation\RandomRotation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UI\PrefabrikatorEditor.uss" />
