@@ -4,46 +4,27 @@ using UnityEngine;
 
 namespace Prefabrikator
 {
-    public class UniformScaleModifier : Modifier
+    public class UniformScaleModifier : UniformModifier
     {
         protected override string DisplayName => "Uniform Scale";
-
-        public GameObject[] Targets => _targets;
-        private GameObject[] _targets = null;
-        private Shared<Vector3> _targetScale = new Shared<Vector3>(new Vector3(1f, 1f, 1f));
-        private Vector3Property _targetScaleProperty = null;
 
         public UniformScaleModifier(ArrayCreator owner)
             : base(owner)
         {
-            _targetScaleProperty = new Vector3Property("Scale", _targetScale, OnValueChanged);
+            _target = new Shared<Vector3>(new Vector3(1f, 1f, 1f));
+            _targetProperty = new Vector3Property("Scale", _target, OnValueChanged);
         }
 
-        public override void Process(GameObject[] objs)
-        {
-            if (_targets == null || objs.Length != _targets.Length)
-            {
-                _targets = objs;
-            }
-
-            Vector3 scale = _targetScale;
-            Owner.ApplyToAll((go) => { go.transform.localScale = scale; });
-        }
-
-        protected override void OnInspectorUpdate()
-        {
-            _targetScale.Set(_targetScaleProperty.Update());
-        }
-
-        public void OnValueChanged(Vector3 current, Vector3 previous)
-        {
-            Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_targetScale, previous, current));
-        }
-
-        public override void OnRemoved()
+        protected override void RestoreDefault(GameObject obj)
         {
             Vector3 defaultScale = Owner.GetDefaultScale();
-            Owner.ApplyToAll((go) => { go.transform.localScale = defaultScale; });
+            obj.transform.localScale = defaultScale;
+        }
+
+        protected override void ApplyModifier()
+        {
+            Vector3 scale = _target;
+            Owner.ApplyToAll((go) => { go.transform.localScale = scale; });
         }
     }
 }

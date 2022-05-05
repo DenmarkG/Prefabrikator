@@ -11,7 +11,7 @@ namespace Prefabrikator
 
         private Vector3[] _scales = null;
         
-        private Shared<Vector3> _min = new Shared<Vector3>(new Vector3(1f, 1f, 1f));
+        private Shared<Vector3> _min = new Shared<Vector3>(new Vector3(.5f, .5f, .5f));
         private Shared<Vector3> _max = new Shared<Vector3>(new Vector3(3f, 3f, 3f));
 
         private Vector3Property _minProperty = null;

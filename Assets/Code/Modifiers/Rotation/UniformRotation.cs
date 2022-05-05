@@ -4,46 +4,27 @@ using UnityEngine;
 
 namespace Prefabrikator
 {
-    public class UniformRotation : Modifier
+    public class UniformRotation : UniformModifier
     {
         protected override string DisplayName => "Uniform Rotation";
-
-        public GameObject[] Targets => _targets;
-        private GameObject[] _targets = null;
-        private Shared<Vector3> _targetRotation = new Shared<Vector3>(new Vector3());
-        private Vector3Property _targetRotationProperty = null;
 
         public UniformRotation(ArrayCreator owner)
             : base(owner)
         {
-            _targetRotationProperty = new Vector3Property("Rotation", _targetRotation, OnValueChanged);
+            _target = new Shared<Vector3>(new Vector3());
+            _targetProperty = new Vector3Property("Rotation", _target, OnValueChanged);
         }
 
-        public override void OnRemoved()
+        protected override void RestoreDefault(GameObject obj)
         {
             Quaternion defaultRotation = Owner.GetDefaultRotation();
-            Owner.ApplyToAll((go) => { go.transform.rotation = defaultRotation; });
+            obj.transform.rotation = defaultRotation;
         }
 
-        public override void Process(GameObject[] objs)
+        protected override void ApplyModifier()
         {
-            if (_targets == null || objs.Length != _targets.Length)
-            {
-                _targets = objs;
-            }
-
-            Quaternion rotation = Quaternion.Euler(_targetRotation);
+            Quaternion rotation = Quaternion.Euler(_target);
             Owner.ApplyToAll((go) => { go.transform.rotation = rotation; });
-        }
-
-        protected override void OnInspectorUpdate()
-        {
-            _targetRotation.Set(_targetRotationProperty.Update());
-        }
-
-        public void OnValueChanged(Vector3 current, Vector3 previous)
-        {
-            Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_targetRotation, previous, current));
         }
     }
 }
