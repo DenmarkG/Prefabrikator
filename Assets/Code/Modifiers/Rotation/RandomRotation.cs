@@ -38,6 +38,18 @@ namespace Prefabrikator
         public override void Process(GameObject[] objs)
         {
             UpdateArray(objs);
+            
+            int numObjs = objs.Length;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                Vector3 rot = _rotations[i];
+
+                rot.x = Mathf.LerpUnclamped(_min.Get().x, _max.Get().x, rot.x);
+                rot.y = Mathf.LerpUnclamped(_min.Get().y, _max.Get().y, rot.y);
+                rot.z = Mathf.LerpUnclamped(_min.Get().z, _max.Get().z, rot.z);
+
+                objs[i].transform.rotation = Quaternion.Euler(Extensions.Clamp(rot, _min, _max));
+            }
         }
 
         protected override void OnInspectorUpdate()
@@ -71,7 +83,6 @@ namespace Prefabrikator
             int numObjs = _rotations.Length;
             Vector3[] previousValues = new Vector3[_rotations.Length];
 
-            _rotations = new Vector3[numObjs];
             for (int i = 0; i < numObjs; ++i)
             {
                 previousValues[i] = _rotations[i];
@@ -122,19 +133,6 @@ namespace Prefabrikator
 
                     _rotations = temp;
                 }
-            }
-
-            for (int i = 0; i < numObjs; ++i)
-            {
-                Vector3 rot = _rotations[i];
-
-                rot.x = Mathf.LerpUnclamped(_min.Get().x, _max.Get().x, rot.x);
-                rot.y = Mathf.LerpUnclamped(_min.Get().y, _max.Get().y, rot.y);
-                rot.z = Mathf.LerpUnclamped(_min.Get().z, _max.Get().z, rot.z);
-
-                Vector3 vect = Extensions.Clamp(rot, _min, _max);
-
-                objs[i].transform.rotation = Quaternion.Euler(vect);
             }
         }
     }
