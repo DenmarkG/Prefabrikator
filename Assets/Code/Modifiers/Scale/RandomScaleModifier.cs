@@ -39,13 +39,10 @@ namespace Prefabrikator
             int numObjs = objs.Length;
             for (int i = 0; i < numObjs; ++i)
             {
-                Vector3 scale = _scales[i];
-
-                scale.x = Mathf.LerpUnclamped(_min.Get().x, _max.Get().x, scale.x);
-                scale.y = Mathf.LerpUnclamped(_min.Get().y, _max.Get().y, scale.y);
-                scale.z = Mathf.LerpUnclamped(_min.Get().z, _max.Get().z, scale.z);
-
-                objs[i].transform.localScale = Extensions.Clamp(scale, _min, _max); ;
+                Vector3 scale = Extensions.BiUnitLerp(_min, _max, _scales[i]);
+                Debug.Log($"Base: {_scales[i]} => Transformed: {scale}");
+                objs[i].transform.localScale = scale;
+                //objs[i].transform.localScale = _scales[i];
             }
         }
 

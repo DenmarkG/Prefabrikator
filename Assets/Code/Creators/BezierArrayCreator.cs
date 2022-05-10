@@ -144,31 +144,6 @@ namespace Prefabrikator
         {
             EstablishHelper();
 
-            if (_targetCount < _createdObjects.Count)
-            {
-                while (_createdObjects.Count > _targetCount)
-                {
-                    int index = _createdObjects.Count - 1;
-                    if (index >= 0)
-                    {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                int index = 0;
-                while (_targetCount > _createdObjects.Count)
-                {
-                    CreateClone(index);
-                    ++index;
-                }
-            }
-
             UpdatePositions();
 
             if (_orientation == OrientationType.Original)
@@ -294,6 +269,34 @@ namespace Prefabrikator
                 _targetRotation = curveData.TargetRotation;
                 _curve = curveData.Curve;
                 _endRotation = curveData.EndRotation;
+            }
+        }
+
+        protected override void OnTargetCountChanged()
+        {
+            if (_targetCount < _createdObjects.Count)
+            {
+                while (_createdObjects.Count > _targetCount)
+                {
+                    int index = _createdObjects.Count - 1;
+                    if (index >= 0)
+                    {
+                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                int index = 0;
+                while (_targetCount > _createdObjects.Count)
+                {
+                    CreateClone(index);
+                    ++index;
+                }
             }
         }
 

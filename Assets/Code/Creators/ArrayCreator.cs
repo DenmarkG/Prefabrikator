@@ -239,7 +239,10 @@ namespace Prefabrikator
         public virtual void SetTargetCount(int targetCount)
         {
             _targetCount = targetCount;
+            OnTargetCountChanged();
         }
+
+        protected abstract void OnTargetCountChanged();
 
         protected void ExecuteCommand(ICommand command)
         {

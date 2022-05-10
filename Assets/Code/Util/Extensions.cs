@@ -141,6 +141,27 @@ namespace Prefabrikator
 
             return vect;
         }
+
+        /// <summary>
+        /// Lerps from a to b based on t, where t : [-1, 1]
+        /// </summary>
+        public static float BiUnitLerp(float min, float max, float t)
+        {
+            float range = max - min;
+
+            return (range * ((t + 1) / 2f)) + min;
+        }
+
+        /// <summary>
+        /// Lerps from a to b based on t, where t : [-1, 1]
+        /// </summary>
+        public static Vector3 BiUnitLerp(Vector3 min, Vector3 max, Vector3 unitVect)
+        {
+            unitVect.x = BiUnitLerp(min.x, max.x, unitVect.x);
+            unitVect.y = BiUnitLerp(min.y, max.y, unitVect.y);
+            unitVect.z = BiUnitLerp(min.z, max.z, unitVect.z);
+
+            return unitVect;
+        }
     }
-    /*EditorStyles.helpBox*/
 }

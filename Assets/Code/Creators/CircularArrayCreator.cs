@@ -92,27 +92,9 @@ namespace Prefabrikator
 
             EstablishHelper();
 
-            if (_targetCount < _createdObjects.Count)
+            if (_targetCount != _createdObjects.Count)
             {
-                while (_createdObjects.Count > _targetCount)
-                {
-                    int index = _createdObjects.Count - 1;
-                    if (index >= 0)
-                    {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                while (_targetCount > _createdObjects.Count)
-                {
-                    CreateClone();
-                }
+                OnTargetCountChanged();
             }
 
             UpdatePositions();
@@ -234,6 +216,32 @@ namespace Prefabrikator
                 _radius.Set(circleData.Radius);
                 _orientation = circleData.Orientation;
                 _targetRotation = circleData.TargetRotation;
+            }
+        }
+
+        protected override void OnTargetCountChanged()
+        {
+            if (_targetCount < _createdObjects.Count)
+            {
+                while (_createdObjects.Count > _targetCount)
+                {
+                    int index = _createdObjects.Count - 1;
+                    if (index >= 0)
+                    {
+                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                while (_targetCount > _createdObjects.Count)
+                {
+                    CreateClone();
+                }
             }
         }
 

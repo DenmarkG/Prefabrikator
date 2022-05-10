@@ -153,37 +153,19 @@ namespace Prefabrikator
                 }
             }
 
+            if (_targetCount != _createdObjects.Count)
+            {
+                OnTargetCountChanged();
+            }
+
             if (_needsPositionRefresh)
             {
                 ResetAllPositions();
             }
+            UpdatePositions();
 
             EstablishHelper();
 
-            if (_targetCount < _createdObjects.Count)
-            {
-                while (_createdObjects.Count > _targetCount)
-                {
-                    int index = _createdObjects.Count - 1;
-                    if (index >= 0)
-                    {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                while (_targetCount > _createdObjects.Count)
-                {
-                    CreateClone();
-                }
-            }
-
-            UpdatePositions();
             UpdateLocalRotations();
         }
 
@@ -345,6 +327,32 @@ namespace Prefabrikator
                 //_offsetVector.Set(gridData.OffsetVector);
                 _targetRotation = gridData.TargetRotation;
                 _targetCount = gridData.Count;
+            }
+        }
+
+        protected override void OnTargetCountChanged()
+        {
+            if (_targetCount < _createdObjects.Count)
+            {
+                while (_createdObjects.Count > _targetCount)
+                {
+                    int index = _createdObjects.Count - 1;
+                    if (index >= 0)
+                    {
+                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                while (_targetCount > _createdObjects.Count)
+                {
+                    CreateClone();
+                }
             }
         }
     }

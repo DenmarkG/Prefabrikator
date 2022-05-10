@@ -80,13 +80,13 @@
     <Compile Include="Assets\Code\Util\MinMax.cs" />
     <Compile Include="Assets\Code\ArrayTypes.cs" />
     <Compile Include="Assets\Code\Bezier\BezierPoint.cs" />
+    <Compile Include="Assets\Code\Modifiers\Uniform\UniformModifier.cs" />
+    <Compile Include="Assets\Code\Modifiers\Random\RandomModifier.cs" />
     <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\GridArrayCreator.cs" />
     <Compile Include="Assets\Code\Modifiers\Rotation\RandomRotation.cs" />
     <Compile Include="Assets\Code\Util\UndoRedo\UndoStack.cs" />
     <Compile Include="Assets\Code\Util\Properties\CustomProperty.cs" />
-    <Compile Include="Assets\Code\Modifiers\Uniform\UniformModifier.cs" />
-    <Compile Include="Assets\Code\Modifiers\Random\RandomModifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UI\Prefabrikator.uxml" />
