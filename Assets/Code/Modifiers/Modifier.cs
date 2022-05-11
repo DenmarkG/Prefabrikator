@@ -19,7 +19,7 @@ namespace Prefabrikator
 
         protected abstract string DisplayName { get; }
 
-        private bool _isExpanded = false;
+        private bool _isExpanded = true;
 
         public Modifier(ArrayCreator owner)
         {

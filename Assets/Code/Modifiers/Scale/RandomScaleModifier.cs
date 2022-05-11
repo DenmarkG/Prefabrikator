@@ -40,9 +40,7 @@ namespace Prefabrikator
             for (int i = 0; i < numObjs; ++i)
             {
                 Vector3 scale = Extensions.BiUnitLerp(_min, _max, _scales[i]);
-                Debug.Log($"Base: {_scales[i]} => Transformed: {scale}");
                 objs[i].transform.localScale = scale;
-                //objs[i].transform.localScale = _scales[i];
             }
         }
 

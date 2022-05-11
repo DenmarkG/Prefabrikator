@@ -8,8 +8,8 @@ namespace Prefabrikator
     {
         protected override string DisplayName => "Random Rotation";
 
-        private Shared<Vector3> _min = new Shared<Vector3>();
-        private Shared<Vector3> _max = new Shared<Vector3>();
+        private Shared<Vector3> _min = new Shared<Vector3>(new Vector3(-179f, -179f, -179f));
+        private Shared<Vector3> _max = new Shared<Vector3>(new Vector3(180f, 180f, 180f));
 
         private Vector3Property _minProperty = null;
         private Vector3Property _maxProperty = null;
@@ -42,12 +42,7 @@ namespace Prefabrikator
             int numObjs = objs.Length;
             for (int i = 0; i < numObjs; ++i)
             {
-                Vector3 rot = _rotations[i];
-
-                rot.x = Mathf.LerpUnclamped(_min.Get().x, _max.Get().x, rot.x);
-                rot.y = Mathf.LerpUnclamped(_min.Get().y, _max.Get().y, rot.y);
-                rot.z = Mathf.LerpUnclamped(_min.Get().z, _max.Get().z, rot.z);
-
+                Vector3 rot = Extensions.BiUnitLerp(_min, _max, _rotations[i]);
                 objs[i].transform.rotation = Quaternion.Euler(Extensions.Clamp(rot, _min, _max));
             }
         }
