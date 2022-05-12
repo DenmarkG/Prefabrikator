@@ -7,3 +7,7 @@ Automate the process for calling the modifier update and process calls
 - Fix layout for float fields
 - fix undo/redo for scale changes
 - process modfiers after each change
+
+- Allow original object to be removed
+
+- Add "keep proportions" option to random scale

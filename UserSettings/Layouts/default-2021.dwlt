@@ -100,7 +100,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 1
-  controlID: 16
+  controlID: 89
 --- !u!114 &5
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -177,7 +177,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 8096}
   vertical: 0
-  controlID: 17
+  controlID: 90
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -909,13 +909,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.14021711, y: 0.8574641, z: -0.31427827, w: -0.3826105}
+    m_Target: {x: -0.10384647, y: 0.88458985, z: -0.23656528, w: -0.38836342}
     speed: 2
-    m_Value: {x: -0.13963842, y: 0.8579058, z: -0.31298122, w: -0.38280755}
+    m_Value: {x: -0.103842705, y: 0.8845578, z: -0.23655671, w: -0.38834935}
   m_Size:
-    m_Target: 5.363357
+    m_Target: 6.2116976
     speed: 2
-    m_Value: 5.3693976
+    m_Value: 6.2116976
   m_Ortho:
     m_Target: 0
     speed: 2

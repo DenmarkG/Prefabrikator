@@ -77,8 +77,11 @@ namespace Prefabrikator
                 _scales = scalesToApply;
             }
 
-            var valueChanged = new ValueChangedCommand<Vector3[]>(previousValues, _scales, ApplyScales);
-            Owner.CommandQueue.Enqueue(valueChanged);           
+            if (startingIndex == 0)
+            {
+                var valueChanged = new ValueChangedCommand<Vector3[]>(previousValues, _scales, ApplyScales);
+                Owner.CommandQueue.Enqueue(valueChanged);
+            }
         }
 
         private void SetupProperties()
