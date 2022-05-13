@@ -185,7 +185,7 @@ namespace Prefabrikator
             }
         }
 
-        private void CreateClone(int index)
+        protected override void CreateClone(int index)
         {
             Quaternion targetRotation = _target.transform.rotation;
             if (_orientation == OrientationType.Random)
@@ -197,6 +197,7 @@ namespace Prefabrikator
             Vector3 pointOnCurve = _curve.GetPointOnCurve(t);
 
             GameObject clone = GameObject.Instantiate(_target, pointOnCurve, targetRotation);
+            clone.SetActive(true);
             clone.transform.SetParent(_targetProxy.transform);
 
             _createdObjects.Add(clone);
@@ -229,8 +230,6 @@ namespace Prefabrikator
                     // Do Nothing, this will be handled during the update loop
                     break;
             }
-
-            _showRotationControls = _orientation == OrientationType.Original || _orientation == OrientationType.Incremental;
         }
 
         private void ResetAllRotations()

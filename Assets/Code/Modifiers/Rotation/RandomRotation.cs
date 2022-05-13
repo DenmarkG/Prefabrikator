@@ -89,8 +89,11 @@ namespace Prefabrikator
                 _rotations = rotationsToApply;
             }
 
-            var valueChanged = new ValueChangedCommand<Vector3[]>(previousValues, _rotations, ApplyRotations);
-            Owner.CommandQueue.Enqueue(valueChanged);
+            if (startingIndex == 0)
+            {
+                var valueChanged = new ValueChangedCommand<Vector3[]>(previousValues, _rotations, ApplyRotations);
+                Owner.CommandQueue.Enqueue(valueChanged);
+            }
         }
 
         private void UpdateArray(GameObject[] objs)

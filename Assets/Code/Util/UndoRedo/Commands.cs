@@ -158,4 +158,6 @@ namespace Prefabrikator
             OnValueChanged(_previous);
         }
     }
+
+    //#DG: add a command that can include multiple steps (eg. adding incresing a count also needs to store the new random value)
 }

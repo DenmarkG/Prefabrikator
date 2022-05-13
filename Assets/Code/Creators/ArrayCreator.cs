@@ -30,11 +30,7 @@ namespace Prefabrikator
         public abstract float MaxWindowHeight { get; }
         public abstract string Name { get; }
 
-        bool _showTransformControls = false;
-        protected bool _showRotationControls = true;
         protected Quaternion _targetRotation = Quaternion.identity;
-        private QuaternionProperty _rotationProperty = null;
-
         protected ArrayData _defaultData = null;
 
 
@@ -45,8 +41,6 @@ namespace Prefabrikator
         {
             _target = target;
             _createdObjects = new List<GameObject>();
-
-            _rotationProperty = new QuaternionProperty("Rotation", _targetRotation, OnRotationChanged);
 
             Refresh();
         }
@@ -151,6 +145,8 @@ namespace Prefabrikator
             }
         }
 
+        protected abstract void CreateClone(int index = 0);
+
         protected void DestroyClone(GameObject clone)
         {
             _createdObjects.RemoveAt(_createdObjects.IndexOf(clone));
@@ -184,19 +180,6 @@ namespace Prefabrikator
             for (int i = 0; i < _createdObjects.Count; ++i)
             {
                 _createdObjects[i].transform.localRotation = _targetRotation;
-            }
-        }
-
-        public void DrawTransformControls()
-        {
-            _showTransformControls = EditorGUILayout.Foldout(_showTransformControls, "Original Transform");
-
-            if (_showTransformControls)
-            {
-                if (_showRotationControls)
-                {
-                    _targetRotation = _rotationProperty.Update();
-                }
             }
         }
 
@@ -248,15 +231,6 @@ namespace Prefabrikator
         {
             command.Execute();
             OnCommandExecuted(command);
-        }
-
-        private void OnRotationChanged(Quaternion current, Quaternion previous)
-        {
-            void SetRotation(Quaternion rotation)
-            {
-                _targetRotation = rotation;
-            }
-            CommandQueue.Enqueue(new ValueChangedCommand<Quaternion>(current, previous, SetRotation));
         }
 
         public Vector3 GetDefaultScale()

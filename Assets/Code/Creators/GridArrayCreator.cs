@@ -300,7 +300,7 @@ namespace Prefabrikator
             _zOffsetProperty = new FloatProperty("Z", _offsetZ, OnZChanged);
         }
 
-        private void CreateClone()
+        protected override void CreateClone(int index = 0)
         {
             GameObject clone = GameObject.Instantiate(_target, _target.transform.position, _target.transform.rotation, _target.transform.parent);
             clone.transform.SetParent(_targetProxy.transform);

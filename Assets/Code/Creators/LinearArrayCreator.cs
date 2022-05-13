@@ -113,9 +113,10 @@ namespace Prefabrikator
             UpdatePositions();
         }
 
-        private void CreateClone()
+        protected override void CreateClone(int index = 0)
         {
             GameObject clone = GameObject.Instantiate(_target, _target.transform.position, _target.transform.rotation, _target.transform.parent);
+            clone.SetActive(true);
             clone.transform.SetParent(_targetProxy.transform);
 
             int lastIndex = _createdObjects.Count - 1;

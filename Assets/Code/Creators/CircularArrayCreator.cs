@@ -184,7 +184,7 @@ namespace Prefabrikator
             return Quaternion.Euler(new Vector3(x, y, z));
         }
 
-        private void CreateClone()
+        protected override void CreateClone(int index = 0)
         {
             Quaternion targetRotation = _target.transform.rotation;
             if (_orientation == OrientationType.Random)
@@ -193,6 +193,7 @@ namespace Prefabrikator
             }
 
             GameObject clone = GameObject.Instantiate(_target, _center, targetRotation);
+            clone.SetActive(true);
             clone.transform.SetParent(_targetProxy.transform);
 
             _createdObjects.Add(clone);

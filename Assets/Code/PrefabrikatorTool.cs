@@ -19,7 +19,7 @@ namespace Prefabrikator
 
         private static PrefabrikatorTool _window = null;
 
-        private GameObject _selectedPrefab = null;
+        private GameObject _selectedObject = null;
         private ArrayContainer _loadedContainer = null;
         private bool IsInEditMode => _loadedContainer != null;
 
@@ -30,7 +30,7 @@ namespace Prefabrikator
         private UndoStack _undoStack = null;
 
         // #DG: make this work as another option
-        //private bool _keepOriginal = true;
+        private bool _keepOriginal = true;
 
         [MenuItem("Tools/Prefabikator &a")]
         static void ArrayToolWindow()
@@ -47,8 +47,13 @@ namespace Prefabrikator
 
             if (Selection.activeObject is GameObject targetObj)
             {
-                _window._selectedPrefab = targetObj;
+                _window._selectedObject = targetObj;
                 _window._creator = _window.GetCreator(_window._shapeType, targetObj);
+
+                if (IsPrefab(targetObj) == false)
+                {
+                    targetObj.SetActive(false);
+                }
             }
 
             //_window.ShowUtility();
@@ -82,7 +87,6 @@ namespace Prefabrikator
             {
                 if (IsInEditMode)
                 {
-                    // #DG: figure out how to save and close
                     _isSaving = true;
                     _creator.CancelPendingEdits();
                     _creator.OnCloseWindow(true);
@@ -102,6 +106,20 @@ namespace Prefabrikator
             {
                 _creator.OnCloseWindow(_isSaving);
             }
+
+            // #DG: ensure this works each close
+            if (IsPrefab(_selectedObject) == false)
+            {
+                if (_isSaving)
+                {
+                    GameObject.Destroy(_selectedObject);
+                    _selectedObject = null;
+                }
+                else
+                {
+                    _selectedObject.SetActive(true);
+                }
+            }
         }
 
         private void OnGUI()
@@ -117,9 +135,9 @@ namespace Prefabrikator
                         {
                             _shapeType = type;
 
-                            if (_selectedPrefab != null)
+                            if (_selectedObject != null)
                             {
-                                _creator = GetCreator(_shapeType, _selectedPrefab);
+                                _creator = GetCreator(_shapeType, _selectedObject);
                             }
 
                             if (_creator != null)
@@ -137,25 +155,34 @@ namespace Prefabrikator
                     {
                         EditorGUILayout.LabelField("Prefab", GUILayout.MaxWidth(100f));
                         GUILayout.FlexibleSpace();
-                        GameObject target = (GameObject)EditorGUILayout.ObjectField(_selectedPrefab, typeof(GameObject), false);
-                        if (target != null && target != _selectedPrefab)
+                        GameObject target = (GameObject)EditorGUILayout.ObjectField(_selectedObject, typeof(GameObject), false);
+                        if (target != null && target != _selectedObject)
                         {
-                            _selectedPrefab = target;
+                            _selectedObject = target;
 
                             if (_creator == null)
                             {
-                                _creator = GetCreator(_shapeType, _selectedPrefab);
+                                _creator = GetCreator(_shapeType, _selectedObject);
                             }
 
-                            _creator.SetTarget(_selectedPrefab);
+                            _creator.SetTarget(_selectedObject);
                         }
                     }
                     EditorGUILayout.EndHorizontal();
+
+                    if (_selectedObject != null && IsPrefab(_selectedObject))
+                    {
+                        bool keepOriginal = EditorGUILayout.Toggle("Keep Original", _keepOriginal);
+                        if (_keepOriginal != keepOriginal)
+                        {
+                            _selectedObject.SetActive(keepOriginal);
+                            _keepOriginal = keepOriginal;
+                        }
+                    }
                 }
 
                 if (_creator != null)
                 {
-                    _creator.DrawTransformControls();
                     _creator.DrawEditor();
                     _creator.DrawModifiers();
                 }
@@ -271,7 +298,7 @@ namespace Prefabrikator
             if (container.Data != null)
             {
                 _shapeType = container.Data.Type;
-                _selectedPrefab = container.Data.Prefab;
+                _selectedObject = container.Data.Prefab;
                 _creator = GetCreator(_shapeType, container.Data.Prefab);
                 _creator.PopulateFromExistingContainer(container);
             }
@@ -295,14 +322,9 @@ namespace Prefabrikator
             RefreshArray();
         }
 
-        private class ModidifierOptionsPopup : EditorWindow
+        private static bool IsPrefab(GameObject obj)
         {
-            //
-        }
-
-        private void ShowModifierOptions(int windowId)
-        {
-            //
+            return PrefabUtility.GetPrefabInstanceHandle(obj) == null;
         }
     }
 }
