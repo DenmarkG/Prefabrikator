@@ -45,11 +45,11 @@ namespace Prefabrikator
         {
             bool needsRefresh = false;
 
-            EditorGUILayout.BeginHorizontal(BoxedHeaderStyle);
+            EditorGUILayout.BeginHorizontal(BoxedHeaderStyle, GUILayout.Width(PrefabrikatorTool.MaxWidth));
             {
                 EditorGUILayout.LabelField(label ?? "Count", GUILayout.Width(LabelWidth));
 
-                if (GUILayout.Button("-", GUILayout.Width(30)))
+                if (GUILayout.Button("-", GUILayout.Width(20)))
                 {
                     if (targetCount > 0)
                     {
@@ -58,12 +58,10 @@ namespace Prefabrikator
                     }
                 }
 
-                float spacing = 30;
-                GUILayout.FlexibleSpace();
-                EditorGUILayout.LabelField(targetCount.ToString(), GUILayout.Width(spacing));
-                GUILayout.FlexibleSpace();
+                var style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter };
+                EditorGUILayout.LabelField(targetCount.ToString(), style, GUILayout.ExpandWidth(true), GUILayout.Width(Extensions.LabelWidth));
 
-                if (GUILayout.Button("+", GUILayout.Width(30)))
+                if (GUILayout.Button("+", GUILayout.Width(20)))
                 {
                     if (targetCount < int.MaxValue - 1)
                     {

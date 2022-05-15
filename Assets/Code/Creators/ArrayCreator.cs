@@ -35,7 +35,7 @@ namespace Prefabrikator
 
 
         private List<Modifier> _modifierStack = new List<Modifier>();
-        ModifierType _selectedModifier = ModifierType.ScaleRandom;
+        int _selectedModifier = 0;
 
         public ArrayCreator(GameObject target)
         {
@@ -266,6 +266,20 @@ namespace Prefabrikator
 
         //
         // Modifiers
+        protected virtual string[] GetAllowedModifiers()
+        {
+            string[] mods =
+            {
+                ModifierType.RotationRandom.ToString(),
+                ModifierType.ScaleRandom.ToString(),
+                ModifierType.ScaleUniform.ToString(),
+                ModifierType.RotationRandom.ToString(),
+                ModifierType.RotationUniform.ToString(),
+            };
+
+            return mods;
+        }
+
         public void DrawModifiers()
         {
             int numMods = _modifierStack.Count;
@@ -276,10 +290,12 @@ namespace Prefabrikator
 
             EditorGUILayout.BeginHorizontal(GUILayout.MaxWidth(PrefabrikatorTool.MaxWidth));
             {
-                _selectedModifier = (ModifierType)EditorGUILayout.EnumPopup(_selectedModifier);
+                // #DG: Get the modifier list from the Array itself. 
+                string[] options = GetAllowedModifiers();
+                _selectedModifier = EditorGUILayout.Popup(_selectedModifier, options);
                 if (GUILayout.Button("Add"))
                 {
-                    AddModifier(_selectedModifier);
+                    AddModifier(options[_selectedModifier]);
                 }
             }
             EditorGUILayout.EndHorizontal();
@@ -294,30 +310,13 @@ namespace Prefabrikator
             }
         }
 
-        private void AddModifier(ModifierType modifierType)
+        private void AddModifier(string modifierName)
         {
-            Modifier mod = GetModifierFromType(modifierType);
+            Modifier mod = ModifierFactory.CreateModifier(modifierName, this);
 
             if (mod != null)
             {
                 CommandQueue.Enqueue(new ModifierAddCommand(mod, this));
-            }
-        }
-
-        private Modifier GetModifierFromType(ModifierType modifierType)
-        {
-            switch (modifierType)
-            {
-                case ModifierType.ScaleRandom:
-                    return new RandomScaleModifier(this);
-                case ModifierType.ScaleUniform:
-                    return new UniformScaleModifier(this);
-                case ModifierType.RotationUniform:
-                    return new UniformRotation(this);
-                case ModifierType.RotationRandom:
-                    return new RandomRotation(this);
-                default:
-                    return null;
             }
         }
 

@@ -8,8 +8,8 @@ namespace Prefabrikator
     {
         ScaleRandom,
         ScaleUniform,
-        RotationUniform,
         RotationRandom,
+        RotationUniform,
     }
 
     public abstract class Modifier

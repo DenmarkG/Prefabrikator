@@ -8,12 +8,12 @@ namespace Prefabrikator
         public Vector3Property(string label, Shared<Vector3> startValue, OnValueSetDelegate onValueSet)
             : base(label, startValue, onValueSet)
         {
-            _shouldShowLabel = false;
+            _shouldShowLabel = true;
         }
 
         protected override Vector3 ShowPropertyField()
         {
-            return EditorGUILayout.Vector3Field(Label, WorkingValue, null);
+            return EditorGUILayout.Vector3Field(string.Empty, WorkingValue, null);
         }
     }
 
@@ -46,7 +46,7 @@ namespace Prefabrikator
         {
             EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
             {
-                if (GUILayout.Button("-", GUILayout.Width(30)))
+                if (GUILayout.Button("-", GUILayout.Width(10)))
                 {
                     if (WorkingValue > 0)
                     {
@@ -54,12 +54,9 @@ namespace Prefabrikator
                     }
                 }
 
-                float spacing = 30;
-                GUILayout.FlexibleSpace();
-                EditorGUILayout.LabelField(WorkingValue.ToString(), GUILayout.Width(spacing));
-                GUILayout.FlexibleSpace();
+                EditorGUILayout.LabelField(WorkingValue.ToString());
 
-                if (GUILayout.Button("+", GUILayout.Width(30)))
+                if (GUILayout.Button("+", GUILayout.Width(10)))
                 {
                     if (WorkingValue < int.MaxValue - 1)
                     {

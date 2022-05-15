@@ -14,8 +14,8 @@ namespace Prefabrikator
         private ArrayCreator _creator = null;
         private ShapeType _shapeType = ShapeType.Line;
 
-        public const float MaxWidth = 350f;
-        public const float MaxHeght = 250;
+        public const float MaxWidth = 500;
+        public const float MaxHeght = 500;
 
         private static PrefabrikatorTool _window = null;
 
@@ -308,8 +308,7 @@ namespace Prefabrikator
         {
             _undoStack.OnCommandExecuted(command);
         }
-        // #DG: Undo does not currently work for Add/Remove Modifiers. 
-        // Need to add proccessor to when undo/redo is performed
+        
         private void Undo()
         {
             _undoStack.Undo();

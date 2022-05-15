@@ -254,5 +254,20 @@ namespace Prefabrikator
                 _center = center;
             }
         }
+
+        protected override string[] GetAllowedModifiers()
+        {
+            string[] mods =
+            {
+                ModifierType.RotationRandom.ToString(),
+                ModifierType.ScaleRandom.ToString(),
+                ModifierType.ScaleUniform.ToString(),
+                ModifierType.RotationRandom.ToString(),
+                ModifierType.RotationUniform.ToString(),
+                // #DG: add circle specic mods here
+            };
+
+            return mods;
+        }
     }
 }
