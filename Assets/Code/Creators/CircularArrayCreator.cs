@@ -35,6 +35,8 @@ namespace Prefabrikator
         protected Shared<float> _radius = new Shared<float>(DefaultRadius);
         protected FloatProperty _radiusProperty = null;
 
+        public Vector3 Center => _center;
+        public Vector3 UpVector => _targetProxy?.transform.up ?? Vector3.up;
         protected Vector3 _center = Vector3.zero;
 
         protected OrientationType _orientation = OrientationType.Original;
@@ -265,6 +267,7 @@ namespace Prefabrikator
                 ModifierType.RotationRandom.ToString(),
                 ModifierType.RotationUniform.ToString(),
                 // #DG: add circle specic mods here
+                ModifierType.FollowCurve.ToString(),
             };
 
             return mods;

@@ -10,6 +10,7 @@ namespace Prefabrikator
         ScaleUniform,
         RotationRandom,
         RotationUniform,
+        FollowCurve,
     }
 
     public abstract class Modifier
