@@ -120,6 +120,10 @@ namespace Prefabrikator
                     _selectedObject.SetActive(true);
                 }
             }
+            else
+            {
+                _selectedObject.SetActive(true);
+            }
         }
 
         private void OnGUI()

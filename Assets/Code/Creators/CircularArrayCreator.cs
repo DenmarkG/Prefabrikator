@@ -8,7 +8,6 @@ namespace Prefabrikator
     public class CircleArrayData : ArrayData
     {
         public float Radius = CircularArrayCreator.DefaultRadius;
-        public CircularArrayCreator.OrientationType Orientation = CircularArrayCreator.OrientationType.Original;
 
         public CircleArrayData(GameObject prefab, Quaternion targetRotation)
             : base(ShapeType.Circle, prefab, targetRotation)
@@ -20,14 +19,6 @@ namespace Prefabrikator
     // #DG: TODO create object to act as center, 
     public class CircularArrayCreator : ArrayCreator
     {
-        // rotate bool, make objects rotate to center, or point along circle direction
-        public enum OrientationType
-        {
-            Original,
-            FollowCircle,
-            Random,
-        }
-
         public override float MaxWindowHeight => 350f;
         public override string Name => "Circle";
 
@@ -38,8 +29,6 @@ namespace Prefabrikator
         public Vector3 Center => _center;
         public Vector3 UpVector => _targetProxy?.transform.up ?? Vector3.up;
         protected Vector3 _center = Vector3.zero;
-
-        protected OrientationType _orientation = OrientationType.Original;
 
         public static readonly int MinCount = 3;
         private static readonly int MinCirlceCount = 6;
@@ -63,23 +52,10 @@ namespace Prefabrikator
             {
                 _radius.Set(Mathf.Abs(_radiusProperty.Update()));
 
-                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
-                {
-                    // #DG: convert this to modifier
-                    OrientationType orientation = (OrientationType)EditorGUILayout.EnumPopup("Rotation", _orientation);
-                    if (orientation != _orientation)
-                    {
-                        _orientation = orientation;
-                        OnOrientationChanged();
-                    }
-                }
-                EditorGUILayout.EndHorizontal();
-
                 int currentCount = _targetCount;
                 if (Extensions.DisplayCountField(ref currentCount))
                 {
                     CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, Mathf.Max(currentCount, MinCount)));
-                    //_needsRefresh = true;
                 }
             }
             EditorGUILayout.EndVertical();
@@ -100,11 +76,6 @@ namespace Prefabrikator
             }
 
             UpdatePositions();
-
-            if (_orientation == OrientationType.Original)
-            {
-                UpdateLocalRotations();
-            }
         }
 
         public override void UpdateEditor()
@@ -133,29 +104,6 @@ namespace Prefabrikator
                 //Vector3 position = right + forward;
 
                 _createdObjects[i].transform.localPosition = position + _center;
-
-                if (_orientation == OrientationType.FollowCircle)
-                {
-                    Vector3 cross = Vector3.Cross((position - _center).normalized, _targetProxy.transform.up);
-                    _createdObjects[i].transform.rotation = Quaternion.LookRotation(cross);
-                }
-            }
-        }
-
-        protected void OnOrientationChanged()
-        {
-            switch (_orientation)
-            {
-                case OrientationType.Random:
-                    RandomizeAllRotations();
-                    break;
-                case OrientationType.Original:
-                    ResetAllRotations();
-                    break;
-                case OrientationType.FollowCircle:
-                default:
-                    // Do Nothing, this will be handled during the update loop
-                    break;
             }
         }
 
@@ -189,10 +137,6 @@ namespace Prefabrikator
         protected override void CreateClone(int index = 0)
         {
             Quaternion targetRotation = _target.transform.rotation;
-            if (_orientation == OrientationType.Random)
-            {
-                targetRotation = GetRandomRotation();
-            }
 
             GameObject clone = GameObject.Instantiate(_target, _center, targetRotation);
             clone.SetActive(true);
@@ -203,10 +147,9 @@ namespace Prefabrikator
 
         protected override ArrayData GetContainerData()
         {
-            CircleArrayData data = new CircleArrayData(_target, _targetRotation);
+            CircleArrayData data = new CircleArrayData(_target, Quaternion.identity);
             data.Count = _targetCount;
             data.Radius = _radius;
-            data.Orientation = _orientation;
 
             return data;
         }
@@ -217,8 +160,6 @@ namespace Prefabrikator
             {
                 _targetCount = circleData.Count;
                 _radius.Set(circleData.Radius);
-                _orientation = circleData.Orientation;
-                _targetRotation = circleData.TargetRotation;
             }
         }
 

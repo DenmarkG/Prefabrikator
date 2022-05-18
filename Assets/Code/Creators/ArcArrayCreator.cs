@@ -8,7 +8,6 @@ namespace Prefabrikator
         public float FillPercent = ArcArrayCreator.DefaultFillPercent;
         public bool CapEnd = false;
         public float Radius = CircularArrayCreator.DefaultRadius;
-        public CircularArrayCreator.OrientationType Orientation = CircularArrayCreator.OrientationType.Original;
 
         public ArcArrayData(GameObject prefab, Quaternion targetRotation)
             : base(ShapeType.Arc, prefab, targetRotation)
@@ -64,21 +63,14 @@ namespace Prefabrikator
                 Vector3 position = new Vector3(x, _target.transform.position.y, z);
 
                 _createdObjects[i].transform.localPosition = position + _center;
-
-                if (_orientation == OrientationType.FollowCircle)
-                {
-                    Vector3 cross = Vector3.Cross(_center - position, Vector3.up);
-                    _createdObjects[i].transform.localRotation = Quaternion.LookRotation(cross);
-                }
             }
         }
 
         protected override ArrayData GetContainerData()
         {
-            ArcArrayData data = new ArcArrayData(_target, _targetRotation);
+            ArcArrayData data = new ArcArrayData(_target, Quaternion.identity);
             data.Count = _targetCount;
             data.Radius = _radius;
-            data.Orientation = _orientation;
             data.FillPercent = _fillPercent;
 
             return data;
@@ -90,9 +82,7 @@ namespace Prefabrikator
             {
                 _targetCount = arcData.Count;
                 _radius.Set(arcData.Radius);
-                _orientation = arcData.Orientation;
                 _fillPercent = arcData.FillPercent;
-                _targetRotation = arcData.TargetRotation;
             }
         }
     }

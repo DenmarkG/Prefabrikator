@@ -182,7 +182,6 @@ namespace Prefabrikator
                 _createdObjects[i].transform.localRotation = _targetRotation;
             }
         }
-
         private ArrayContainer GetOrAddContainer(GameObject target)
         {
             ArrayContainer container = target.GetComponent<ArrayContainer>();

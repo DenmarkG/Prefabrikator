@@ -9,10 +9,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{34CF6211-3760-1726-EB97-CBA07E5C184B}</ProjectGuid>
+    <ProjectGuid>{6919AA84-1DB9-E588-C358-B0129AEC3802}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <AssemblyName>Unity.Services.Core.Device</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -56,43 +56,16 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Code\ArrayTypes.cs" />
-    <Compile Include="Assets\Code\Util\SharedValue.cs" />
-    <Compile Include="Assets\Code\Util\Properties\MinMaxProperty.cs" />
-    <Compile Include="Assets\Code\Modifiers\Scale\RandomScaleModifier.cs" />
-    <Compile Include="Assets\Code\Util\MinMax.cs" />
-    <Compile Include="Assets\Code\Util\GlobalEnums.cs" />
-    <Compile Include="Assets\Code\Modifiers\Scale\UniformScaleModifier.cs" />
-    <Compile Include="Assets\Code\Modifiers\Rotation\FollowCurveModifier.cs" />
-    <Compile Include="Assets\Code\Modifiers\Rotation\RandomRotation.cs" />
-    <Compile Include="Assets\Code\Creators\LinearArrayCreator.cs" />
-    <Compile Include="Assets\Code\Util\UndoRedo\Command.cs" />
-    <Compile Include="Assets\Code\Util\UndoRedo\UndoStack.cs" />
-    <Compile Include="Assets\Code\Modifiers\Modifier.cs" />
-    <Compile Include="Assets\Code\Modifiers\Uniform\UniformModifier.cs" />
-    <Compile Include="Assets\Code\Util\UndoRedo\Commands.cs" />
-    <Compile Include="Assets\Code\Runtime\ArrayContainer.cs" />
-    <Compile Include="Assets\Code\Util\Properties\CustomProperty.cs" />
-    <Compile Include="Assets\Code\Util\Extensions.cs" />
-    <Compile Include="Assets\Code\Creators\ArcArrayCreator.cs" />
-    <Compile Include="Assets\Code\Modifiers\ModifierFactory.cs" />
-    <Compile Include="Assets\Code\Bezier\CubicBezierCurve.cs" />
-    <Compile Include="Assets\Code\PrefabrikatorTool.cs" />
-    <Compile Include="Assets\Code\Modifiers\Rotation\UniformRotation.cs" />
-    <Compile Include="Assets\Code\Creators\GridArrayCreator.cs" />
-    <Compile Include="Assets\Code\Modifiers\Random\RandomModifier.cs" />
-    <Compile Include="Assets\Code\Util\ArrayHelper.cs" />
-    <Compile Include="Assets\Code\Bezier\BezierPoint.cs" />
-    <Compile Include="Assets\Code\Creators\CircularArrayCreator.cs" />
-    <Compile Include="Assets\Code\Util\PropertyExtensions.cs" />
-    <Compile Include="Assets\Code\Runtime\ArrayData.cs" />
-    <Compile Include="Assets\Code\Creators\ArrayCreator.cs" />
-    <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
-    <Compile Include="Assets\Code\Creators\SphereArrayCreator.cs" />
+    <Compile Include="Library\PackageCache\com.unity.services.core@1.3.1\Runtime\Device\UserIdProviders\AndroidUtils.cs" />
+    <Compile Include="Library\PackageCache\com.unity.services.core@1.3.1\Runtime\Device\UserIdProviders\NSUserDefaults.cs" />
+    <Compile Include="Library\PackageCache\com.unity.services.core@1.3.1\Runtime\Device\AssemblyInfo.cs" />
+    <Compile Include="Library\PackageCache\com.unity.services.core@1.3.1\Runtime\Device\UserIdProviders\UnityAdsIdentifier.cs" />
+    <Compile Include="Library\PackageCache\com.unity.services.core@1.3.1\Runtime\Device\UserIdProviders\IUserIdentifierProvider.cs" />
+    <Compile Include="Library\PackageCache\com.unity.services.core@1.3.1\Runtime\Device\InstallationId.cs" />
+    <Compile Include="Library\PackageCache\com.unity.services.core@1.3.1\Runtime\Device\UserIdProviders\UnityAnalyticsIdentifier.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\UI\PrefabrikatorEditor.uss" />
-    <None Include="Assets\UI\Prefabrikator.uxml" />
+    <None Include="Library\PackageCache\com.unity.services.core@1.3.1\Runtime\Device\Unity.Services.Core.Device.asmdef" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -341,11 +314,35 @@
     <Reference Include="UnityEditor.UnityConnectModule">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.Graphs">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\Managed\UnityEditor.Graphs.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.WindowsStandalone.Extensions">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Plastic.Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Plastic.Antlr3.Runtime">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.YamlDotNet">
+      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.IonicZip">
+      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
+    </Reference>
+    <Reference Include="log4netPlastic">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="unityplastic">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>
@@ -715,89 +712,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity.VisualScripting.Flow.Editor.csproj">
-      <Project>{B2931C6A-C397-34EB-6E4B-507FA298B4C2}</Project>
-      <Name>Unity.VisualScripting.Flow.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VSCode.Editor.csproj">
-      <Project>{F3F8D58A-3F96-5A77-B106-5DE77DB3C6A6}</Project>
-      <Name>Unity.VSCode.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Services.Core.Analytics.csproj">
-      <Project>{D731901D-5FA3-D0FD-3C70-AE9A6F5FF04D}</Project>
-      <Name>Unity.Services.Core.Analytics</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.Shared.Editor.csproj">
-      <Project>{AF2D5808-6065-6932-D0CA-D640D34AFDE6}</Project>
-      <Name>Unity.VisualScripting.Shared.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.TextMeshPro.Editor.csproj">
-      <Project>{91091E48-0CFA-9E94-F7AB-527214B0B8F1}</Project>
-      <Name>Unity.TextMeshPro.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Services.Core.Environments.csproj">
-      <Project>{7E6A47EE-600A-7D18-1A40-4E5CDE603D0D}</Project>
-      <Name>Unity.Services.Core.Environments</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualStudio.Editor.csproj">
-      <Project>{579DB393-99DB-4394-E7FD-18BD5FD9297E}</Project>
-      <Name>Unity.VisualStudio.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Timeline.Editor.csproj">
-      <Project>{F8054101-2754-7EBC-CAEE-FE34FB672A39}</Project>
-      <Name>Unity.Timeline.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Timeline.csproj">
-      <Project>{7D0CA519-D73B-B289-A4C9-180753780F43}</Project>
-      <Name>Unity.Timeline</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.Core.Editor.csproj">
-      <Project>{71C6746B-5235-6EEC-5915-B98398F7F3ED}</Project>
-      <Name>Unity.VisualScripting.Core.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.TextMeshPro.csproj">
-      <Project>{31B68A82-AAB8-D6E4-236A-54CE9E7343C0}</Project>
-      <Name>Unity.TextMeshPro</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.State.Editor.csproj">
-      <Project>{7E1F795E-B54B-84E6-BA2C-933CEAF83A9D}</Project>
-      <Name>Unity.VisualScripting.State.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.SettingsProvider.Editor.csproj">
-      <Project>{15CB3176-F3EC-7575-8B27-6BB15168C0F0}</Project>
-      <Name>Unity.VisualScripting.SettingsProvider.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.Flow.csproj">
-      <Project>{48C307A4-6955-4687-BA49-148146A83DC1}</Project>
-      <Name>Unity.VisualScripting.Flow</Name>
+    <ProjectReference Include="Unity.Services.Core.Internal.csproj">
+      <Project>{76ECD03A-1B1E-36A4-EB16-7B3891E2C396}</Project>
+      <Name>Unity.Services.Core.Internal</Name>
     </ProjectReference>
     <ProjectReference Include="UnityEditor.UI.csproj">
       <Project>{537B70B2-D491-7CA5-CBE2-7019F4DB8A50}</Project>
       <Name>UnityEditor.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.PlasticSCM.Editor.csproj">
-      <Project>{F513D5C3-9E60-C566-6BEC-FA49610280B9}</Project>
-      <Name>Unity.PlasticSCM.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Rider.Editor.csproj">
-      <Project>{E01FD99B-3B28-FE39-572A-7522CD61147A}</Project>
-      <Name>Unity.Rider.Editor</Name>
-    </ProjectReference>
     <ProjectReference Include="UnityEngine.UI.csproj">
       <Project>{B7AB3349-0C75-33E4-CF66-9B020A854B37}</Project>
       <Name>UnityEngine.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.Services.Core.csproj">
-      <Project>{D28BF5BC-C534-6411-D862-68AC9C70640D}</Project>
-      <Name>Unity.Services.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.State.csproj">
-      <Project>{F2B01B62-32B8-9355-C50E-06134DD7EA28}</Project>
-      <Name>Unity.VisualScripting.State</Name>
-    </ProjectReference>
-    <ProjectReference Include="Unity.VisualScripting.Core.csproj">
-      <Project>{9F5BB9AA-814E-9AAF-6BF1-AB50AAE5E144}</Project>
-      <Name>Unity.VisualScripting.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

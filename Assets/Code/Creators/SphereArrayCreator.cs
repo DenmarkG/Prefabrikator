@@ -6,7 +6,6 @@ namespace Prefabrikator
     public class SphereArrayData : ArrayData
     {
         public float Radius = CircularArrayCreator.DefaultRadius;
-        public CircularArrayCreator.OrientationType Orientation = CircularArrayCreator.OrientationType.Original;
         public int SectorCount = SphereArrayCreator.DefaultSectorCount;
         public int StackCount = SphereArrayCreator.DefaultStackCount;
 
@@ -23,12 +22,10 @@ namespace Prefabrikator
         public override string Name => "Sphere";
 
         public static readonly int DefaultSectorCount = 16;
-        private int _sectorCount = DefaultSectorCount;
-        private CountProperty _sectorCountProperty = null;
+        private Shared<int> _sectorCount = new Shared<int>(DefaultSectorCount);
 
         public static readonly int DefaultStackCount = 8;
-        private int _stackCount = DefaultStackCount;
-        private CountProperty _stackCountProperty = null;
+        private Shared<int> _stackCount = new Shared<int>(DefaultStackCount);
 
         private const float PiOverTwo = Mathf.PI / 2f;
         private const float TwoPi = Mathf.PI * 2f; // 360
@@ -52,33 +49,22 @@ namespace Prefabrikator
                     if (radius != _radius)
                     {
                         _radius.Set(Mathf.Abs(radius));
-                        //_needsRefresh = true;
                     }
                 }
                 EditorGUILayout.EndHorizontal();
 
-                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
+                int sectorCount = _sectorCount;
+                if (Extensions.DisplayCountField(ref sectorCount, "Segments"))
                 {
-                    OrientationType orientation = (OrientationType)EditorGUILayout.EnumPopup("Rotation", _orientation);
-                    if (orientation != _orientation)
-                    {
-                        _orientation = orientation;
-                        OnOrientationChanged();
-                        //_needsRefresh = true;
-                    }
-                }
-                EditorGUILayout.EndHorizontal();
-
-                if (Extensions.DisplayCountField(ref _sectorCount, "Segments"))
-                {
-                    _sectorCount = Mathf.Max(_sectorCount, MinCount);
-                    //_needsRefresh = true;
+                    sectorCount = Mathf.Max(sectorCount, MinCount);
+                    CommandQueue.Enqueue(new GenericCommand<int>(_sectorCount, _sectorCount, sectorCount));
                 }
 
-                if (Extensions.DisplayCountField(ref _stackCount, "Rings"))
+                int stackCount = _stackCount;
+                if (Extensions.DisplayCountField(ref stackCount, "Rings"))
                 {
-                    _stackCount = Mathf.Max(_stackCount, MinCount);
-                    //_needsRefresh = true;
+                    stackCount = Mathf.Max(stackCount, MinCount);
+                    CommandQueue.Enqueue(new GenericCommand<int>(_stackCount, _stackCount, stackCount));
                 }
 
                 _targetCount = GetTargetCount();
@@ -99,6 +85,11 @@ namespace Prefabrikator
 
         protected override void UpdatePositions()
         {
+            if (_targetCount < MinCount || _createdObjects.Count < MinCount)
+            {
+                return;
+            }
+
             float sectorStep = Mathf.PI * 2 / _sectorCount;
             float stackStep = Mathf.PI / _stackCount;
             int index = 0;
@@ -116,11 +107,11 @@ namespace Prefabrikator
                 Vector3 position = new Vector3(x, y, z);
                 _createdObjects[0].transform.localPosition = position + _center;
 
-                if (_orientation == OrientationType.FollowCircle)
-                {
-                    _createdObjects[0].transform.localRotation = Quaternion.LookRotation(_center - position);
-                }
 
+                //if (_orientation == OrientationType.FollowCircle)
+                //{
+                //    _createdObjects[0].transform.localRotation = Quaternion.LookRotation(_center - position);
+                //}
                 ++index;
             }
 
@@ -139,11 +130,10 @@ namespace Prefabrikator
                     Vector3 position = new Vector3(x, y, z);
                     _createdObjects[index].transform.localPosition = position + _center;
 
-                    if (_orientation == OrientationType.FollowCircle)
-                    {
-                        _createdObjects[index].transform.localRotation = Quaternion.LookRotation(_center - position);
-                    }
-
+                    //if (_orientation == OrientationType.FollowCircle)
+                    //{
+                    //    _createdObjects[index].transform.localRotation = Quaternion.LookRotation(_center - position);
+                    //}
                     ++index;
                 }
             }
@@ -160,11 +150,6 @@ namespace Prefabrikator
 
                 Vector3 position = new Vector3(x, y, z);
                 _createdObjects[_createdObjects.Count - 1].transform.localPosition = position + _center;
-
-                if (_orientation == OrientationType.FollowCircle)
-                {
-                    _createdObjects[_createdObjects.Count - 1].transform.localRotation = Quaternion.LookRotation(_center - position);
-                }
             }
         }
 
@@ -175,10 +160,9 @@ namespace Prefabrikator
 
         protected override ArrayData GetContainerData()
         {
-            SphereArrayData data = new SphereArrayData(_target, _targetRotation);
+            SphereArrayData data = new SphereArrayData(_target, Quaternion.identity);
             data.Count = _targetCount;
             data.Radius = _radius;
-            data.Orientation = _orientation;
 
             data.StackCount = _stackCount;
             data.SectorCount = _sectorCount;
@@ -192,11 +176,10 @@ namespace Prefabrikator
             {
                 _targetCount = sphereData.Count;
                 _radius.Set(sphereData.Radius);
-                _orientation = sphereData.Orientation;
                 _targetRotation = sphereData.TargetRotation;
 
-                _stackCount = sphereData.StackCount;
-                _sectorCount = sphereData.SectorCount;
+                _stackCount.Set(sphereData.StackCount);
+                _sectorCount.Set(sphereData.SectorCount);
             }
         }
     }

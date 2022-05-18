@@ -22,7 +22,7 @@ namespace Prefabrikator
 
         public override void OnRemoved()
         {
-            //
+            Owner.ApplyToAll((go) => { go.transform.rotation = Owner.GetDefaultRotation(); });
         }
 
         public override void Process(GameObject[] objs)
@@ -41,7 +41,7 @@ namespace Prefabrikator
 
         protected override void OnInspectorUpdate()
         {
-            //
+            // #DG: Add follow axis? 
         }
     }
 }
