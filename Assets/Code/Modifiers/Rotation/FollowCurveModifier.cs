@@ -27,6 +27,7 @@ namespace Prefabrikator
 
         public override void Process(GameObject[] objs)
         {
+            bool isSphere = Owner is SphereArrayCreator;
             int numObjs = objs.Length;
             Vector3 center = _circle.Center;
             GameObject current = null;
@@ -34,8 +35,16 @@ namespace Prefabrikator
             {
                 current = objs[i];
                 Vector3 position = current.transform.position;
-                Vector3 cross = Vector3.Cross((position - center).normalized, _circle.UpVector);
-                current.transform.rotation = Quaternion.LookRotation(cross);
+
+                if (isSphere)
+                {
+                    current.transform.localRotation = Quaternion.LookRotation(center - position);
+                }
+                else
+                {
+                    Vector3 cross = Vector3.Cross((position - center).normalized, _circle.UpVector);
+                    current.transform.rotation = Quaternion.LookRotation(cross);
+                }
             }
         }
 

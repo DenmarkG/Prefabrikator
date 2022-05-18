@@ -1,8 +1,5 @@
-Automate the process for calling the modifier update and process calls
-    - should not need to be called manually by each createor
-
-- replace existing transform fields with mods that can be added/removed
-- allow Undo/Redo of Add/Remove modifiers
+[x] replace existing transform fields with mods that can be added/removed
+[x] allow Undo/Redo of Add/Remove modifiers
 
 [x] Fix layout for float fields
 [x] fix undo/redo for scale changes
@@ -11,9 +8,13 @@ Automate the process for calling the modifier update and process calls
 [x] Allow original object to be removed
 
 - Add "keep proportions" option to random scale
+Automate the process for calling the modifier update and process calls
+    - should not need to be called manually by each createor
 
 Modifiers to Add: 
     [] Incremental Scale
     [] Incremental Roatation
     [] Position Noise
     [] Checkerboard (grid only)
+
+Undo/Redo should support changing the Shape type
