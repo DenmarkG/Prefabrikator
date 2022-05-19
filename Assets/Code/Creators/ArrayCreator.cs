@@ -13,13 +13,7 @@ namespace Prefabrikator
 
         protected GameObject _target = null;
 
-        public GameObject TargetProxy
-        {
-            get { return _targetProxy; }
-            set { _targetProxy = value; }
-        }
-
-        protected GameObject _targetProxy = null;
+        private GameObject _targetProxy = null;
 
         public List<GameObject> CreatedObjects => _createdObjects;
         protected List<GameObject> _createdObjects = null;
@@ -40,6 +34,7 @@ namespace Prefabrikator
         public ArrayCreator(GameObject target)
         {
             _target = target;
+
             _createdObjects = new List<GameObject>();
 
             Refresh();
@@ -162,6 +157,16 @@ namespace Prefabrikator
 
                 Refresh(true);
             }
+        }
+
+        protected GameObject GetProxy()
+        {
+            if (_targetProxy == null)
+            {
+                EstablishHelper();
+            }
+
+            return _targetProxy;
         }
 
         protected void EstablishHelper(bool useDefaultData = false)

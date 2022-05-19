@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using RNG = UnityEngine.Random;
 
 namespace Prefabrikator
 {
@@ -27,7 +26,7 @@ namespace Prefabrikator
         protected FloatProperty _radiusProperty = null;
 
         public Vector3 Center => _center;
-        public Vector3 UpVector => _targetProxy?.transform.up ?? Vector3.up;
+        public Vector3 UpVector => GetProxy()?.transform.up ?? Vector3.up;
         protected Vector3 _center = Vector3.zero;
 
         public static readonly int MinCount = 3;
@@ -91,47 +90,25 @@ namespace Prefabrikator
             const float degrees = Mathf.PI * 2;
             float angle = (degrees / _createdObjects.Count);
 
-            for (int i = 0; i < _createdObjects.Count; ++i)
+            GameObject proxy = GetProxy();
+
+            if (proxy != null)
             {
-                float t = angle * i;
-                float x = Mathf.Cos(t) * _radius;
-                Vector3 right = Mathf.Cos(t) * _radius * _targetProxy.transform.right;
+                for (int i = 0; i < _createdObjects.Count; ++i)
+                {
+                    float t = angle * i;
+                    float x = Mathf.Cos(t) * _radius;
+                    Vector3 right = Mathf.Cos(t) * _radius * proxy.transform.right;
 
-                float z = Mathf.Sin(t) * _radius;
-                Vector3 forward = Mathf.Sin(t) * _radius * _targetProxy.transform.forward;
+                    float z = Mathf.Sin(t) * _radius;
+                    Vector3 forward = Mathf.Sin(t) * _radius * proxy.transform.forward;
 
-                Vector3 position = new Vector3(x, _targetProxy.transform.position.y, z);
-                //Vector3 position = right + forward;
+                    Vector3 position = new Vector3(x, proxy.transform.position.y, z);
+                    //Vector3 position = right + forward;
 
-                _createdObjects[i].transform.localPosition = position + _center;
+                    _createdObjects[i].transform.localPosition = position + _center;
+                }
             }
-        }
-
-        private void ResetAllRotations()
-        {
-            for (int i = 0; i < _createdObjects.Count; ++i)
-            {
-                _createdObjects[i].transform.localRotation = _targetProxy.transform.rotation;
-            }
-        }
-
-        private void RandomizeAllRotations()
-        {
-            for (int i = 0; i < _createdObjects.Count; ++i)
-            {
-                _createdObjects[i].transform.localRotation = GetRandomRotation();
-            }
-        }
-
-        private Quaternion GetRandomRotation()
-        {
-            float max = 360f;
-            float min = -360;
-            float x = RNG.Range(min, max);
-            float y = RNG.Range(min, max);
-            float z = RNG.Range(min, max);
-
-            return Quaternion.Euler(new Vector3(x, y, z));
         }
 
         protected override void CreateClone(int index = 0)
@@ -140,7 +117,12 @@ namespace Prefabrikator
 
             GameObject clone = GameObject.Instantiate(_target, _center, targetRotation);
             clone.SetActive(true);
-            clone.transform.SetParent(_targetProxy.transform);
+            GameObject proxy = GetProxy();
+
+            if (proxy != null)
+            {
+                clone.transform.SetParent(proxy.transform);
+            }
 
             _createdObjects.Add(clone);
         }

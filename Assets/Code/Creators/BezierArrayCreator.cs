@@ -187,20 +187,25 @@ namespace Prefabrikator
 
         protected override void CreateClone(int index)
         {
-            Quaternion targetRotation = _target.transform.rotation;
-            if (_orientation == OrientationType.Random)
+            GameObject proxy = GetProxy();
+
+            if (proxy != null)
             {
-                targetRotation = GetRandomRotation();
+                Quaternion targetRotation = _target.transform.rotation;
+                if (_orientation == OrientationType.Random)
+                {
+                    targetRotation = GetRandomRotation();
+                }
+
+                float t = (float)index / (float)_targetCount;
+                Vector3 pointOnCurve = _curve.GetPointOnCurve(t);
+
+                GameObject clone = GameObject.Instantiate(_target, pointOnCurve, targetRotation);
+                clone.SetActive(true);
+                clone.transform.SetParent(proxy.transform);
+
+                _createdObjects.Add(clone);
             }
-
-            float t = (float)index / (float)_targetCount;
-            Vector3 pointOnCurve = _curve.GetPointOnCurve(t);
-
-            GameObject clone = GameObject.Instantiate(_target, pointOnCurve, targetRotation);
-            clone.SetActive(true);
-            clone.transform.SetParent(_targetProxy.transform);
-
-            _createdObjects.Add(clone);
         }
 
         private Quaternion GetRandomRotation()
@@ -234,9 +239,14 @@ namespace Prefabrikator
 
         private void ResetAllRotations()
         {
-            for (int i = 0; i < _createdObjects.Count; ++i)
+            GameObject proxy = GetProxy();
+
+            if (proxy != null)
             {
-                _createdObjects[i].transform.localRotation = _targetProxy.transform.rotation;
+                for (int i = 0; i < _createdObjects.Count; ++i)
+                {
+                    _createdObjects[i].transform.localRotation = proxy.transform.rotation;
+                }
             }
         }
 

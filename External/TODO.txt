@@ -16,5 +16,13 @@ Modifiers to Add:
     [] Incremental Roatation
     [] Position Noise
     [] Checkerboard (grid only)
+    [] Random Color
+
+[] Remove Constructors for arrays
+    [] replace with factory
+    [] add init function to be called each time one is created
+        - prevent errors related to array creation by consolodating where and how they can be created
+        - Some contructors contain race conditions
+        - Some refresh functions require fully formed objects, but the base class calls refresh
 
 Undo/Redo should support changing the Shape type

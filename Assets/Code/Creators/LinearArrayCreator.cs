@@ -92,8 +92,9 @@ namespace Prefabrikator
 
         private void UpdatePositions()
         {
+            GameObject proxy = GetProxy();
 
-            if (_createdObjects.Count > 0)
+            if (_createdObjects.Count > 0 && proxy != null)
             {
                 Undo.RecordObjects(_createdObjects.ToArray(), "Changed offset");
                 GameObject currentObj = null;
@@ -103,7 +104,7 @@ namespace Prefabrikator
                     Vector3 offset = (Vector3)_offset * i;
 
                     currentObj = _createdObjects[i];
-                    currentObj.transform.position = _targetProxy.transform.position + offset;
+                    currentObj.transform.position = proxy.transform.position + offset;
                 }
             }
         }
@@ -115,24 +116,29 @@ namespace Prefabrikator
 
         protected override void CreateClone(int index = 0)
         {
-            GameObject clone = GameObject.Instantiate(_target, _target.transform.position, _target.transform.rotation, _target.transform.parent);
-            clone.SetActive(true);
-            clone.transform.SetParent(_targetProxy.transform);
+            GameObject proxy = GetProxy();
 
-            int lastIndex = _createdObjects.Count - 1;
-
-            if (_createdObjects.Count > 0)
+            if (proxy != null)
             {
-                clone.transform.position = _createdObjects[lastIndex].transform.position + _offset;
-                clone.transform.rotation = _createdObjects[lastIndex].transform.rotation;
-            }
-            else
-            {
-                clone.transform.position = _target.transform.position + _offset;
-                clone.transform.rotation = _target.transform.rotation;
-            }
+                GameObject clone = GameObject.Instantiate(_target, _target.transform.position, _target.transform.rotation, _target.transform.parent);
+                clone.SetActive(true);
+                clone.transform.SetParent(proxy.transform);
 
-            _createdObjects.Add(clone);
+                int lastIndex = _createdObjects.Count - 1;
+
+                if (_createdObjects.Count > 0)
+                {
+                    clone.transform.position = _createdObjects[lastIndex].transform.position + _offset;
+                    clone.transform.rotation = _createdObjects[lastIndex].transform.rotation;
+                }
+                else
+                {
+                    clone.transform.position = _target.transform.position + _offset;
+                    clone.transform.rotation = _target.transform.rotation;
+                }
+
+                _createdObjects.Add(clone);
+            }
         }
 
         protected override ArrayData GetContainerData()

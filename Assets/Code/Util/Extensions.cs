@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using RNG = UnityEngine.Random;
 
 namespace Prefabrikator
 {
@@ -129,6 +130,18 @@ namespace Prefabrikator
             {
                 vect.z = Random.Range(zRange.Value.Min, zRange.Value.Max);
             }
+        }
+
+
+        public static Quaternion GetRandomRotation()
+        {
+            float max = 360f;
+            float min = -360;
+            float x = RNG.Range(min, max);
+            float y = RNG.Range(min, max);
+            float z = RNG.Range(min, max);
+
+            return Quaternion.Euler(new Vector3(x, y, z));
         }
 
         public static Vector3 Clamp(Vector3 vect, Vector3 min, Vector3 max)

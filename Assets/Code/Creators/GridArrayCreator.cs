@@ -202,7 +202,8 @@ namespace Prefabrikator
 
         private void UpdatePositions()
         {
-            if (_createdObjects.Count > 0)
+            GameObject proxy = GetProxy();
+            if (_createdObjects.Count > 0 && proxy != null)
             {
                 int index = 0;
                 GameObject currentObj = null;
@@ -221,14 +222,14 @@ namespace Prefabrikator
                     {
                         Vector3 offsetX = rowVector * (rowOffset * x);
                         currentObj = _createdObjects[index];
-                        currentObj.transform.position = _targetProxy.transform.position + offsetX;
+                        currentObj.transform.position = proxy.transform.position + offsetX;
                         ++index;
 
                         for (int y = 1; y < colCount; ++y)
                         {
                             Vector3 offsetY = (colVector * (colOffset * y)) + offsetX;
                             currentObj = _createdObjects[index];
-                            currentObj.transform.position = _targetProxy.transform.position + offsetY;
+                            currentObj.transform.position = proxy.transform.position + offsetY;
                             ++index;
                         }
                     }
@@ -243,14 +244,14 @@ namespace Prefabrikator
                         {
                             Vector3 offsetX = (Vector3.right * (_offsetX * x)) + offsetZ;
                             currentObj = _createdObjects[index];
-                            currentObj.transform.position = _targetProxy.transform.position + offsetX;
+                            currentObj.transform.position = proxy.transform.position + offsetX;
                             ++index;
 
                             for (int y = 1; y < _countY; ++y)
                             {
                                 Vector3 offsetY = (Vector3.up * (_offsetY * y)) + offsetX;
                                 currentObj = _createdObjects[index];
-                                currentObj.transform.position = _targetProxy.transform.position + offsetY;
+                                currentObj.transform.position = proxy.transform.position + offsetY;
                                 ++index;
                             }
                         }
@@ -261,12 +262,17 @@ namespace Prefabrikator
 
         private void ResetAllPositions()
         {
-            for (int i = 0; i < _createdObjects.Count; ++i)
-            {
-                _createdObjects[i].transform.position = _targetProxy.transform.position;
-            }
+            GameObject proxy = GetProxy();
 
-            _needsPositionRefresh = false;
+            if (proxy != null)
+            {
+                for (int i = 0; i < _createdObjects.Count; ++i)
+                {
+                    _createdObjects[i].transform.position = proxy.transform.position;
+                }
+
+                _needsPositionRefresh = false;
+            }
         }
 
         private int GetCount()
@@ -302,9 +308,14 @@ namespace Prefabrikator
 
         protected override void CreateClone(int index = 0)
         {
-            GameObject clone = GameObject.Instantiate(_target, _target.transform.position, _target.transform.rotation, _target.transform.parent);
-            clone.transform.SetParent(_targetProxy.transform);
-            _createdObjects.Add(clone);
+            GameObject proxy = GetProxy();
+
+            if (proxy != null)
+            {
+                GameObject clone = GameObject.Instantiate(_target, _target.transform.position, _target.transform.rotation, _target.transform.parent);
+                clone.transform.SetParent(proxy.transform);
+                _createdObjects.Add(clone);
+            }
         }
 
         protected override ArrayData GetContainerData()

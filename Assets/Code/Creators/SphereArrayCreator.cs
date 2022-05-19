@@ -57,17 +57,15 @@ namespace Prefabrikator
                 if (Extensions.DisplayCountField(ref sectorCount, "Segments"))
                 {
                     sectorCount = Mathf.Max(sectorCount, MinCount);
-                    CommandQueue.Enqueue(new GenericCommand<int>(_sectorCount, _sectorCount, sectorCount));
+                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, sectorCount));
                 }
 
                 int stackCount = _stackCount;
                 if (Extensions.DisplayCountField(ref stackCount, "Rings"))
                 {
                     stackCount = Mathf.Max(stackCount, MinCount);
-                    CommandQueue.Enqueue(new GenericCommand<int>(_stackCount, _stackCount, stackCount));
+                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, stackCount));
                 }
-
-                _targetCount = GetTargetCount();
             }
             EditorGUILayout.EndVertical();
         }
@@ -82,6 +80,24 @@ namespace Prefabrikator
                 }
             }
         }
+
+        //protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
+        //{
+        //    if (hardRefresh)
+        //    {
+        //        DestroyAll();
+        //    }
+
+        //    EstablishHelper();
+
+        //    _targetCount = GetTargetCount();
+        //    if (_targetCount != _createdObjects.Count)
+        //    {
+        //        OnTargetCountChanged();
+        //    }
+
+        //    UpdatePositions();
+        //}
 
         protected override void UpdatePositions()
         {
