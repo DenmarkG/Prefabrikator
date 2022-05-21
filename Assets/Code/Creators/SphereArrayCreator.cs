@@ -30,8 +30,6 @@ namespace Prefabrikator
         private const float PiOverTwo = Mathf.PI / 2f;
         private const float TwoPi = Mathf.PI * 2f; // 360
 
-        
-
         public SphereArrayCreator(GameObject target)
             : base(target)
         {
@@ -43,64 +41,28 @@ namespace Prefabrikator
         {
             EditorGUILayout.BeginVertical();
             {
-                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
-                {
-                    float radius = EditorGUILayout.FloatField("Radius", _radius);
-                    if (radius != _radius)
-                    {
-                        _radius.Set(Mathf.Abs(radius));
-                    }
-                }
-                EditorGUILayout.EndHorizontal();
+                _radius.Set(Mathf.Abs(_radiusProperty.Update()));
 
                 int sectorCount = _sectorCount;
                 if (Extensions.DisplayCountField(ref sectorCount, "Segments"))
                 {
                     sectorCount = Mathf.Max(sectorCount, MinCount);
-                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, sectorCount));
+                    CommandQueue.Enqueue(new GenericCommand<int>(_sectorCount, _sectorCount, sectorCount));
                 }
 
                 int stackCount = _stackCount;
                 if (Extensions.DisplayCountField(ref stackCount, "Rings"))
                 {
                     stackCount = Mathf.Max(stackCount, MinCount);
-                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, stackCount));
+                    CommandQueue.Enqueue(new GenericCommand<int>(_stackCount, _stackCount, stackCount));
                 }
             }
             EditorGUILayout.EndVertical();
         }
 
-        public override void UpdateEditor()
-        {
-            if (_target != null)
-            {
-                if (NeedsRefresh)
-                {
-                    Refresh();
-                }
-            }
-        }
-
-        //protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
-        //{
-        //    if (hardRefresh)
-        //    {
-        //        DestroyAll();
-        //    }
-
-        //    EstablishHelper();
-
-        //    _targetCount = GetTargetCount();
-        //    if (_targetCount != _createdObjects.Count)
-        //    {
-        //        OnTargetCountChanged();
-        //    }
-
-        //    UpdatePositions();
-        //}
-
         protected override void UpdatePositions()
         {
+            Debug.Log($"created objs count = {_createdObjects.Count}; target count = {_targetCount}");
             if (_targetCount < MinCount || _createdObjects.Count < MinCount)
             {
                 return;
@@ -123,11 +85,6 @@ namespace Prefabrikator
                 Vector3 position = new Vector3(x, y, z);
                 _createdObjects[0].transform.localPosition = position + _center;
 
-
-                //if (_orientation == OrientationType.FollowCircle)
-                //{
-                //    _createdObjects[0].transform.localRotation = Quaternion.LookRotation(_center - position);
-                //}
                 ++index;
             }
 
@@ -146,10 +103,6 @@ namespace Prefabrikator
                     Vector3 position = new Vector3(x, y, z);
                     _createdObjects[index].transform.localPosition = position + _center;
 
-                    //if (_orientation == OrientationType.FollowCircle)
-                    //{
-                    //    _createdObjects[index].transform.localRotation = Quaternion.LookRotation(_center - position);
-                    //}
                     ++index;
                 }
             }
@@ -167,6 +120,12 @@ namespace Prefabrikator
                 Vector3 position = new Vector3(x, y, z);
                 _createdObjects[_createdObjects.Count - 1].transform.localPosition = position + _center;
             }
+        }
+
+        protected override sealed void VerifyTargetCount()
+        {
+            _targetCount = GetTargetCount();
+            base.VerifyTargetCount();
         }
 
         private int GetTargetCount()

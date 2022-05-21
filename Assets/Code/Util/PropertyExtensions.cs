@@ -34,42 +34,6 @@ namespace Prefabrikator
         }
     }
 
-    public class CountProperty : CustomProperty<int>
-    {
-        public CountProperty(string label, int startValue, OnValueSetDelegate onValueSet)
-            : base(label, startValue, onValueSet)
-        {
-            //
-        }
-
-        protected override int ShowPropertyField()
-        {
-            EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
-            {
-                if (GUILayout.Button("-", GUILayout.Width(10)))
-                {
-                    if (WorkingValue > 0)
-                    {
-                        --WorkingValue;
-                    }
-                }
-
-                EditorGUILayout.LabelField(WorkingValue.ToString());
-
-                if (GUILayout.Button("+", GUILayout.Width(10)))
-                {
-                    if (WorkingValue < int.MaxValue - 1)
-                    {
-                        ++WorkingValue;
-                    }
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-
-            return WorkingValue;
-        }
-    }
-
     public class FloatProperty : CustomProperty<float>
     {
         public FloatProperty(string label, Shared<float> startValue, OnValueSetDelegate onValueSet)

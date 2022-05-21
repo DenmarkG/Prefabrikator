@@ -17,6 +17,9 @@ Modifiers to Add:
     [] Position Noise
     [] Checkerboard (grid only)
     [] Random Color
+    [] Global Rotator
+    [] Global Offset
+    [] Global Scale
 
 [] Remove Constructors for arrays
     [] replace with factory

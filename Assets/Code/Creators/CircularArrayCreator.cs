@@ -69,10 +69,7 @@ namespace Prefabrikator
 
             EstablishHelper();
 
-            if (_targetCount != _createdObjects.Count)
-            {
-                OnTargetCountChanged();
-            }
+            VerifyTargetCount();
 
             UpdatePositions();
         }
@@ -145,7 +142,15 @@ namespace Prefabrikator
             }
         }
 
-        protected override void OnTargetCountChanged()
+        protected virtual void VerifyTargetCount()
+        {
+            if (_targetCount != _createdObjects.Count)
+            {
+                OnTargetCountChanged();
+            }
+        }
+
+        protected override sealed void OnTargetCountChanged()
         {
             if (_targetCount < _createdObjects.Count)
             {
