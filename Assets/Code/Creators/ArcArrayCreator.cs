@@ -52,7 +52,7 @@ namespace Prefabrikator
         {
             float degrees = (360 * _fillPercent) * Mathf.Deg2Rad; // #DG: TODO multiply this by fill percent
             int n = _createdObjects.Count - 1;
-            float angle = (degrees / n);
+            float angle = (n != 0f) ? (degrees / n) : 0f;
 
             for (int i = 0; i < _createdObjects.Count; ++i)
             {
