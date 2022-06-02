@@ -86,10 +86,10 @@
     <Compile Include="Assets\Code\Creators\CircularArrayCreator.cs" />
     <Compile Include="Assets\Code\Util\PropertyExtensions.cs" />
     <Compile Include="Assets\Code\Runtime\ArrayData.cs" />
+    <Compile Include="Assets\Code\Util\MathUtils.cs" />
     <Compile Include="Assets\Code\Creators\ArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\SphereArrayCreator.cs" />
-    <Compile Include="Assets\Code\Util\MathUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UI\PrefabrikatorEditor.uss" />

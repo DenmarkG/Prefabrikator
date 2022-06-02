@@ -11,6 +11,11 @@
 Automate the process for calling the modifier update and process calls
     - should not need to be called manually by each createor
 
+Shapes to add:
+    [] Scatter Circular
+    [] Scatter Volume
+    [] Scatter Spherical
+
 Modifiers to Add: 
     [] Incremental Scale
     [] Incremental Roatation
@@ -20,6 +25,8 @@ Modifiers to Add:
     [] Global Rotator
     [] Global Offset
     [] Global Scale
+    [] Drop To Floor    
+        [] Select floor? 
 
 [] Remove Constructors for arrays
     [] replace with factory

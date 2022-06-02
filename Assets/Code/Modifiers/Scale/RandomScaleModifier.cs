@@ -10,12 +10,24 @@ namespace Prefabrikator
         protected override string DisplayName => "Random Scale";
 
         private Vector3[] _scales = null;
-        
-        private Shared<Vector3> _min = new Shared<Vector3>(new Vector3(.5f, .5f, .5f));
-        private Shared<Vector3> _max = new Shared<Vector3>(new Vector3(3f, 3f, 3f));
 
-        private Vector3Property _minProperty = null;
-        private Vector3Property _maxProperty = null;
+        private static readonly float DefaultMin = .5f;
+        private static readonly float DefaultMax = 3f;
+
+        private Shared<Vector3> _minVector = new Shared<Vector3>(new Vector3(DefaultMin, DefaultMin, DefaultMin));
+        private Shared<Vector3> _maxVector = new Shared<Vector3>(new Vector3(DefaultMax, DefaultMax, DefaultMax));
+
+        private Vector3Property _minVectorProperty = null;
+        private Vector3Property _maxVectorProperty = null;
+
+        private Shared<float> _minFloat = new Shared<float>(DefaultMin);
+        private Shared<float> _maxFloat = new Shared<float>(DefaultMax);
+
+        private FloatProperty _minFloatProperty = null;
+        private FloatProperty _maxFloatProperty = null;
+
+        private Shared<bool> _keepAspectRatio = new Shared<bool>(false);
+        private BoolProperty _keepAspectProperty = null;
 
         public RandomScaleModifier(ArrayCreator owner)
             : base(owner)
@@ -37,9 +49,18 @@ namespace Prefabrikator
             UpdateArray(objs);
 
             int numObjs = objs.Length;
+            Vector3 scale = Vector3.one;
             for (int i = 0; i < numObjs; ++i)
             {
-                Vector3 scale = Extensions.BiUnitLerp(_min, _max, _scales[i]);
+                if (_keepAspectRatio)
+                {
+                    scale = Owner.GetDefaultScale() * Mathf.Lerp(_minFloat, _maxFloat, _scales[i].x);
+                }
+                else
+                {
+                    scale = Extensions.BiUnitLerp(_minVector, _maxVector, _scales[i]);
+                }
+                
                 objs[i].transform.localScale = scale;
             }
         }
@@ -52,8 +73,21 @@ namespace Prefabrikator
 
         protected override void OnInspectorUpdate()
         {
-            _min.Set(_minProperty.Update());
-            _max.Set(_maxProperty.Update());
+            _keepAspectRatio.Set(_keepAspectProperty.Update());
+
+            if (_keepAspectRatio)
+            {
+                _minFloat.Set(_minFloatProperty.Update());
+                _minVector.Set(new Vector3(_minFloat, _minFloat, _minFloat));
+
+                _maxFloat.Set(_maxFloatProperty.Update());
+                _maxVector.Set(new Vector3(_maxFloat, _maxFloat, _maxFloat));
+            }
+            else
+            {
+                _minVector.Set(_minVectorProperty.Update());
+                _maxVector.Set(_maxVectorProperty.Update());
+            }
 
             if (GUILayout.Button("Randomize"))
             {
@@ -86,17 +120,38 @@ namespace Prefabrikator
 
         private void SetupProperties()
         {
-            void OnMinChanged(Vector3 current, Vector3 previous)
+            const string Min = "Min";
+            const string Max = "Max";
+            void OnMinVectorChanged(Vector3 current, Vector3 previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_min, previous, current));
+                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_minVector, previous, current));
             }
-            _minProperty = new Vector3Property("Min", _min, OnMinChanged);
+            _minVectorProperty = new Vector3Property(Min, _minVector, OnMinVectorChanged);
 
-            void OnMaxChanged(Vector3 current, Vector3 previous)
+            void OnMaxVectorChanged(Vector3 current, Vector3 previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_max, previous, current));
+                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_maxVector, previous, current));
             }
-            _maxProperty = new Vector3Property("Max", _max, OnMaxChanged);
+            _maxVectorProperty = new Vector3Property(Max, _maxVector, OnMaxVectorChanged);
+
+            void OnMinFloatChanged(float current, float previous)
+            {
+                Owner.CommandQueue.Enqueue(new GenericCommand<float>(_minFloat, previous, current));
+            }
+            _minFloatProperty = new FloatProperty(Min, _minFloat, OnMinFloatChanged);
+
+            void OnMaxFloatChanged(float current, float previous)
+            {
+                Owner.CommandQueue.Enqueue(new GenericCommand<float>(_maxFloat, previous, current));
+            }
+            _maxFloatProperty = new FloatProperty(Max, _maxFloat, OnMaxFloatChanged);
+
+            void OnKeepAspectChanged(bool current, bool previous)
+            {
+                Owner.CommandQueue.Enqueue(new GenericCommand<bool>(_keepAspectRatio, previous, current));
+            }
+            _keepAspectProperty = new BoolProperty("Keep Aspect Ratio", _keepAspectRatio, OnKeepAspectChanged);
+
         }
 
         private void UpdateArray(GameObject[] objs)

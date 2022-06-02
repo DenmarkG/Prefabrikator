@@ -47,4 +47,18 @@ namespace Prefabrikator
             return EditorGUILayout.FloatField(Label, WorkingValue);
         }
     }
+
+    public class BoolProperty : CustomProperty<bool>
+    {
+        public BoolProperty(string label, Shared<bool> startValue, OnValueSetDelegate onValueSet)
+            : base(label, startValue, onValueSet)
+        {
+            //
+        }
+
+        protected override bool ShowPropertyField()
+        {
+            return EditorGUILayout.ToggleLeft(Label, WorkingValue);
+        }
+    }
 }
