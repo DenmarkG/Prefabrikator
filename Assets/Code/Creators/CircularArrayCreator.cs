@@ -33,10 +33,9 @@ namespace Prefabrikator
         private static readonly int MinCirlceCount = 6;
 
         public CircularArrayCreator(GameObject target)
-            : base(target)
+            : base(target, MinCirlceCount)
         {
             _center = _target.transform.position;
-            _targetCount = MinCirlceCount;
 
             void OnRadiusSet(float current, float previous)
             {

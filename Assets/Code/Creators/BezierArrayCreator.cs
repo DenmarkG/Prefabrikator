@@ -38,12 +38,14 @@ namespace Prefabrikator
 
         private CubicBezierCurve _curve = new CubicBezierCurve();
 
+        //
 
         public BezierArrayCreator(GameObject target)
-            : base(target)
+            : base(target, MinCount)
         {
             SceneView.duringSceneGui += OnSceneGUI;
-            _targetCount = MinCount;
+
+            Refresh();
         }
 
         ~BezierArrayCreator()
@@ -72,10 +74,11 @@ namespace Prefabrikator
         {
             EditorGUILayout.BeginVertical();
             {
-                if (Extensions.DisplayCountField(ref _targetCount))
+                int currentCount = _targetCount;
+                if (Extensions.DisplayCountField(ref currentCount))
                 {
-                    _targetCount = Mathf.Max(_targetCount, MinCount);
-                    //_needsRefresh = true;
+                    currentCount = Mathf.Max(currentCount, MinCount);
+                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, currentCount));
                 }
 
                 EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
@@ -85,7 +88,6 @@ namespace Prefabrikator
                     {
                         _orientation = orientation;
                         OnOrientationChanged();
-                        //_needsRefresh = true;
                     }
                 }
                 EditorGUILayout.EndHorizontal();
@@ -142,14 +144,24 @@ namespace Prefabrikator
 
         protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
         {
-            EstablishHelper();
+            if (hardRefresh)
+            {
+                DestroyAll();
+            }
+
+            EstablishHelper(useDefaultData);
+
+            if (_targetCount != _createdObjects.Count)
+            {
+                OnTargetCountChanged();
+            }
 
             UpdatePositions();
 
-            if (_orientation == OrientationType.Original)
-            {
-                UpdateLocalRotations();
-            }
+            //if (_orientation == OrientationType.Original)
+            //{
+            //    UpdateLocalRotations();
+            //}
         }
 
         public override void UpdateEditor()
@@ -165,22 +177,25 @@ namespace Prefabrikator
 
         private void UpdatePositions()
         {
-            float n = _createdObjects.Count - 1;
-            for (int i = 0; i < _createdObjects.Count; ++i)
+            if (_createdObjects.Count > 0)
             {
-                float t = (float)i / n;
-                Vector3 position = _curve.GetPointOnCurve(t);
-                _createdObjects[i].transform.position = position;
+                float n = _createdObjects.Count - 1;
+                for (int i = 0; i < _createdObjects.Count; ++i)
+                {
+                    float t = (float)i / n;
+                    Vector3 position = _curve.GetPointOnCurve(t);
+                    _createdObjects[i].transform.position = position;
 
-                if (_orientation == OrientationType.FollowCurve)
-                {
-                    Vector3 tangent = _curve.GetTangentToCurve(t);
-                    _createdObjects[i].transform.localRotation = Quaternion.LookRotation(tangent);
-                }
-                else if (_orientation == OrientationType.Incremental)
-                {
-                    Quaternion rotation = Quaternion.Lerp(_targetRotation, Quaternion.Euler(_endRotation), t);
-                    _createdObjects[i].transform.rotation = rotation;
+                    if (_orientation == OrientationType.FollowCurve)
+                    {
+                        Vector3 tangent = _curve.GetTangentToCurve(t);
+                        _createdObjects[i].transform.localRotation = Quaternion.LookRotation(tangent);
+                    }
+                    else if (_orientation == OrientationType.Incremental)
+                    {
+                        Quaternion rotation = Quaternion.Lerp(_targetRotation, Quaternion.Euler(_endRotation), t);
+                        _createdObjects[i].transform.rotation = rotation;
+                    }
                 }
             }
         }
@@ -311,43 +326,52 @@ namespace Prefabrikator
 
         private void OnSceneGUI(SceneView view)
         {
-            BezierPoint start = _curve.Start;
-            Vector3 p0 = Handles.PositionHandle(start.Position, Quaternion.identity);
-            if (p0 != start.Position)
+            if (_showControlPoints)
             {
-                start.Position = p0;
-                //_needsRefresh = true;
+                bool needsRefresh = false;
+                BezierPoint start = _curve.Start;
+                Vector3 p0 = Handles.PositionHandle(start.Position, Quaternion.identity);
+                if (p0 != start.Position)
+                {
+                    start.Position = p0;
+                    needsRefresh = true;
+                }
+
+                Vector3 p1 = Handles.PositionHandle(start.Tangent, Quaternion.identity);
+                if (p1 != start.Tangent)
+                {
+                    start.Tangent = p1;
+                    needsRefresh = true;
+                }
+
+                Handles.color = Color.cyan;
+                Handles.DrawLine(start.Position, start.Tangent);
+                Handles.SphereHandleCap(0, start.Tangent, Quaternion.identity, .25f, EventType.Repaint);
+
+                BezierPoint end = _curve.End;
+                Vector3 p2 = Handles.PositionHandle(end.Tangent, Quaternion.identity);
+                if (p2 != end.Tangent)
+                {
+                    end.Tangent = p2;
+                    needsRefresh = true;
+                }
+
+                Vector3 p3 = Handles.PositionHandle(end.Position, Quaternion.identity);
+                if (p3 != end.Position)
+                {
+                    end.Position = p3;
+                    needsRefresh = true;
+                }
+
+                Handles.DrawLine(end.Position, end.Tangent);
+                Handles.SphereHandleCap(0, end.Tangent, Quaternion.identity, .25f, EventType.Repaint);
+                Handles.DrawBezier(start.Position, end.Position, start.Tangent, end.Tangent, Color.cyan, null, 3f);
+
+                if (needsRefresh)
+                {
+                    Refresh();
+                }
             }
-
-            Vector3 p1 = Handles.PositionHandle(start.Tangent, Quaternion.identity);
-            if (p1 != start.Tangent)
-            {
-                start.Tangent = p1;
-                //_needsRefresh = true;
-            }
-
-            Handles.color = Color.cyan;
-            Handles.DrawLine(start.Position, start.Tangent);
-            Handles.SphereHandleCap(0, start.Tangent, Quaternion.identity, .25f, EventType.Repaint);
-
-            BezierPoint end = _curve.End;
-            Vector3 p2 = Handles.PositionHandle(end.Tangent, Quaternion.identity);
-            if (p2 != end.Tangent)
-            {
-                end.Tangent = p2;
-                //_needsRefresh = true;
-            }
-
-            Vector3 p3 = Handles.PositionHandle(end.Position, Quaternion.identity);
-            if (p3 != end.Position)
-            {
-                end.Position = p3;
-                //_needsRefresh = true;
-            }
-
-            Handles.DrawLine(end.Position, end.Tangent);
-            Handles.SphereHandleCap(0, end.Tangent, Quaternion.identity, .25f, EventType.Repaint);
-            Handles.DrawBezier(start.Position, end.Position, start.Tangent, end.Tangent, Color.cyan, null, 3f);
         }
     }
 }

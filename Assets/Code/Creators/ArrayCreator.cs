@@ -31,11 +31,14 @@ namespace Prefabrikator
         private List<Modifier> _modifierStack = new List<Modifier>();
         int _selectedModifier = 0;
 
-        public ArrayCreator(GameObject target)
+        public ArrayCreator(GameObject target, int defaultCount)
         {
             _target = target;
 
-            _createdObjects = new List<GameObject>();
+            _targetCount = defaultCount;
+
+            _createdObjects = new List<GameObject>(_targetCount);
+            OnTargetCountChanged();
 
             Refresh();
         }

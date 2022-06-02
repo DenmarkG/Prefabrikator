@@ -7,9 +7,15 @@
 
 [x] Allow original object to be removed
 
-- Add "keep proportions" option to random scale
+[x] Add "keep proportions" option to random scale
 Automate the process for calling the modifier update and process calls
     - should not need to be called manually by each createor
+
+[] Add Interactive views to draw shapes in scene view
+    [] Box 
+    [] line
+    [] circle
+    [] sphere
 
 Shapes to add:
     [] Scatter Circular

@@ -48,7 +48,7 @@ namespace Prefabrikator
         private FloatProperty _zOffsetProperty = null;
 
         public GridArrayCreator(GameObject target)
-            : base(target)
+            : base(target, DefaultCount * DefaultCount)
         {
             SetupOffsetProperties();
         }

@@ -122,7 +122,10 @@ namespace Prefabrikator
             }
             else
             {
-                _selectedObject.SetActive(true);
+                if (_selectedObject != null)
+                {
+                    _selectedObject.SetActive(true);
+                }
             }
         }
 

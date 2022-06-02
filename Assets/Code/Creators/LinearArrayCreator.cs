@@ -25,10 +25,8 @@ namespace Prefabrikator
         private Vector3Property _offsetProperty = null;
 
         public LinearArrayCreator(GameObject target)
-            : base(target)
+            : base(target, MinCount)
         {
-            _targetCount = MinCount;
-
             void OnValueSet(Vector3 current, Vector3 previous)
             {
                 CommandQueue.Enqueue(new GenericCommand<Vector3>(_offset, previous, current));
@@ -87,7 +85,7 @@ namespace Prefabrikator
             }
 
             UpdatePositions();
-            UpdateLocalRotations();
+            UpdateLocalRotations(); // #DG: Remove this from the project
         }
 
         private void UpdatePositions()

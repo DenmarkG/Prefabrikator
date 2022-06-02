@@ -62,7 +62,6 @@ namespace Prefabrikator
 
         protected override void UpdatePositions()
         {
-            Debug.Log($"created objs count = {_createdObjects.Count}; target count = {_targetCount}");
             if (_targetCount < MinCount || _createdObjects.Count < MinCount)
             {
                 return;
