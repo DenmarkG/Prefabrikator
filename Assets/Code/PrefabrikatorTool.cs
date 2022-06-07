@@ -30,7 +30,7 @@ namespace Prefabrikator
         private UndoStack _undoStack = null;
 
         // #DG: make this work as another option
-        private bool _keepOriginal = true;
+        private bool _keepOriginal = false;
 
         [MenuItem("Tools/Prefabikator &a")]
         static void ArrayToolWindow()
@@ -50,9 +50,10 @@ namespace Prefabrikator
                 _window._selectedObject = targetObj;
                 _window._creator = _window.GetCreator(_window._shapeType, targetObj);
 
-                if (IsPrefab(targetObj) == false)
+                if (IsPrefab(targetObj) == false || !_window._keepOriginal)
                 {
                     targetObj.SetActive(false);
+                    Selection.activeObject = null;
                 }
             }
 

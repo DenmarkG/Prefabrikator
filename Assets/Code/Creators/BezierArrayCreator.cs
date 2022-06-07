@@ -9,7 +9,6 @@ namespace Prefabrikator
     public class BezierArrayData : ArrayData
     {
         public CubicBezierCurve Curve = new CubicBezierCurve();
-        public BezierArrayCreator.OrientationType Orientation = BezierArrayCreator.OrientationType.Original;
         public Vector3 EndRotation = new Vector3(0f, 90f, 0f);
 
         public BezierArrayData(GameObject prefab, Quaternion targetRotation)
@@ -21,21 +20,10 @@ namespace Prefabrikator
 
     public class BezierArrayCreator : ArrayCreator
     {
-        // rotate bool, make objects rotate to center, or point along circle direction
-        public enum OrientationType
-        {
-            Original,
-            FollowCurve,
-            Random,
-            Incremental
-        }
-
         private static readonly int MinCount = 3;
-        private OrientationType _orientation = OrientationType.Original;
-        private Vector3 _endRotation = new Vector3(0f, 90f, 0f);
-
         private bool _showControlPoints = false;
 
+        public CubicBezierCurve Curve => _curve;
         private CubicBezierCurve _curve = new CubicBezierCurve();
 
         //
@@ -80,28 +68,6 @@ namespace Prefabrikator
                     currentCount = Mathf.Max(currentCount, MinCount);
                     CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, currentCount));
                 }
-
-                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
-                {
-                    OrientationType orientation = (OrientationType)EditorGUILayout.EnumPopup("Rotation", _orientation);
-                    if (orientation != _orientation)
-                    {
-                        _orientation = orientation;
-                        OnOrientationChanged();
-                    }
-                }
-                EditorGUILayout.EndHorizontal();
-
-                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
-                {
-                    Vector3 endRotation = EditorGUILayout.Vector3Field("Goal Rotation", _endRotation);
-                    if (endRotation != _endRotation)
-                    {
-                        _endRotation = endRotation;
-                        //_needsRefresh = true;
-                    }
-                }
-                EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginVertical(Extensions.BoxedHeaderStyle);
                 {
@@ -185,17 +151,6 @@ namespace Prefabrikator
                     float t = (float)i / n;
                     Vector3 position = _curve.GetPointOnCurve(t);
                     _createdObjects[i].transform.position = position;
-
-                    if (_orientation == OrientationType.FollowCurve)
-                    {
-                        Vector3 tangent = _curve.GetTangentToCurve(t);
-                        _createdObjects[i].transform.localRotation = Quaternion.LookRotation(tangent);
-                    }
-                    else if (_orientation == OrientationType.Incremental)
-                    {
-                        Quaternion rotation = Quaternion.Lerp(_targetRotation, Quaternion.Euler(_endRotation), t);
-                        _createdObjects[i].transform.rotation = rotation;
-                    }
                 }
             }
         }
@@ -207,10 +162,6 @@ namespace Prefabrikator
             if (proxy != null)
             {
                 Quaternion targetRotation = _target.transform.rotation;
-                if (_orientation == OrientationType.Random)
-                {
-                    targetRotation = GetRandomRotation();
-                }
 
                 float t = (float)index / (float)_targetCount;
                 Vector3 pointOnCurve = _curve.GetPointOnCurve(t);
@@ -232,24 +183,6 @@ namespace Prefabrikator
             float z = RNG.Range(min, max);
 
             return Quaternion.Euler(new Vector3(x, y, z));
-        }
-
-        protected void OnOrientationChanged()
-        {
-            switch (_orientation)
-            {
-                case OrientationType.Random:
-                    RandomizeAllRotations();
-                    break;
-                case OrientationType.Original:
-                    ResetAllRotations();
-                    break;
-                case OrientationType.Incremental:
-                case OrientationType.FollowCurve:
-                default:
-                    // Do Nothing, this will be handled during the update loop
-                    break;
-            }
         }
 
         private void ResetAllRotations()
@@ -278,8 +211,6 @@ namespace Prefabrikator
             BezierArrayData data = new BezierArrayData(_target, _targetRotation);
             data.Count = _targetCount;
             data.Curve = _curve;
-            data.Orientation = _orientation;
-            data.EndRotation = _endRotation;
 
             return data;
         }
@@ -289,10 +220,8 @@ namespace Prefabrikator
             if (data is BezierArrayData curveData)
             {
                 _targetCount = curveData.Count;
-                _orientation = curveData.Orientation;
                 _targetRotation = curveData.TargetRotation;
                 _curve = curveData.Curve;
-                _endRotation = curveData.EndRotation;
             }
         }
 
@@ -372,6 +301,24 @@ namespace Prefabrikator
                     Refresh();
                 }
             }
+        }
+
+        protected override string[] GetAllowedModifiers()
+        {
+            string[] mods =
+            {
+                ModifierType.RotationRandom,
+                ModifierType.ScaleRandom,
+                ModifierType.ScaleUniform,
+                ModifierType.RotationRandom,
+                ModifierType.RotationUniform,
+                
+                // #DG: add bezier specic mods here
+                ModifierType.FollowCurve,
+                ModifierType.IncrementalRotation,
+            };
+
+            return mods;
         }
     }
 }

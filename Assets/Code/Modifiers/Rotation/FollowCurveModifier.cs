@@ -6,18 +6,30 @@ namespace Prefabrikator
 {
     public class FollowCurveModifier : Modifier
     {
-        protected override string DisplayName => "Follow Curve";
+        private enum CurveMode
+        {
+            Circle,
+            Path,
+        }
 
-        private CircularArrayCreator _circle = null;
+        protected override string DisplayName => "Follow Curve";
+        private CurveMode _curveMode = CurveMode.Circle;
+
         public FollowCurveModifier(ArrayCreator owner)
             : base(owner)
         {
-            if (owner is CircularArrayCreator circle)
+            if (owner is CircularArrayCreator)
             {
-                _circle = circle;
+                _curveMode = CurveMode.Circle;
             }
-
-            Debug.Assert(_circle != null, "Attempting to an invalid modifier");
+            else if (owner is BezierArrayCreator)
+            {
+                _curveMode = CurveMode.Path;
+            }
+            else
+            {
+                Debug.LogError("Attempting to an invalid curve modifier");
+            }
         }
 
         public override void OnRemoved()
@@ -27,24 +39,15 @@ namespace Prefabrikator
 
         public override void Process(GameObject[] objs)
         {
-            bool isSphere = Owner is SphereArrayCreator;
-            int numObjs = objs.Length;
-            Vector3 center = _circle.Center;
-            GameObject current = null;
-            for (int i = 0; i < numObjs; ++i)
+            switch (_curveMode)
             {
-                current = objs[i];
-                Vector3 position = current.transform.position;
-
-                if (isSphere)
-                {
-                    current.transform.localRotation = Quaternion.LookRotation(center - position);
-                }
-                else
-                {
-                    Vector3 cross = Vector3.Cross((position - center).normalized, _circle.UpVector);
-                    current.transform.rotation = Quaternion.LookRotation(cross);
-                }
+                case CurveMode.Path:
+                    SetRotationFromPath(objs);
+                    break;
+                case CurveMode.Circle:
+                default:
+                    SetRoationFromCircle(objs);
+                    break;
             }
         }
 
@@ -52,5 +55,51 @@ namespace Prefabrikator
         {
             // #DG: Add follow axis? 
         }
+
+        private void SetRoationFromCircle(GameObject[] objs)
+        {
+            CircularArrayCreator circle = Owner as CircularArrayCreator;
+            if (circle != null)
+            {
+                bool isSphere = Owner is SphereArrayCreator;
+                int numObjs = objs.Length;
+                Vector3 center = circle.Center;
+                GameObject current = null;
+                for (int i = 0; i < numObjs; ++i)
+                {
+                    current = objs[i];
+                    Vector3 position = current.transform.position;
+
+                    if (isSphere)
+                    {
+                        current.transform.localRotation *= Quaternion.LookRotation(center - position);
+                    }
+                    else
+                    {
+                        Vector3 cross = Vector3.Cross((position - center).normalized, circle.UpVector);
+                        current.transform.localRotation *= Quaternion.LookRotation(cross);
+                    }
+                }
+            }
+        }
+
+        private void SetRotationFromPath(GameObject[] objs)
+        {
+            BezierArrayCreator path = Owner as BezierArrayCreator;
+
+            if (path != null)
+            {
+                float n = objs.Length - 1;
+                int numObjs = objs.Length;
+
+                for (int i = 0; i < numObjs; ++i)
+                {
+                    float t = (float)i / n;
+                    Vector3 tangent = path.Curve.GetTangentToCurve(t);
+                    objs[i].transform.localRotation = Quaternion.LookRotation(tangent);
+                }
+            }
+        }
+
     }
 }

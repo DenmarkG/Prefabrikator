@@ -4,13 +4,14 @@ using UnityEditor;
 
 namespace Prefabrikator
 {
-    public enum ModifierType
+    public class ModifierType
     {
-        ScaleRandom,
-        ScaleUniform,
-        RotationRandom,
-        RotationUniform,
-        FollowCurve,
+        public static readonly string ScaleRandom = "Scale Random";
+        public static readonly string ScaleUniform = "Scale Uniform";
+        public static readonly string RotationRandom = "Rotation Random";
+        public static readonly string RotationUniform = "Rotation Uniform";
+        public static readonly string FollowCurve = "Follow Curve";
+        public static readonly string IncrementalRotation = "Incremental Rotation";
     }
 
     public abstract class Modifier
@@ -32,12 +33,12 @@ namespace Prefabrikator
             _isExpanded = EditorGUILayout.Foldout(_isExpanded, DisplayName);
             if (_isExpanded)
             {
+                EditorGUI.indentLevel++;
                 if (GUILayout.Button("-"))
                 {
                     _owner.CommandQueue.Enqueue(new ModifierRemoveCommand(this, _owner));
                 }
-
-                EditorGUI.indentLevel++;
+                
                 OnInspectorUpdate();
                 EditorGUI.indentLevel--;
             }            

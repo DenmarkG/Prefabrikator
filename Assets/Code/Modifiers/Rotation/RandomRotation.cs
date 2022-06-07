@@ -96,6 +96,7 @@ namespace Prefabrikator
             }
         }
 
+        // #DG: Move this to parent. 
         private void UpdateArray(GameObject[] objs)
         {
             int numObjs = objs.Length;

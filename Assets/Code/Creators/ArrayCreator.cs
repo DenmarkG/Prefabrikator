@@ -277,11 +277,11 @@ namespace Prefabrikator
         {
             string[] mods =
             {
-                ModifierType.RotationRandom.ToString(),
-                ModifierType.ScaleRandom.ToString(),
-                ModifierType.ScaleUniform.ToString(),
-                ModifierType.RotationRandom.ToString(),
-                ModifierType.RotationUniform.ToString(),
+                ModifierType.RotationRandom,
+                ModifierType.ScaleRandom,
+                ModifierType.ScaleUniform,
+                ModifierType.RotationRandom,
+                ModifierType.RotationUniform,
             };
 
             return mods;
