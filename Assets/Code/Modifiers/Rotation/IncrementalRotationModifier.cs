@@ -7,10 +7,10 @@ namespace Prefabrikator
     {
         protected override string DisplayName => "Incremental Rotation";
 
-        private Shared<Vector3> _targetRotation = new Shared<Vector3>(new Vector3(0f, 180f, 0f));
+        private Shared<Vector3> _targetRotation = new Shared<Vector3>(new Vector3(0f, 90f, 0f));
         private Vector3Property _targetProperty = null;
 
-        private bool _reverseDirection = false;
+        //private bool _reverseDirection = false;
 
         public IncrementalRotationModifier(ArrayCreator owner)
             : base(owner)

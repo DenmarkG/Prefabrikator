@@ -85,5 +85,23 @@ namespace Prefabrikator
                 _fillPercent = arcData.FillPercent;
             }
         }
+
+        protected override string[] GetAllowedModifiers()
+        {
+            string[] mods =
+            {
+                ModifierType.RotationRandom,
+                ModifierType.ScaleRandom,
+                ModifierType.ScaleUniform,
+                ModifierType.RotationRandom,
+                ModifierType.RotationUniform,
+                ModifierType.IncrementalRotation,
+                ModifierType.IncrementalScale,
+                // #DG: add circle specic mods here
+                ModifierType.FollowCurve,
+            };
+
+            return mods;
+        }
     }
 }

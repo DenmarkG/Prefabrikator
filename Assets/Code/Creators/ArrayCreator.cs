@@ -273,6 +273,7 @@ namespace Prefabrikator
 
         //
         // Modifiers
+            // #DG: move this to a unified dictionary, keyed by modifier type
         protected virtual string[] GetAllowedModifiers()
         {
             string[] mods =

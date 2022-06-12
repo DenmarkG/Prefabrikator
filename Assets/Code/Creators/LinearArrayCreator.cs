@@ -183,5 +183,21 @@ namespace Prefabrikator
             }
         }
 
+        protected override string[] GetAllowedModifiers()
+        {
+            string[] mods =
+            {
+                ModifierType.RotationRandom,
+                ModifierType.ScaleRandom,
+                ModifierType.ScaleUniform,
+                ModifierType.RotationRandom,
+                ModifierType.RotationUniform,
+                ModifierType.IncrementalRotation,
+                ModifierType.IncrementalScale,
+            };
+
+            return mods;
+        }
+
     }
 }

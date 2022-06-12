@@ -13,7 +13,8 @@ namespace Prefabrikator
             { ModifierType.RotationRandom, (array) => { return new RandomRotation(array); } },
             { ModifierType.RotationUniform, (array) => { return new UniformRotation(array); } },
             { ModifierType.FollowCurve, (array) => { return new FollowCurveModifier(array); } },
-            { ModifierType.IncrementalRotation, (array) => { return new IncrementalRotationModifier(array); } }
+            { ModifierType.IncrementalRotation, (array) => { return new IncrementalRotationModifier(array); } },
+            { ModifierType.IncrementalScale, (array) => { return new IncrementalScaleModifier(array); } },
         };
 
         public static Modifier CreateModifier(string modifierName, ArrayCreator array)

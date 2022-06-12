@@ -316,6 +316,7 @@ namespace Prefabrikator
                 // #DG: add bezier specic mods here
                 ModifierType.FollowCurve,
                 ModifierType.IncrementalRotation,
+                ModifierType.IncrementalScale,
             };
 
             return mods;

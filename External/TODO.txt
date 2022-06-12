@@ -26,7 +26,7 @@ Shapes to add:
 
 Modifiers to Add: 
     [] Incremental Scale
-    [] Incremental Roatation
+    [x] Incremental Roatation
     [] Position Noise
     [] Checkerboard (grid only)
     [] Random Color
