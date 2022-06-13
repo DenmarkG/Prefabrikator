@@ -3,23 +3,14 @@ using UnityEngine;
 
 namespace Prefabrikator
 {
-    public class IncrementalRotationModifier : Modifier
+    public class IncrementalRotationModifier : IncrementalModifier
     {
         protected override string DisplayName => "Incremental Rotation";
 
-        private Shared<Vector3> _targetRotation = new Shared<Vector3>(new Vector3(0f, 90f, 0f));
-        private Vector3Property _targetProperty = null;
-
-        //private bool _reverseDirection = false;
-
         public IncrementalRotationModifier(ArrayCreator owner)
-            : base(owner)
+            : base(owner, new Vector3(0f, 90f, 0f))
         {
-            void OnTargetChanged(Vector3 current, Vector3 previous)
-            {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_targetRotation, previous, current));
-            }
-            _targetProperty = new Vector3Property("Target Rotation", _targetRotation, OnTargetChanged);
+            //
         }
 
         public override void Process(GameObject[] objs)
@@ -30,7 +21,7 @@ namespace Prefabrikator
             for (int i = 0; i < numObjs; ++i)
             {
                 float t = (float)i / (numObjs - 1);
-                Quaternion rotation = Quaternion.Lerp(defaultRotation, Quaternion.Euler(_targetRotation), t);
+                Quaternion rotation = Quaternion.Lerp(defaultRotation, Quaternion.Euler(Target), t);
                 objs[i].transform.rotation = rotation;
             }
         }
@@ -39,11 +30,6 @@ namespace Prefabrikator
         {
             Quaternion defaultRotation = Owner.GetDefaultRotation();
             Owner.ApplyToAll((go) => { go.transform.rotation = defaultRotation; });
-        }
-
-        protected override void OnInspectorUpdate()
-        {
-            _targetRotation.Set(_targetProperty.Update());
         }
     }
 }

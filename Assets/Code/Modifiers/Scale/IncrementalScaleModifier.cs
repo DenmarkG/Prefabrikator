@@ -4,23 +4,14 @@ using UnityEngine;
 
 namespace Prefabrikator
 {
-    public class IncrementalScaleModifier : Modifier
+    public class IncrementalScaleModifier : IncrementalModifier
     {
         protected override string DisplayName => "Incremental Scale";
 
-        private Shared<Vector3> _targetScale = new Shared<Vector3>(new Vector3(2f, 2f, 2f));
-        private Vector3Property _targetProperty = null;
-
-        //private bool _reverseDirection = false;
-
         public IncrementalScaleModifier(ArrayCreator owner)
-            : base(owner)
+            : base(owner, new Vector3(2f, 2f, 2f))
         {
-            void OnTargetChanged(Vector3 current, Vector3 previous)
-            {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_targetScale, previous, current));
-            }
-            _targetProperty = new Vector3Property("Target Rotation", _targetScale, OnTargetChanged);
+            //
         }
         
         public override void Process(GameObject[] objs)
@@ -31,7 +22,7 @@ namespace Prefabrikator
             for (int i = 0; i < numObjs; ++i)
             {
                 float t = (float)i / (numObjs - 1);
-                Vector3 scale = Vector3.Lerp(defaultScale, _targetScale, t);
+                Vector3 scale = Vector3.Lerp(defaultScale, Target, t);
                 objs[i].transform.localScale = scale;
             }
         }
@@ -40,11 +31,6 @@ namespace Prefabrikator
         {
             Vector3 defaultScale = Owner.GetDefaultScale();
             Owner.ApplyToAll((go) => { go.transform.localScale = defaultScale; });
-        }
-
-        protected override void OnInspectorUpdate()
-        {
-            _targetScale.Set(_targetProperty.Update());
         }
     }
 }
