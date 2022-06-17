@@ -13,6 +13,8 @@ Automate the process for calling the modifier update and process calls
 
 [] Add Global/Local option for rotations
 
+[] Refactor Random Modifiers
+
 [] Add Interactive views to draw shapes in scene view
     [] Box 
     [] line

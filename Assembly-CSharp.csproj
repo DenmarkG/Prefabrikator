@@ -60,12 +60,14 @@
     <Compile Include="Assets\Code\Modifiers\Modifier.cs" />
     <Compile Include="Assets\Code\Modifiers\ModifierFactory.cs" />
     <Compile Include="Assets\Code\Util\GlobalEnums.cs" />
+    <Compile Include="Assets\Code\Modifiers\Scale\IncrementalScaleModifier.cs" />
     <Compile Include="Assets\Code\Util\SharedValue.cs" />
     <Compile Include="Assets\Code\Util\Properties\MinMaxProperty.cs" />
     <Compile Include="Assets\Code\Modifiers\Rotation\UniformRotation.cs" />
     <Compile Include="Assets\Code\Util\UndoRedo\Command.cs" />
     <Compile Include="Assets\Code\Util\ArrayHelper.cs" />
     <Compile Include="Assets\Code\Creators\CircularArrayCreator.cs" />
+    <Compile Include="Assets\Code\Modifiers\IncrementalModifier.cs" />
     <Compile Include="Assets\Code\Creators\ArrayCreator.cs" />
     <Compile Include="Assets\Code\Util\Extensions.cs" />
     <Compile Include="Assets\Code\Modifiers\Scale\UniformScaleModifier.cs" />
@@ -91,8 +93,6 @@
     <Compile Include="Assets\Code\Modifiers\Rotation\RandomRotation.cs" />
     <Compile Include="Assets\Code\Util\UndoRedo\UndoStack.cs" />
     <Compile Include="Assets\Code\Util\Properties\CustomProperty.cs" />
-    <Compile Include="Assets\Code\Modifiers\Scale\IncrementalScaleModifier.cs" />
-    <Compile Include="Assets\Code\Modifiers\IncrementalModifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UI\Prefabrikator.uxml" />
