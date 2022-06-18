@@ -13,6 +13,7 @@ namespace Prefabrikator
         public static readonly string FollowCurve = "Follow Curve";
         public static readonly string IncrementalRotation = "Incremental Rotation";
         public static readonly string IncrementalScale = "Incremental Scale";
+        public static readonly string PositionNoise = "Position Noise";
     }
 
     public abstract class Modifier

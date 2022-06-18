@@ -15,6 +15,7 @@ namespace Prefabrikator
             { ModifierType.FollowCurve, (array) => { return new FollowCurveModifier(array); } },
             { ModifierType.IncrementalRotation, (array) => { return new IncrementalRotationModifier(array); } },
             { ModifierType.IncrementalScale, (array) => { return new IncrementalScaleModifier(array); } },
+            { ModifierType.PositionNoise, (array) => { return new PositionNoiseModifier(array); } },
         };
 
         public static Modifier CreateModifier(string modifierName, ArrayCreator array)

@@ -261,6 +261,7 @@ namespace Prefabrikator
         }
 
         public delegate void ApplicatorDelegate(GameObject go);
+        public delegate void IndexedApplicatorDelegate(GameObject go, int index);
 
         public void ApplyToAll(ApplicatorDelegate applicator)
         {
@@ -268,6 +269,15 @@ namespace Prefabrikator
             for (int i = 0; i < numObjs; ++i)
             {
                 applicator(_createdObjects[i]);
+            }
+        }
+
+        public void ApplyToAll(IndexedApplicatorDelegate applicator)
+        {
+            int numObjs = _createdObjects.Count;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                applicator(_createdObjects[i], i);
             }
         }
 
@@ -283,6 +293,7 @@ namespace Prefabrikator
                 ModifierType.ScaleUniform,
                 ModifierType.RotationRandom,
                 ModifierType.RotationUniform,
+                ModifierType.PositionNoise,
             };
 
             return mods;

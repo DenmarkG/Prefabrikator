@@ -194,6 +194,7 @@ namespace Prefabrikator
                 ModifierType.RotationUniform,
                 ModifierType.IncrementalRotation,
                 ModifierType.IncrementalScale,
+                ModifierType.PositionNoise,
             };
 
             return mods;

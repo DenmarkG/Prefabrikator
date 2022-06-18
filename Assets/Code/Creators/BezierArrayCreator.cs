@@ -317,6 +317,7 @@ namespace Prefabrikator
                 ModifierType.FollowCurve,
                 ModifierType.IncrementalRotation,
                 ModifierType.IncrementalScale,
+                ModifierType.PositionNoise,
             };
 
             return mods;

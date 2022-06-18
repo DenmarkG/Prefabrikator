@@ -97,6 +97,7 @@ namespace Prefabrikator
                 ModifierType.RotationUniform,
                 ModifierType.IncrementalRotation,
                 ModifierType.IncrementalScale,
+                ModifierType.PositionNoise,
                 // #DG: add circle specic mods here
                 ModifierType.FollowCurve,
             };
