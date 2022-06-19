@@ -72,12 +72,12 @@ namespace Prefabrikator
 
                     if (isSphere)
                     {
-                        current.transform.localRotation *= Quaternion.LookRotation(center - position);
+                        current.transform.localRotation = Quaternion.LookRotation(center - position);
                     }
                     else
                     {
                         Vector3 cross = Vector3.Cross((position - center).normalized, circle.UpVector);
-                        current.transform.localRotation *= Quaternion.LookRotation(cross);
+                        current.transform.localRotation = Quaternion.LookRotation(cross);
                     }
                 }
             }
