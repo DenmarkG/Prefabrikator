@@ -83,8 +83,7 @@ namespace Prefabrikator
 
         protected virtual void UpdatePositions()
         {
-            const float degrees = Mathf.PI * 2;
-            float angle = (degrees / _createdObjects.Count);
+            
 
             GameObject proxy = GetProxy();
 
@@ -92,19 +91,27 @@ namespace Prefabrikator
             {
                 for (int i = 0; i < _createdObjects.Count; ++i)
                 {
-                    float t = angle * i;
-                    float x = Mathf.Cos(t) * _radius;
-                    Vector3 right = Mathf.Cos(t) * _radius * proxy.transform.right;
-
-                    float z = Mathf.Sin(t) * _radius;
-                    Vector3 forward = Mathf.Sin(t) * _radius * proxy.transform.forward;
-
-                    Vector3 position = new Vector3(x, proxy.transform.position.y, z);
-                    //Vector3 position = right + forward;
-
-                    _createdObjects[i].transform.localPosition = position + _center;
+                    _createdObjects[i].transform.localPosition = GetDefaultPositionAtIndex(i) + _center;
                 }
             }
+        }
+
+        public override Vector3 GetDefaultPositionAtIndex(int index)
+        {
+            GameObject proxy = GetProxy();
+
+            const float degrees = Mathf.PI * 2;
+            float angle = (degrees / _createdObjects.Count);
+
+            float t = angle * index;
+            float x = Mathf.Cos(t) * _radius;
+            Vector3 right = Mathf.Cos(t) * _radius * proxy.transform.right;
+
+            float z = Mathf.Sin(t) * _radius;
+            Vector3 forward = Mathf.Sin(t) * _radius * proxy.transform.forward;
+
+            //Vector3 position = right + forward;
+            return new Vector3(x, proxy.transform.position.y, z);
         }
 
         protected override void CreateClone(int index = 0)
@@ -193,6 +200,7 @@ namespace Prefabrikator
                 ModifierType.ScaleUniform,
                 ModifierType.RotationRandom,
                 ModifierType.RotationUniform,
+                ModifierType.PositionNoise,
                 // #DG: add circle specic mods here
                 ModifierType.FollowCurve,
             };

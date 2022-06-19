@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System;
+using System.Collections.Generic;
 
 namespace Prefabrikator
 {
@@ -46,6 +46,8 @@ namespace Prefabrikator
         private FloatProperty _xOffsetProperty = null;
         private FloatProperty _yOffsetProperty = null;
         private FloatProperty _zOffsetProperty = null;
+
+        private List<Vector3> _defaultPositions = new List<Vector3>();
 
         public GridArrayCreator(GameObject target)
             : base(target, DefaultCount * DefaultCount)
@@ -225,6 +227,7 @@ namespace Prefabrikator
                         currentObj.transform.position = proxy.transform.position + offsetX;
                         ++index;
 
+
                         for (int y = 1; y < colCount; ++y)
                         {
                             Vector3 offsetY = (colVector * (colOffset * y)) + offsetX;
@@ -255,6 +258,23 @@ namespace Prefabrikator
                                 ++index;
                             }
                         }
+                    }
+                }
+
+                int count = _createdObjects.Count;
+                if (_defaultPositions.Count != count)
+                {
+                    _defaultPositions = new List<Vector3>(_createdObjects.Count);
+                    for (int i = 0; i < count; ++i)
+                    {
+                        _defaultPositions.Add(_createdObjects[i].transform.position);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < count; ++i)
+                    {
+                        _defaultPositions[i] = (_createdObjects[i].transform.position);
                     }
                 }
             }
@@ -313,6 +333,7 @@ namespace Prefabrikator
             if (proxy != null)
             {
                 GameObject clone = GameObject.Instantiate(_target, _target.transform.position, _target.transform.rotation, _target.transform.parent);
+                clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
                 _createdObjects.Add(clone);
             }
@@ -365,6 +386,11 @@ namespace Prefabrikator
                     CreateClone();
                 }
             }
+        }
+
+        public override Vector3 GetDefaultPositionAtIndex(int index)
+        {
+            return _defaultPositions[index];
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Prefabrikator
 
         private Vector3[] _positions = null;
 
-        private static readonly float DefaultMin = -2f;
+        private static readonly float DefaultMin = -1f;
         private static readonly float DefaultMax = 1f;
 
         private Shared<Vector3> _minVector = new Shared<Vector3>(new Vector3(DefaultMin, DefaultMin, DefaultMin));
@@ -49,7 +49,7 @@ namespace Prefabrikator
             {
                 // #DG: Need to store default positions
                 position = Extensions.BiUnitLerp(_minVector, _maxVector, _positions[i]);
-                objs[i].transform.position += position;
+                objs[i].transform.position = position + Owner.GetDefaultPositionAtIndex(i);
             }
         }
 

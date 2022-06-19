@@ -260,6 +260,8 @@ namespace Prefabrikator
             return Quaternion.identity;
         }
 
+        public abstract Vector3 GetDefaultPositionAtIndex(int index);
+
         public delegate void ApplicatorDelegate(GameObject go);
         public delegate void IndexedApplicatorDelegate(GameObject go, int index);
 

@@ -78,28 +78,24 @@ namespace Prefabrikator
                         if (p0 != _curve.Start.Position)
                         {
                             _curve.Start.Position = p0;
-                            //_needsRefresh = true;
                         }
 
                         Vector3 p1 = EditorGUILayout.Vector3Field("P1", _curve.Start.Tangent);
                         if (p1 != _curve.Start.Tangent)
                         {
                             _curve.Start.Tangent = p1;
-                            //_needsRefresh = true;
                         }
 
                         Vector3 p2 = EditorGUILayout.Vector3Field("P2", _curve.End.Tangent);
                         if (p2 != _curve.End.Tangent)
                         {
                             _curve.End.Tangent = p2;
-                            //_needsRefresh = true;
                         }
 
                         Vector3 p3 = EditorGUILayout.Vector3Field("P3", _curve.End.Position);
                         if (p3 != _curve.End.Position)
                         {
                             _curve.End.Position = p3;
-                            //_needsRefresh = true;
                         }
                     }
                 }
@@ -123,11 +119,6 @@ namespace Prefabrikator
             }
 
             UpdatePositions();
-
-            //if (_orientation == OrientationType.Original)
-            //{
-            //    UpdateLocalRotations();
-            //}
         }
 
         public override void UpdateEditor()
@@ -145,14 +136,19 @@ namespace Prefabrikator
         {
             if (_createdObjects.Count > 0)
             {
-                float n = _createdObjects.Count - 1;
                 for (int i = 0; i < _createdObjects.Count; ++i)
                 {
-                    float t = (float)i / n;
-                    Vector3 position = _curve.GetPointOnCurve(t);
-                    _createdObjects[i].transform.position = position;
+                    _createdObjects[i].transform.position = GetDefaultPositionAtIndex(i);
                 }
             }
+        }
+
+        public override Vector3 GetDefaultPositionAtIndex(int index)
+        {
+            float n = _createdObjects.Count - 1;
+            float t = (float)index / n;
+            return _curve.GetPointOnCurve(t);
+
         }
 
         protected override void CreateClone(int index)
@@ -171,38 +167,6 @@ namespace Prefabrikator
                 clone.transform.SetParent(proxy.transform);
 
                 _createdObjects.Add(clone);
-            }
-        }
-
-        private Quaternion GetRandomRotation()
-        {
-            float max = 360f;
-            float min = -360;
-            float x = RNG.Range(min, max);
-            float y = RNG.Range(min, max);
-            float z = RNG.Range(min, max);
-
-            return Quaternion.Euler(new Vector3(x, y, z));
-        }
-
-        private void ResetAllRotations()
-        {
-            GameObject proxy = GetProxy();
-
-            if (proxy != null)
-            {
-                for (int i = 0; i < _createdObjects.Count; ++i)
-                {
-                    _createdObjects[i].transform.localRotation = proxy.transform.rotation;
-                }
-            }
-        }
-
-        private void RandomizeAllRotations()
-        {
-            for (int i = 0; i < _createdObjects.Count; ++i)
-            {
-                _createdObjects[i].transform.localRotation = GetRandomRotation();
             }
         }
 

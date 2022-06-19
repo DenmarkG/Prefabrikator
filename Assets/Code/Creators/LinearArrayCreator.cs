@@ -95,16 +95,26 @@ namespace Prefabrikator
             if (_createdObjects.Count > 0 && proxy != null)
             {
                 Undo.RecordObjects(_createdObjects.ToArray(), "Changed offset");
-                GameObject currentObj = null;
 
                 for (int i = 0; i < _createdObjects.Count; ++i)
                 {
-                    Vector3 offset = (Vector3)_offset * i;
-
-                    currentObj = _createdObjects[i];
-                    currentObj.transform.position = proxy.transform.position + offset;
+                    _createdObjects[i].transform.position = GetDefaultPositionAtIndex(i);
                 }
             }
+        }
+
+        public override Vector3 GetDefaultPositionAtIndex(int index)
+        {
+            GameObject proxy = GetProxy();
+
+            if (_createdObjects.Count > 0 && proxy != null)
+            {
+                Vector3 offset = (Vector3)_offset * index;
+                return proxy.transform.position + offset;
+            }
+
+            Debug.LogError($"Proxy not found for Array Creator. Positions may not appear correctly");
+            return default;
         }
 
         private void OnOffsetChange()
