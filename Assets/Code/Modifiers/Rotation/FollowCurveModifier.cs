@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Prefabrikator
 {
-    public class FollowCurveModifier : Modifier
+    public class FollowCurveModifier : Modifier, IRotator
     {
         private enum CurveMode
         {
@@ -14,6 +14,8 @@ namespace Prefabrikator
 
         protected override string DisplayName => "Follow Curve";
         private CurveMode _curveMode = CurveMode.Circle;
+
+        private Quaternion[] _rotations = null;
 
         public FollowCurveModifier(ArrayCreator owner)
             : base(owner)
@@ -39,6 +41,11 @@ namespace Prefabrikator
 
         public override void Process(GameObject[] objs)
         {
+            if (_rotations == null || _rotations.Length != objs.Length)
+            {
+                _rotations = new Quaternion[objs.Length];
+            }
+
             switch (_curveMode)
             {
                 case CurveMode.Path:
@@ -79,6 +86,8 @@ namespace Prefabrikator
                         Vector3 cross = Vector3.Cross((position - center).normalized, circle.UpVector);
                         current.transform.localRotation = Quaternion.LookRotation(cross);
                     }
+
+                    _rotations[i] = current.transform.localRotation;
                 }
             }
         }
@@ -96,10 +105,17 @@ namespace Prefabrikator
                 {
                     float t = (float)i / n;
                     Vector3 tangent = path.Curve.GetTangentToCurve(t);
-                    objs[i].transform.localRotation = Quaternion.LookRotation(tangent);
+                    Quaternion rotation = Quaternion.LookRotation(tangent);
+                    objs[i].transform.localRotation = rotation;
+
+                    _rotations[i] = rotation;
                 }
             }
         }
 
+        public Quaternion GetRotationAtIndex(int index)
+        {
+            return _rotations[index];
+        }
     }
 }

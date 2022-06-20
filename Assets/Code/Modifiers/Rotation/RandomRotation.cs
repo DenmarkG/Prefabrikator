@@ -38,12 +38,27 @@ namespace Prefabrikator
         public override void Process(GameObject[] objs)
         {
             UpdateArray(objs);
-            
+
+            IRotator rotator = null;
+            bool isAdditive = IsAdditive(out rotator);
+
             int numObjs = objs.Length;
             for (int i = 0; i < numObjs; ++i)
             {
                 Vector3 rot = Extensions.BiUnitLerp(_min, _max, _rotations[i]);
-                objs[i].transform.rotation = Quaternion.Euler(Extensions.Clamp(rot, _min, _max));
+
+                Quaternion rotation = Quaternion.identity;
+                if (isAdditive)
+                {
+                    Quaternion defaultRotation = rotator.GetRotationAtIndex(i);
+                    rotation = defaultRotation * Quaternion.Euler(Extensions.Clamp(rot, _min, _max));
+                }
+                else
+                {
+                    rotation = Quaternion.Euler(Extensions.Clamp(rot, _min, _max));
+                }
+
+                objs[i].transform.rotation = rotation;
             }
         }
 
@@ -133,6 +148,22 @@ namespace Prefabrikator
                     _rotations = temp;
                 }
             }
+        }
+
+        private bool IsAdditive(out IRotator rotator)
+        {
+            int? index = Owner.GetIndexOfModifier(this);
+            if (index != null)
+            {
+                rotator = Owner.GetUpstreamModifierOfType<IRotator>(index.Value);
+                if (rotator != null)
+                {
+                    return true;
+                }
+            }
+
+            rotator = null;
+            return false;
         }
     }
 }

@@ -359,5 +359,38 @@ namespace Prefabrikator
         {
             RemoveModifier(_modifierStack.IndexOf(modifier));
         }
+
+        public int? GetIndexOfModifier(Modifier mod)
+        {
+            if (_modifierStack != null)
+            {
+                for (int i = 0; i < _modifierStack.Count; ++i)
+                {
+                    if (mod == _modifierStack[i])
+                    {
+                        return i;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public T GetUpstreamModifierOfType<T>(int startIndex)
+        {
+            if (_modifierStack != null)
+            {
+                Modifier mod = null;
+                for (int i = startIndex; i >= 0; --i)
+                {
+                    mod = _modifierStack[i];
+                    if (mod is T typedMod)
+                    {
+                        return typedMod;
+                    }
+                }
+            }
+
+            return default(T);
+        }
     }
 }

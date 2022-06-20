@@ -94,6 +94,7 @@
     <Compile Include="Assets\Code\Creators\ArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\SphereArrayCreator.cs" />
+    <Compile Include="Assets\Code\Modifiers\Rotation\IRotator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UI\PrefabrikatorEditor.uss" />
