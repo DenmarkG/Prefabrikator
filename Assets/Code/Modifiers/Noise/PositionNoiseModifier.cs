@@ -10,8 +10,8 @@ namespace Prefabrikator
 
         private Vector3[] _positions = null;
 
-        private static readonly float DefaultMin = -1f;
-        private static readonly float DefaultMax = 1f;
+        private static readonly float DefaultMin = -.5f;
+        private static readonly float DefaultMax = .5f;
 
         private Shared<Vector3> _minVector = new Shared<Vector3>(new Vector3(DefaultMin, DefaultMin, DefaultMin));
         private Shared<Vector3> _maxVector = new Shared<Vector3>(new Vector3(DefaultMax, DefaultMax, DefaultMax));

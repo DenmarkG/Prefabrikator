@@ -27,9 +27,9 @@ Shapes to add:
     [] Scatter Spherical
 
 Modifiers to Add: 
-    [] Incremental Scale
+    [x] Incremental Scale
     [x] Incremental Roatation
-    [] Position Noise
+    [x] Position Noise
     [] Checkerboard (grid only)
     [] Random Color
     [] Global Rotator

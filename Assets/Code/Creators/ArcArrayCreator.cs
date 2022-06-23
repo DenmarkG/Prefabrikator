@@ -50,20 +50,24 @@ namespace Prefabrikator
 
         protected override void UpdatePositions()
         {
+            for (int i = 0; i < _createdObjects.Count; ++i)
+            {
+                Vector3 position = GetDefaultPositionAtIndex(i);
+                _createdObjects[i].transform.localPosition = position + _center;
+            }
+        }
+
+        public override Vector3 GetDefaultPositionAtIndex(int index)
+        {
             float degrees = (360 * _fillPercent) * Mathf.Deg2Rad; // #DG: TODO multiply this by fill percent
             int n = _createdObjects.Count - 1;
             float angle = (n != 0f) ? (degrees / n) : 0f;
 
-            for (int i = 0; i < _createdObjects.Count; ++i)
-            {
-                float t = angle * i;
-                float x = Mathf.Cos(t) * _radius;
-                float z = Mathf.Sin(t) * _radius;
+            float t = angle * index;
+            float x = Mathf.Cos(t) * _radius;
+            float z = Mathf.Sin(t) * _radius;
 
-                Vector3 position = new Vector3(x, _target.transform.position.y, z);
-
-                _createdObjects[i].transform.localPosition = position + _center;
-            }
+            return new Vector3(x, _target.transform.position.y, z);
         }
 
         protected override ArrayData GetContainerData()

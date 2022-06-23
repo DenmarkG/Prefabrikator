@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 namespace Prefabrikator
 {
@@ -29,6 +30,8 @@ namespace Prefabrikator
 
         private const float PiOverTwo = Mathf.PI / 2f;
         private const float TwoPi = Mathf.PI * 2f; // 360
+
+        private List<Vector3> _defaultPositions = new List<Vector3>();
 
         public SphereArrayCreator(GameObject target)
             : base(target)
@@ -119,6 +122,28 @@ namespace Prefabrikator
                 Vector3 position = new Vector3(x, y, z);
                 _createdObjects[_createdObjects.Count - 1].transform.localPosition = position + _center;
             }
+
+            int count = _createdObjects.Count;
+            if (_defaultPositions.Count != count)
+            {
+                _defaultPositions = new List<Vector3>();
+                for (int i = 0; i < count; ++i)
+                {
+                    _defaultPositions.Add(_createdObjects[i].transform.position);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < count; ++i)
+                {
+                    _defaultPositions[i] = (_createdObjects[i].transform.position);
+                }
+            }
+        }
+
+        public override Vector3 GetDefaultPositionAtIndex(int index)
+        {
+            return _defaultPositions[index];
         }
 
         protected override sealed void VerifyTargetCount()

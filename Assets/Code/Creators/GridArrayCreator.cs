@@ -264,7 +264,7 @@ namespace Prefabrikator
                 int count = _createdObjects.Count;
                 if (_defaultPositions.Count != count)
                 {
-                    _defaultPositions = new List<Vector3>(_createdObjects.Count);
+                    _defaultPositions = new List<Vector3>();
                     for (int i = 0; i < count; ++i)
                     {
                         _defaultPositions.Add(_createdObjects[i].transform.position);
@@ -298,9 +298,11 @@ namespace Prefabrikator
         private int GetCount()
         {
             int targetCount = 1;
-            targetCount *= (_countX > 0) ? _countX : 1;
-            targetCount *= (_countY > 0) ? _countY : 1;
-            targetCount *= (_countZ > 0) ? _countZ : 1;
+            targetCount *= (_countX > 0 && ShouldShowX()) ? _countX : 1;
+            targetCount *= (_countY > 0 && ShouldShowY()) ? _countY : 1;
+            targetCount *= (_countZ > 0 && ShouldShowZ()) ? _countZ : 1;
+
+            Debug.Log($"Target Count = {targetCount}");
 
             return targetCount;
         }

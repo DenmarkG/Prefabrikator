@@ -83,8 +83,6 @@ namespace Prefabrikator
 
         protected virtual void UpdatePositions()
         {
-            
-
             GameObject proxy = GetProxy();
 
             if (proxy != null)
