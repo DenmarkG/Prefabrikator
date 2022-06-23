@@ -95,6 +95,7 @@
     <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\SphereArrayCreator.cs" />
     <Compile Include="Assets\Code\Modifiers\Rotation\IRotator.cs" />
+    <Compile Include="Assets\Code\Modifiers\Position\CheckerBoardModifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UI\PrefabrikatorEditor.uss" />

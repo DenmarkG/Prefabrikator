@@ -36,7 +36,7 @@ namespace Prefabrikator
 
         public override void OnRemoved()
         {
-            Owner.ApplyToAll((go, index) => { go.transform.position -= _positions[index]; });
+            Owner.ApplyToAll((go, index) => { go.transform.position = Owner.GetDefaultPositionAtIndex(index); });
         }
 
         public override void Process(GameObject[] objs)
