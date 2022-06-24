@@ -9,6 +9,8 @@ namespace Prefabrikator
         Arc,
         Sphere,
         Path,
+        ScatterSphere,
+        ScatterBox,
         //Elipse,
         // Box
         // polygon
