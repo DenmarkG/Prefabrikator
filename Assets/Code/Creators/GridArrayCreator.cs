@@ -49,20 +49,6 @@ namespace Prefabrikator
 
         private List<Vector3> _defaultPositions = new List<Vector3>();
 
-        private Shared<bool> _useCheckerboard = new Shared<bool>(false);
-        private BoolProperty _checkerboardProperty = null;
-        private bool _showCheckerboardOptions = false;
-
-        private enum OffsetDirection
-        {
-            Row,
-            Column,
-        }
-
-        private Shared<OffsetDirection> _offsetDirection = new Shared<OffsetDirection>(OffsetDirection.Row);
-        private Shared<Vector3> _checkerboardOffset = new Shared<Vector3>(new Vector3(1f, 0f, 0f));
-        private Vector3Property _checkerboardOffsetProperty = null;
-
         public GridArrayCreator(GameObject target)
             : base(target, DefaultCount * DefaultCount)
         {
@@ -83,23 +69,6 @@ namespace Prefabrikator
                 }
 
                 int targetCount = 1;
-
-                _useCheckerboard.Set(_checkerboardProperty.Update());
-                if (_useCheckerboard)
-                {
-                    _showCheckerboardOptions = EditorGUILayout.Foldout(_showCheckerboardOptions, "Checkerboard Options");
-                    if (_showCheckerboardOptions)
-                    {
-                        OffsetDirection direction = (OffsetDirection)EditorGUILayout.EnumPopup("Offset Type", _offsetDirection);
-                        if (direction != _offsetDirection)
-                        {
-                            CommandQueue.Enqueue(new GenericCommand<OffsetDirection>(_offsetDirection, _offsetDirection.Get(), direction));
-                            _needsPositionRefresh = true;
-                        }
-
-                        _checkerboardOffset.Set(_checkerboardOffsetProperty.Update());
-                    }
-                }
 
                 GUILayout.Space(5);
 
@@ -358,18 +327,6 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetZ, previous, current));
             }
             _zOffsetProperty = new FloatProperty("Z", _offsetZ, OnZChanged);
-
-            void OnCheckerboardChange(bool current, bool previous)
-            {
-                CommandQueue.Enqueue(new GenericCommand<bool>(_useCheckerboard, previous, current));
-            }
-            _checkerboardProperty = new BoolProperty("Checkerboard", _useCheckerboard, OnCheckerboardChange);
-
-            void OnOffsetChanged(Vector3 current, Vector3 previous)
-            {
-                CommandQueue.Enqueue(new GenericCommand<Vector3>(_checkerboardOffset, previous, current));
-            }
-            _checkerboardOffsetProperty = new Vector3Property("Offset", _checkerboardOffset, OnOffsetChanged);
         }
 
         protected override void CreateClone(int index = 0)
