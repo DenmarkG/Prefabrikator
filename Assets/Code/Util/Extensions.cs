@@ -144,6 +144,18 @@ namespace Prefabrikator
             return Quaternion.Euler(new Vector3(x, y, z));
         }
 
+        public static Vector3 GetRandomPointInBounds(this Bounds bounds)
+        {
+            Vector3 min = bounds.center - bounds.extents;
+            Vector3 max = bounds.center + bounds.extents;
+
+            float x = RNG.Range(min.x, max.x);
+            float y = RNG.Range(min.y, max.y);
+            float z = RNG.Range(min.z, max.z);
+
+            return new Vector3(x, y, z);
+        }
+
         public static Vector3 Clamp(Vector3 vect, Vector3 min, Vector3 max)
         {
             vect.x = Mathf.Clamp(vect.x, min.x, max.x);

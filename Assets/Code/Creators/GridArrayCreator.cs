@@ -209,8 +209,6 @@ namespace Prefabrikator
             GameObject proxy = GetProxy();
             if (_createdObjects.Count > 0 && proxy != null)
             {
-                float direction = 1f;
-
                 int index = 0;
                 GameObject currentObj = null;
                 if (_dimension != Dimension.XYZ)

@@ -290,6 +290,9 @@ namespace Prefabrikator
                 case ShapeType.Path:
                     creator = new BezierArrayCreator(target);
                     break;
+                case ShapeType.ScatterBox:
+                    creator = new ScatterBoxCreator(target);
+                    break;
                 case ShapeType.Line:
                 default:
                     creator = new LinearArrayCreator(target);

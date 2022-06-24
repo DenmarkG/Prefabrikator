@@ -7,7 +7,6 @@ namespace Prefabrikator
         protected override string DisplayName => throw new System.NotImplementedException();
 
         private Shared<Vector3> _offset = new Shared<Vector3>();
-        private Vector3Property _offsetProperty = null;
 
         public CheckerBoardModifier(ArrayCreator owner)
             : base(owner)

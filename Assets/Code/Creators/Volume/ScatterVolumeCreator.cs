@@ -10,7 +10,7 @@ namespace Prefabrikator
 
         private static readonly int MinCount = 3;
 
-        private Vector3[] _positions = null;
+        protected List<Vector3> Positions { get; private set; } = new List<Vector3>();
 
         public ScatterVolumeCreator(GameObject target)
             : base(target, MinCount)
@@ -18,17 +18,21 @@ namespace Prefabrikator
             //
         }
 
-        public override void DrawEditor()
+        public override sealed void DrawEditor()
         {
             if (GUILayout.Button("Scatter"))
             {
                 Scatter();
             }
+
+            DrawVolumeEditor();
         }
+
+        protected abstract void DrawVolumeEditor();
 
         public override Vector3 GetDefaultPositionAtIndex(int index)
         {
-            return _positions[index];
+            return Positions[index];
         }
 
         public override void UpdateEditor()
@@ -84,6 +88,7 @@ namespace Prefabrikator
         }
 
         protected abstract void Scatter();
+        protected abstract Vector3 GetRandomPointInBounds();
 
         protected override string[] GetAllowedModifiers()
         {
