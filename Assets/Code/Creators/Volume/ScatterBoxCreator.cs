@@ -97,18 +97,26 @@ namespace Prefabrikator
             }
 
             // #DG: wrap this in an edit mode boolean
+            Vector3 center = _bounds.center;
+
             Handles.DrawWireCube(_bounds.center, _bounds.size);
-            _boundsHandle.center = _bounds.center;
+            _boundsHandle.center = center;
             _boundsHandle.size = _bounds.size;
 
             EditorGUI.BeginChangeCheck();
             {
                 _boundsHandle.DrawHandle();
+
+                center = Handles.PositionHandle(center, Quaternion.identity);
             }
 
             if (EditorGUI.EndChangeCheck())
             {
-                _bounds.center = _boundsHandle.center;
+                if (center != _bounds.center)
+                {
+                    _bounds.center = center;
+                }
+
                 _bounds.size = _boundsHandle.size;
             }
         }

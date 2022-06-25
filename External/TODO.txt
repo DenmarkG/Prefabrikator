@@ -26,6 +26,8 @@ Automate the process for calling the modifier update and process calls
 Shapes to add:
     [] Scatter Circular
     [] Scatter Volume
+        [] Store positions as relative to center
+        [] Recalculate positions while changing box size
     [] Scatter Spherical
     [] Circular 
         [] Rings
