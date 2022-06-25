@@ -9,16 +9,22 @@ namespace Prefabrikator
     public class ScatterBoxCreator : ScatterVolumeCreator
     {
         private static readonly Vector3 DefaultSize = new Vector3(5f, 2f, 5f);
-        private Bounds _bounds;
 
         private SceneView _sceneView = null;
 
         private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
 
+        private Shared<Vector3> _center = new Shared<Vector3>();
+        private Vector3Property _centerProperty = null;
+        private Shared<Vector3> _size = new Shared<Vector3>(DefaultSize);
+        private Vector3Property _sizeProperty = null;
+
         public ScatterBoxCreator(GameObject target)
             : base(target)
         {
-            _bounds = new Bounds(target.transform.position, DefaultSize);
+            _center.Set(target.transform.position);
+
+            SetupProperties();
 
             SceneView.duringSceneGui += OnSceneGUI;
         }
@@ -67,7 +73,7 @@ namespace Prefabrikator
 
         protected override Vector3 GetRandomPointInBounds()
         {
-            return _bounds.GetRandomPointInBounds();
+            return Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
         }
 
         protected override void PopulateFromExistingData(ArrayData data)
@@ -97,11 +103,10 @@ namespace Prefabrikator
             }
 
             // #DG: wrap this in an edit mode boolean
-            Vector3 center = _bounds.center;
+            Vector3 center = _center;
 
-            Handles.DrawWireCube(_bounds.center, _bounds.size);
             _boundsHandle.center = center;
-            _boundsHandle.size = _bounds.size;
+            _boundsHandle.size = _size;
 
             EditorGUI.BeginChangeCheck();
             {
@@ -112,12 +117,12 @@ namespace Prefabrikator
 
             if (EditorGUI.EndChangeCheck())
             {
-                if (center != _bounds.center)
+                if (center != _center)
                 {
-                    _bounds.center = center;
+                    _center.Set(center);
                 }
 
-                _bounds.size = _boundsHandle.size;
+                _size.Set(_boundsHandle.size);
             }
         }
 
@@ -130,16 +135,28 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, Mathf.Max(currentCount, MinCount)));
             }
 
-            Vector3 center = EditorGUILayout.Vector3Field("Center", _bounds.center);
-            Vector3 size = EditorGUILayout.Vector3Field("Size", _bounds.size);
-
-            _bounds.center = center;
-            _bounds.size = size;
+            _center.Set(_centerProperty.Update());
+            _size.Set(_sizeProperty.Update());
 
             if (_sceneView != null)
             {
                 EditorUtility.SetDirty(_sceneView);
             }
+        }
+
+        private void SetupProperties()
+        {
+            void OnCenterChanged(Vector3 current, Vector3 previous)
+            {
+                CommandQueue.Enqueue(new GenericCommand<Vector3>(_center, previous, current));
+            }
+            _centerProperty = new Vector3Property("Center", _center, OnCenterChanged);
+
+            void OnSizeChanged(Vector3 current, Vector3 previous)
+            {
+                CommandQueue.Enqueue(new GenericCommand<Vector3>(_center, previous, current));
+            }
+            _sizeProperty = new Vector3Property("Size", _size, OnSizeChanged);
         }
     }
 }
