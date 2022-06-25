@@ -8,9 +8,9 @@ namespace Prefabrikator
     {
         public override float MaxWindowHeight => 300f;
 
-        protected static readonly int MinCount = 3;
+        protected static readonly int MinCount = 10;
 
-        protected List<Vector3> Positions { get; private set; } = new List<Vector3>();
+        protected List<Vector3> _positions = new List<Vector3>();
 
         public ScatterVolumeCreator(GameObject target)
             : base(target, MinCount)
@@ -32,7 +32,7 @@ namespace Prefabrikator
 
         public override Vector3 GetDefaultPositionAtIndex(int index)
         {
-            return Positions[index];
+            return _positions[index];
         }
 
         public override void UpdateEditor()

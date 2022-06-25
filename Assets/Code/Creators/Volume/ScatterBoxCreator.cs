@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
@@ -17,8 +18,16 @@ namespace Prefabrikator
         private Shared<Vector3> _size = new Shared<Vector3>(DefaultSize);
         private Vector3Property _sizeProperty = null;
 
-        private bool IsEditMode => _editsEnabled > 0;
-        private int _editsEnabled = 0;
+        private bool IsEditMode => _editMode != EditMode.None;
+        private EditMode _editMode = EditMode.None;
+
+        [System.Flags]
+        private enum EditMode : int
+        {
+            None = 0,
+            Center = 0x1,
+            Size = 0x2,
+        }
 
         public ScatterBoxCreator(GameObject target)
             : base(target)
@@ -61,7 +70,7 @@ namespace Prefabrikator
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
 
-                Positions.Add(position);
+                _positions.Add(position);
                 _createdObjects.Add(clone);
             }
         }
@@ -84,7 +93,8 @@ namespace Prefabrikator
 
         protected override void Scatter()
         {
-            Positions.Clear();
+            Vector3[] previous = _positions.ToArray();
+            _positions.Clear();
 
             int count = _createdObjects.Count;
 
@@ -92,8 +102,17 @@ namespace Prefabrikator
             {
                 Vector3 position = GetRandomPointInBounds();
                 _createdObjects[i].transform.position = position;
-                Positions.Add(position);
+                _positions.Add(position);
             }
+
+            void Apply(Vector3[] positions)
+            {
+                _positions = new List<Vector3>(positions);
+                int count = positions.Length;
+                ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
+            }
+            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
+            CommandQueue.Enqueue(valueChanged);
         }
 
         private void OnSceneGUI(SceneView view)
@@ -108,15 +127,38 @@ namespace Prefabrikator
             {
                 Vector3 center = _center;
 
-
                 _boundsHandle.center = center;
                 _boundsHandle.size = _size;
 
                 EditorGUI.BeginChangeCheck();
                 {
-                    _boundsHandle.DrawHandle();
-                    center = Handles.PositionHandle(center, Quaternion.identity);
+                    if (_editMode.HasFlag(EditMode.Size))
+                    {
+                        _boundsHandle.DrawHandle();
+                    }
+
+                    if (_editMode.HasFlag(EditMode.Center))
+                    {
+                        center = Handles.PositionHandle(center, Quaternion.identity);
+                    }
+                    
                 }
+                if (EditorGUI.EndChangeCheck())
+                {
+                    if (_boundsHandle.size != _size)
+                    {
+                        _size.Set(_boundsHandle.size);
+                    }
+
+                    if (center != _center)
+                    {
+                        _center.Set(center);
+                    }
+                }
+            }
+            else
+            {
+                Handles.DrawWireCube(_center, _size);
             }
         }
 
@@ -145,26 +187,16 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new GenericCommand<Vector3>(_center, previous, current));
             }
             _centerProperty = new Vector3Property("Center", _center, OnCenterChanged);
-            _centerProperty.OnEditModeEnter += OnEnterEditMode;
-            _centerProperty.OnEditModeExit += OnExitEditMode;
+            _centerProperty.OnEditModeEnter += () => { _editMode |= EditMode.Center; };
+            _centerProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
 
             void OnSizeChanged(Vector3 current, Vector3 previous)
             {
                 CommandQueue.Enqueue(new GenericCommand<Vector3>(_size, previous, current));
             }
             _sizeProperty = new Vector3Property("Size", _size, OnSizeChanged);
-            _sizeProperty.OnEditModeEnter += OnEnterEditMode;
-            _sizeProperty.OnEditModeExit += OnExitEditMode;
-        }
-
-        private void OnEnterEditMode()
-        {
-            ++_editsEnabled;
-        }
-
-        private void OnExitEditMode()
-        {
-            --_editsEnabled;
+            _sizeProperty.OnEditModeEnter += () => { _editMode |= EditMode.Size; };
+            _sizeProperty.OnEditModeExit += () => { _editMode &= EditMode.Size; };
         }
     }
 }
