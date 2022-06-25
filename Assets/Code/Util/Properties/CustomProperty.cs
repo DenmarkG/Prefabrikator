@@ -33,6 +33,9 @@ namespace Prefabrikator
 
         protected bool _shouldShowLabel = true;
 
+        public event System.Action OnEditModeEnter = null;
+        public event System.Action OnEditModeExit = null;
+
         public CustomProperty(string label, T startValue, OnValueSetDelegate onValueSet)
         {
             _setValue.Set(startValue);
@@ -72,11 +75,13 @@ namespace Prefabrikator
                         OnValueSet(_workingValue, _setValueCopy);
                         _setValue.Set(_workingValue);
                         _editMode = EditMode.Disabled;
+                        OnEditModeExit?.Invoke();
                     }
                     if (GUILayout.Button("X"))
                     {
                         _workingValue = _setValueCopy;
                         _editMode = EditMode.Disabled;
+                        OnEditModeExit?.Invoke();
                     }
                 }
                 else
@@ -90,6 +95,7 @@ namespace Prefabrikator
                     {
                         _editMode = EditMode.Enabled;
                         _setValueCopy = _setValue;
+                        OnEditModeEnter?.Invoke();
                     }
                 }
             }
