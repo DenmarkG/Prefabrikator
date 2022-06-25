@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
@@ -11,6 +12,8 @@ namespace Prefabrikator
         private Bounds _bounds;
 
         private SceneView _sceneView = null;
+
+        private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
 
         public ScatterBoxCreator(GameObject target)
             : base(target)
@@ -93,11 +96,32 @@ namespace Prefabrikator
                 _sceneView = view;
             }
 
+            // #DG: wrap this in an edit mode boolean
             Handles.DrawWireCube(_bounds.center, _bounds.size);
+            _boundsHandle.center = _bounds.center;
+            _boundsHandle.size = _bounds.size;
+
+            EditorGUI.BeginChangeCheck();
+            {
+                _boundsHandle.DrawHandle();
+            }
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                _bounds.center = _boundsHandle.center;
+                _bounds.size = _boundsHandle.size;
+            }
         }
 
         protected override void DrawVolumeEditor()
         {
+            // #DG: Add a toggle for edit mode
+            int currentCount = _targetCount;
+            if (Extensions.DisplayCountField(ref currentCount))
+            {
+                CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, Mathf.Max(currentCount, MinCount)));
+            }
+
             Vector3 center = EditorGUILayout.Vector3Field("Center", _bounds.center);
             Vector3 size = EditorGUILayout.Vector3Field("Size", _bounds.size);
 

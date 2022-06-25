@@ -8,7 +8,7 @@ namespace Prefabrikator
     {
         public override float MaxWindowHeight => 300f;
 
-        private static readonly int MinCount = 3;
+        protected static readonly int MinCount = 3;
 
         protected List<Vector3> Positions { get; private set; } = new List<Vector3>();
 

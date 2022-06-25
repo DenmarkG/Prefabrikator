@@ -15,6 +15,8 @@ Automate the process for calling the modifier update and process calls
 
 [] Refactor Random Modifiers
 
+[] Convert Min/Max Values to sliders
+
 [] Add Interactive views to draw shapes in scene view
     [] Box 
     [] line
@@ -25,6 +27,8 @@ Shapes to add:
     [] Scatter Circular
     [] Scatter Volume
     [] Scatter Spherical
+    [] Circular 
+        [] Rings
 
 Modifiers to Add: 
     [x] Incremental Scale
