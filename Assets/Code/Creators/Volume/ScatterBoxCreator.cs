@@ -9,25 +9,12 @@ namespace Prefabrikator
     {
         private static readonly Vector3 DefaultSize = new Vector3(5f, 2f, 5f);
 
-        private SceneView _sceneView = null;
-
         private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
 
         private Shared<Vector3> _center = new Shared<Vector3>();
         private Vector3Property _centerProperty = null;
         private Shared<Vector3> _size = new Shared<Vector3>(DefaultSize);
         private Vector3Property _sizeProperty = null;
-
-        private bool IsEditMode => _editMode != EditMode.None;
-        private EditMode _editMode = EditMode.None;
-
-        [System.Flags]
-        private enum EditMode : int
-        {
-            None = 0,
-            Center = 0x1,
-            Size = 0x2,
-        }
 
         public ScatterBoxCreator(GameObject target)
             : base(target)
@@ -38,8 +25,6 @@ namespace Prefabrikator
 
             SceneView.duringSceneGui += OnSceneGUI;
         }
-
-        public override string Name => "Scatter Box";
 
         ~ScatterBoxCreator()
         {
@@ -91,30 +76,6 @@ namespace Prefabrikator
             // #DG: TODO
         }
 
-        protected override void Scatter()
-        {
-            Vector3[] previous = _positions.ToArray();
-            _positions.Clear();
-
-            int count = _createdObjects.Count;
-
-            for (int i = 0; i < count; ++i)
-            {
-                Vector3 position = GetRandomPointInBounds();
-                _createdObjects[i].transform.position = position;
-                _positions.Add(position);
-            }
-
-            void Apply(Vector3[] positions)
-            {
-                _positions = new List<Vector3>(positions);
-                int count = positions.Length;
-                ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
-            }
-            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
-            CommandQueue.Enqueue(valueChanged);
-        }
-
         private void OnSceneGUI(SceneView view)
         {
             if (_sceneView == null || _sceneView != view)
@@ -164,7 +125,6 @@ namespace Prefabrikator
 
         protected override void DrawVolumeEditor()
         {
-            // #DG: Add a toggle for edit mode
             int currentCount = _targetCount;
             if (Extensions.DisplayCountField(ref currentCount))
             {
@@ -196,7 +156,7 @@ namespace Prefabrikator
             }
             _sizeProperty = new Vector3Property("Size", _size, OnSizeChanged);
             _sizeProperty.OnEditModeEnter += () => { _editMode |= EditMode.Size; };
-            _sizeProperty.OnEditModeExit += () => { _editMode &= EditMode.Size; };
+            _sizeProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Size; };
         }
     }
 }

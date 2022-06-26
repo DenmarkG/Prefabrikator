@@ -31,6 +31,7 @@ Shapes to add:
     [] Scatter Spherical
     [] Circular 
         [] Rings
+        [] Interactive Layer
 
 Modifiers to Add: 
     [x] Incremental Scale

@@ -1,16 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 namespace Prefabrikator
 {
     public abstract class ScatterVolumeCreator : ArrayCreator
     {
+        [System.Flags]
+        protected enum EditMode : int
+        {
+            None = 0,
+            Center = 0x1,
+            Size = 0x2,
+        }
+
         public override float MaxWindowHeight => 300f;
+        public override string Name => "Scatter";
 
         protected static readonly int MinCount = 10;
 
         protected List<Vector3> _positions = new List<Vector3>();
+
+        protected bool IsEditMode => _editMode != EditMode.None;
+        protected EditMode _editMode = EditMode.None;
+
+        protected SceneView _sceneView = null;
 
         public ScatterVolumeCreator(GameObject target)
             : base(target, MinCount)
@@ -87,7 +102,30 @@ namespace Prefabrikator
             }
         }
 
-        protected abstract void Scatter();
+        private void Scatter()
+        {
+            Vector3[] previous = _positions.ToArray();
+            _positions.Clear();
+
+            int count = _createdObjects.Count;
+
+            for (int i = 0; i < count; ++i)
+            {
+                Vector3 position = GetRandomPointInBounds();
+                _createdObjects[i].transform.position = position;
+                _positions.Add(position);
+            }
+
+            void Apply(Vector3[] positions)
+            {
+                _positions = new List<Vector3>(positions);
+                int count = positions.Length;
+                ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
+            }
+            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
+            CommandQueue.Enqueue(valueChanged);
+        }
+
         protected abstract Vector3 GetRandomPointInBounds();
 
         protected override string[] GetAllowedModifiers()

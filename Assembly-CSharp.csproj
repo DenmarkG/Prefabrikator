@@ -98,6 +98,7 @@
     <Compile Include="Assets\Code\Util\Properties\CustomProperty.cs" />
     <Compile Include="Assets\Code\Creators\Volume\ScatterVolumeCreator.cs" />
     <Compile Include="Assets\Code\Creators\Volume\ScatterBoxCreator.cs" />
+    <Compile Include="Assets\Code\Creators\Volume\ScatterSphereCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UI\Prefabrikator.uxml" />
