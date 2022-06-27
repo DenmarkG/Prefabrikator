@@ -27,6 +27,12 @@ namespace Prefabrikator
 
         protected SceneView _sceneView = null;
 
+        protected bool IsDirty { get; private set; }
+
+        
+        protected Shared<Vector3> _center = new Shared<Vector3>();
+        protected Vector3Property _centerProperty = null;
+
         public ScatterVolumeCreator(GameObject target)
             : base(target, MinCount)
         {
@@ -54,6 +60,12 @@ namespace Prefabrikator
         {
             if (_target != null)
             {
+                if (IsDirty)
+                {
+                    UpdatePositions();
+                    IsDirty = false;
+                }
+
                 if (NeedsRefresh)
                 {
                     Refresh();
@@ -124,6 +136,20 @@ namespace Prefabrikator
             }
             var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
             CommandQueue.Enqueue(valueChanged);
+        }
+
+        protected void MarkDirty()
+        {
+            IsDirty = true;
+        }
+
+        protected virtual void UpdatePositions()
+        {
+            int count = _createdObjects.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                _createdObjects[i].transform.position = _positions[i] + _center;
+            }
         }
 
         protected abstract Vector3 GetRandomPointInBounds();

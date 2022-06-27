@@ -11,8 +11,6 @@ namespace Prefabrikator
 
         private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
 
-        private Shared<Vector3> _center = new Shared<Vector3>();
-        private Vector3Property _centerProperty = null;
         private Shared<Vector3> _size = new Shared<Vector3>(DefaultSize);
         private Vector3Property _sizeProperty = null;
 

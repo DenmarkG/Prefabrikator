@@ -12,8 +12,6 @@ namespace Prefabrikator
         
         private Shared<float> _radius = new Shared<float>(DefaultRadius);
         private FloatProperty _radiusProperty = null;
-        private Shared<Vector3> _center = new Shared<Vector3>();
-        private Vector3Property _centerProperty = null;
 
         private SphereBoundsHandle _sphereHandle = new SphereBoundsHandle();
 
@@ -52,7 +50,7 @@ namespace Prefabrikator
             if (proxy != null)
             {
                 Vector3 position = GetRandomPointInBounds();
-                GameObject clone = GameObject.Instantiate(_target, position, _target.transform.rotation);
+                GameObject clone = GameObject.Instantiate(_target, position * _radius, _target.transform.rotation);
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
 
@@ -69,8 +67,20 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, Mathf.Max(currentCount, MinCount)));
             }
 
-            _center.Set(_centerProperty.Update());
-            _radius.Set(_radiusProperty.Update());
+            Vector3 center = _centerProperty.Update();
+            if (center != _center)
+            {
+                MarkDirty();
+                _center.Set(center);
+            }
+
+            float radius = _radiusProperty.Update();
+            if (radius != _radius)
+            {
+                MarkDirty();
+                _radius.Set(radius);
+            }
+            
 
             if (_sceneView != null)
             {
@@ -91,7 +101,7 @@ namespace Prefabrikator
 
         protected override Vector3 GetRandomPointInBounds()
         {
-            return Random.insideUnitSphere * _radius;
+            return Random.insideUnitSphere;
         }
 
         private void SetupProperties()
@@ -111,6 +121,15 @@ namespace Prefabrikator
             _radiusProperty = new FloatProperty("Radius", _radius, OnRadiusChanged);
             _radiusProperty.OnEditModeEnter += () => { _editMode |= EditMode.Size; };
             _radiusProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Size; };
+        }
+
+        protected override void UpdatePositions()
+        {
+            int count = _createdObjects.Count;
+            for (int i = 0; i < count; ++i)
+            {
+                _createdObjects[i].transform.position = (_positions[i] * _radius) + _center;
+            }
         }
 
         private void OnSceneGUI(SceneView view)
@@ -143,6 +162,8 @@ namespace Prefabrikator
 
                 if (EditorGUI.EndChangeCheck())
                 {
+                    MarkDirty();
+
                     if (_sphereHandle.radius != _radius)
                     {
                         _radius.Set(_sphereHandle.radius);
