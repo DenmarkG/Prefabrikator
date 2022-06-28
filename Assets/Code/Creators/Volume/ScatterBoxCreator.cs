@@ -50,14 +50,7 @@ namespace Prefabrikator
             {
                 Vector3 position = GetRandomPointInBounds();
 
-                Vector3 extents = (_size.Get() / 2f);
-                Vector3 min = _center - extents;
-                Vector3 max = _center + extents;
-
-                Vector3 relativePos = new Vector3();
-                relativePos.x = position.x.Normalize(min.x, max.x);
-                relativePos.y = position.y.Normalize(min.y, max.y);
-                relativePos.z = position.z.Normalize(min.z, max.z);
+                Vector3 relativePos = ConvertPointToShapeRelative(position);
 
                 GameObject clone = GameObject.Instantiate(_target, position, _target.transform.rotation);
                 clone.SetActive(true);
@@ -66,6 +59,33 @@ namespace Prefabrikator
                 _positions.Add(relativePos);
                 _createdObjects.Add(clone);
             }
+        }
+
+        private Vector3 ConvertPointToShapeRelative(Vector3 point)
+        {
+            Vector3 extents = (_size.Get() / 2f);
+            Vector3 min = _center - extents;
+            Vector3 max = _center + extents;
+
+            Vector3 relativePos = new Vector3();
+            relativePos.x = point.x.Normalize(min.x, max.x);
+            relativePos.y = point.y.Normalize(min.y, max.y);
+            relativePos.z = point.z.Normalize(min.z, max.z);
+
+            return relativePos;
+        }
+
+        private Vector3 ConvertPointToWorldRelative(Vector3 point)
+        {
+            Vector3 extents = (_size.Get() / 2f);
+            Vector3 min = _center - extents;
+            Vector3 max = _center + extents;
+            
+            float x = Mathf.Lerp(min.x, max.x, point.x);
+            float y = Mathf.Lerp(min.y, max.y, point.y);
+            float z = Mathf.Lerp(min.z, max.z, point.z);
+
+            return new Vector3(x, y, z);
         }
 
         protected override void Scatter()
@@ -78,15 +98,13 @@ namespace Prefabrikator
             for (int i = 0; i < count; ++i)
             {
                 Vector3 position = GetRandomPointInBounds();
-                _createdObjects[i].transform.position = position;
-                _positions.Add(position);
+                _positions.Add(ConvertPointToShapeRelative(position));
             }
 
             void Apply(Vector3[] positions)
             {
                 _positions = new List<Vector3>(positions);
-                int count = positions.Length;
-                ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
+                ApplyToAll((go, index) => { go.transform.position = ConvertPointToWorldRelative(_positions[index]); });
             }
             var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
             CommandQueue.Enqueue(valueChanged);
@@ -111,18 +129,10 @@ namespace Prefabrikator
         protected override void UpdatePositions()
         {
             int count = _createdObjects.Count;
-            Vector3 extents = (_size.Get() / 2f);
-            Vector3 min = _center - extents;
-            Vector3 max = _center + extents;
 
             for (int i = 0; i < count; ++i)
             {
-                Vector3 relPos = _positions[i];
-                float x = Mathf.Lerp(min.x, max.x, relPos.x);
-                float y = Mathf.Lerp(min.y, max.y, relPos.y);
-                float z = Mathf.Lerp(min.z, max.z, relPos.z);
-
-                _createdObjects[i].transform.position = new Vector3(x, y, z);
+                _createdObjects[i].transform.position = ConvertPointToWorldRelative(_positions[i]);
             }
         }
 

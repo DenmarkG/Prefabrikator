@@ -114,29 +114,7 @@ namespace Prefabrikator
             }
         }
 
-        protected virtual void Scatter()
-        {
-            Vector3[] previous = _positions.ToArray();
-            _positions.Clear();
-
-            int count = _createdObjects.Count;
-
-            for (int i = 0; i < count; ++i)
-            {
-                Vector3 position = GetRandomPointInBounds();
-                _createdObjects[i].transform.position = position;
-                _positions.Add(position);
-            }
-
-            void Apply(Vector3[] positions)
-            {
-                _positions = new List<Vector3>(positions);
-                int count = positions.Length;
-                ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
-            }
-            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
-            CommandQueue.Enqueue(valueChanged);
-        }
+        protected abstract void Scatter();
 
         protected void MarkDirty()
         {

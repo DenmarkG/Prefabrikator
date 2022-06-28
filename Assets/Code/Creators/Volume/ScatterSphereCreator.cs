@@ -55,9 +55,31 @@ namespace Prefabrikator
                 clone.transform.SetParent(proxy.transform);
 
                 _positions.Add(position);
-                Debug.Log($"Position count = {_positions.Count}");
                 _createdObjects.Add(clone);
             }
+        }
+
+        protected override void Scatter()
+        {
+            Vector3[] previous = _positions.ToArray();
+            _positions.Clear();
+
+            int count = _createdObjects.Count;
+
+            for (int i = 0; i < count; ++i)
+            {
+                Vector3 position = GetRandomPointInBounds();
+                _positions.Add(position);
+            }
+
+            void Apply(Vector3[] positions)
+            {
+                _positions = new List<Vector3>(positions);
+                int count = positions.Length;
+                ApplyToAll((go, index) => { go.transform.position = _positions[index] * _radius; });
+            }
+            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
+            CommandQueue.Enqueue(valueChanged);
         }
 
         protected override void DrawVolumeEditor()
