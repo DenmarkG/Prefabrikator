@@ -186,5 +186,18 @@ namespace Prefabrikator
 
             return unitVect;
         }
+
+
+        public static float Normalize(this float e, float min, float max)
+        {
+            float denominator = max - min;
+            if (denominator != 0f)
+            {
+                return (e - min) / (denominator);
+            }
+
+            Debug.LogError("Attempt to divide by zero");
+            return 0;
+        }
     }
 }

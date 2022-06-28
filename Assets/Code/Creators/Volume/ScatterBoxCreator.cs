@@ -49,13 +49,47 @@ namespace Prefabrikator
             if (proxy != null)
             {
                 Vector3 position = GetRandomPointInBounds();
+
+                Vector3 extents = (_size.Get() / 2f);
+                Vector3 min = _center - extents;
+                Vector3 max = _center + extents;
+
+                Vector3 relativePos = new Vector3();
+                relativePos.x = position.x.Normalize(min.x, max.x);
+                relativePos.y = position.y.Normalize(min.y, max.y);
+                relativePos.z = position.z.Normalize(min.z, max.z);
+
                 GameObject clone = GameObject.Instantiate(_target, position, _target.transform.rotation);
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
 
-                _positions.Add(position);
+                _positions.Add(relativePos);
                 _createdObjects.Add(clone);
             }
+        }
+
+        protected override void Scatter()
+        {
+            Vector3[] previous = _positions.ToArray();
+            _positions.Clear();
+
+            int count = _createdObjects.Count;
+
+            for (int i = 0; i < count; ++i)
+            {
+                Vector3 position = GetRandomPointInBounds();
+                _createdObjects[i].transform.position = position;
+                _positions.Add(position);
+            }
+
+            void Apply(Vector3[] positions)
+            {
+                _positions = new List<Vector3>(positions);
+                int count = positions.Length;
+                ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
+            }
+            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
+            CommandQueue.Enqueue(valueChanged);
         }
 
         protected override ArrayData GetContainerData()
@@ -72,6 +106,24 @@ namespace Prefabrikator
         protected override void PopulateFromExistingData(ArrayData data)
         {
             // #DG: TODO
+        }
+
+        protected override void UpdatePositions()
+        {
+            int count = _createdObjects.Count;
+            Vector3 extents = (_size.Get() / 2f);
+            Vector3 min = _center - extents;
+            Vector3 max = _center + extents;
+
+            for (int i = 0; i < count; ++i)
+            {
+                Vector3 relPos = _positions[i];
+                float x = Mathf.Lerp(min.x, max.x, relPos.x);
+                float y = Mathf.Lerp(min.y, max.y, relPos.y);
+                float z = Mathf.Lerp(min.z, max.z, relPos.z);
+
+                _createdObjects[i].transform.position = new Vector3(x, y, z);
+            }
         }
 
         private void OnSceneGUI(SceneView view)
@@ -104,6 +156,7 @@ namespace Prefabrikator
                 }
                 if (EditorGUI.EndChangeCheck())
                 {
+                    MarkDirty();
                     if (_boundsHandle.size != _size)
                     {
                         _size.Set(_boundsHandle.size);
@@ -129,8 +182,19 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, Mathf.Max(currentCount, MinCount)));
             }
 
-            _center.Set(_centerProperty.Update());
-            _size.Set(_sizeProperty.Update());
+            Vector3 center = _centerProperty.Update();
+            if (center != _center)
+            {
+                MarkDirty();
+                _center.Set(center);
+            }
+
+            Vector3 size = _sizeProperty.Update();
+            if (size != _size)
+            {
+                MarkDirty();
+                _size.Set(size);
+            }
 
             if (_sceneView != null)
             {

@@ -28,7 +28,6 @@ namespace Prefabrikator
         protected SceneView _sceneView = null;
 
         protected bool IsDirty { get; private set; }
-
         
         protected Shared<Vector3> _center = new Shared<Vector3>();
         protected Vector3Property _centerProperty = null;
@@ -78,6 +77,7 @@ namespace Prefabrikator
             if (hardRefresh)
             {
                 DestroyAll();
+                _positions.Clear();
             }
 
             EstablishHelper(useDefaultData);
@@ -114,7 +114,7 @@ namespace Prefabrikator
             }
         }
 
-        private void Scatter()
+        protected virtual void Scatter()
         {
             Vector3[] previous = _positions.ToArray();
             _positions.Clear();
@@ -143,14 +143,7 @@ namespace Prefabrikator
             IsDirty = true;
         }
 
-        protected virtual void UpdatePositions()
-        {
-            int count = _createdObjects.Count;
-            for (int i = 0; i < count; ++i)
-            {
-                _createdObjects[i].transform.position = _positions[i] + _center;
-            }
-        }
+        protected abstract void UpdatePositions();
 
         protected abstract Vector3 GetRandomPointInBounds();
 

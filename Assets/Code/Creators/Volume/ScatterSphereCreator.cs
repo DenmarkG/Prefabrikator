@@ -55,6 +55,7 @@ namespace Prefabrikator
                 clone.transform.SetParent(proxy.transform);
 
                 _positions.Add(position);
+                Debug.Log($"Position count = {_positions.Count}");
                 _createdObjects.Add(clone);
             }
         }
@@ -80,7 +81,6 @@ namespace Prefabrikator
                 MarkDirty();
                 _radius.Set(radius);
             }
-            
 
             if (_sceneView != null)
             {
@@ -139,7 +139,6 @@ namespace Prefabrikator
                 _sceneView = view;
             }
 
-            Debug.Log($"Edit mode = {_editMode}");
             if (IsEditMode)
             {
                 Vector3 center = _center;
