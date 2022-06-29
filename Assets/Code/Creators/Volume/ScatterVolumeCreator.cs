@@ -5,16 +5,10 @@ using UnityEditor;
 
 namespace Prefabrikator
 {
+    using Prefabrikator.Constants;
+
     public abstract class ScatterVolumeCreator : ArrayCreator
     {
-        [System.Flags]
-        protected enum EditMode : int
-        {
-            None = 0,
-            Center = 0x1,
-            Size = 0x2,
-        }
-
         public override float MaxWindowHeight => 300f;
         public override string Name => "Scatter";
 

@@ -6,6 +6,8 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
+    using Prefabrikator.Constants;
+
     public class ScatterSphereCreator : ScatterVolumeCreator
     {
         private static readonly float DefaultRadius = 5f;

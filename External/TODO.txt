@@ -26,10 +26,10 @@ Automate the process for calling the modifier update and process calls
 
 Shapes to add:
     [] Scatter Circular
-    [] Scatter Volume
-        [] Store positions as relative to center
-        [] Recalculate positions while changing box size
-    [] Scatter Spherical
+    [x] Scatter Volume
+        [x] Store positions as relative to center
+        [x] Recalculate positions while changing box size
+    [x] Scatter Spherical
     [] Circular 
         [] Rings
         [] Interactive Layer
@@ -57,3 +57,6 @@ Modifiers to Add:
 [] Make Count field easier to use
 
 Undo/Redo should support changing the Shape type
+
+
+[] Bug using position noise on off-center circles

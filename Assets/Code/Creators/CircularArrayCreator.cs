@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
+    using Prefabrikator.Constants;
+
     // #DG: Refactor this to extract common data for derived classes
     public class CircleArrayData : ArrayData
     {
@@ -27,27 +30,66 @@ namespace Prefabrikator
 
         public Vector3 Center => _center;
         public Vector3 UpVector => GetProxy()?.transform.up ?? Vector3.up;
-        protected Vector3 _center = Vector3.zero;
+        protected Shared<Vector3> _center = new Shared<Vector3>(Vector3.zero);
+        protected Vector3Property _centerProperty = null;
 
         public static readonly int MinCount = 3;
         private static readonly int MinCirlceCount = 6;
 
+        private SceneView _sceneView = null;
+
+        protected bool IsEditMode => _editMode != EditMode.None;
+        private EditMode _editMode = EditMode.None;
+
+        SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
+
         public CircularArrayCreator(GameObject target)
             : base(target, MinCirlceCount)
         {
-            _center = _target.transform.position;
+            _center.Set(_target.transform.position);
 
             void OnRadiusSet(float current, float previous)
             {
                 CommandQueue.Enqueue(new GenericCommand<float>(_radius, previous, current));
             }
             _radiusProperty = new FloatProperty("Radius", _radius, OnRadiusSet);
+            _radiusProperty.OnEditModeEnter += () => { _editMode |= EditMode.Size; };
+            _radiusProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Size; };
+
+            void OnCenterChanged(Vector3 current, Vector3 previous)
+            {
+                CommandQueue.Enqueue(new GenericCommand<Vector3>(_center, previous, current));
+            }
+            _centerProperty = new Vector3Property("Center", _center, OnCenterChanged);
+            _centerProperty.OnEditModeEnter += () => { _editMode |= EditMode.Center; };
+            _centerProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
+
+            SceneView.duringSceneGui += OnSceneGUI;
+        }
+
+        ~CircularArrayCreator()
+        {
+            Teardown();
+        }
+
+        protected override void OnSave()
+        {
+            SceneView.duringSceneGui -= OnSceneGUI;
+            SceneView.RepaintAll();
+        }
+
+        public override void Teardown()
+        {
+            SceneView.duringSceneGui -= OnSceneGUI;
+            SceneView.RepaintAll();
+            base.Teardown();
         }
 
         public override void DrawEditor()
         {
             EditorGUILayout.BeginVertical();
             {
+                _center.Set(_centerProperty.Update());
                 _radius.Set(Mathf.Abs(_radiusProperty.Update()));
 
                 int currentCount = _targetCount;
@@ -57,6 +99,11 @@ namespace Prefabrikator
                 }
             }
             EditorGUILayout.EndVertical();
+
+            if (_sceneView != null)
+            {
+                EditorUtility.SetDirty(_sceneView);
+            }
         }
 
         protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
@@ -182,10 +229,37 @@ namespace Prefabrikator
 
         private void OnSceneGUI(SceneView view)
         {
-            Vector3 center = Handles.PositionHandle(_center, Quaternion.identity);
-            if (center != _center)
+            if (_sceneView == null || _sceneView != view)
             {
-                _center = center;
+                _sceneView = view;
+            }
+
+            if (IsEditMode)
+            {
+                Vector3 center = _center;
+
+                
+                _radiusHandle.center = center;
+                _radiusHandle.radius = _radius;
+                _radiusHandle.axes = PrimitiveBoundsHandle.Axes.X | PrimitiveBoundsHandle.Axes.Z;
+
+                EditorGUI.BeginChangeCheck();
+                {
+                    center = Handles.PositionHandle(_center, Quaternion.identity);
+                    _radiusHandle.DrawHandle();
+                }
+                if (EditorGUI.EndChangeCheck())
+                {
+                    if (center != _center)
+                    {
+                        _center.Set(center);
+                    }
+
+                    if (_radiusHandle.radius != _radius)
+                    {
+                        _radius.Set(_radiusHandle.radius);
+                    }
+                }
             }
         }
 

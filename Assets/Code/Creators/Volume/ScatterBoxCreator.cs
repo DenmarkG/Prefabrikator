@@ -5,6 +5,8 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
+    using Prefabrikator.Constants;
+
     public class ScatterBoxCreator : ScatterVolumeCreator
     {
         private static readonly Vector3 DefaultSize = new Vector3(5f, 2f, 5f);
