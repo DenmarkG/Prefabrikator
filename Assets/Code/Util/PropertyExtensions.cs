@@ -48,17 +48,17 @@ namespace Prefabrikator
         }
     }
 
-    public class BoolProperty : CustomProperty<bool>
-    {
-        public BoolProperty(string label, Shared<bool> startValue, OnValueSetDelegate onValueSet)
-            : base(label, startValue, onValueSet)
-        {
-            //
-        }
+    //public class BoolProperty : CustomProperty<bool>
+    //{
+    //    public BoolProperty(string label, Shared<bool> startValue, OnValueSetDelegate onValueSet)
+    //        : base(label, startValue, onValueSet)
+    //    {
+    //        //
+    //    }
 
-        protected override bool ShowPropertyField()
-        {
-            return EditorGUILayout.ToggleLeft(Label, WorkingValue);
-        }
-    }
+    //    protected override bool ShowPropertyField()
+    //    {
+    //        return EditorGUILayout.ToggleLeft(Label, WorkingValue);
+    //    }
+    //}
 }

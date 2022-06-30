@@ -27,7 +27,6 @@ namespace Prefabrikator
         private FloatProperty _maxFloatProperty = null;
 
         private Shared<bool> _keepAspectRatio = new Shared<bool>(false);
-        private BoolProperty _keepAspectProperty = null;
 
         public RandomScaleModifier(ArrayCreator owner)
             : base(owner)
@@ -73,7 +72,11 @@ namespace Prefabrikator
 
         protected override void OnInspectorUpdate()
         {
-            _keepAspectRatio.Set(_keepAspectProperty.Update());
+            bool keepApsectRatio = EditorGUILayout.ToggleLeft("Keep Aspect Ratio", _keepAspectRatio);
+            if (keepApsectRatio != _keepAspectRatio)
+            {
+                Owner.CommandQueue.Enqueue(new GenericCommand<bool>(_keepAspectRatio, _keepAspectRatio, keepApsectRatio));
+            }
 
             if (_keepAspectRatio)
             {
@@ -145,13 +148,6 @@ namespace Prefabrikator
                 Owner.CommandQueue.Enqueue(new GenericCommand<float>(_maxFloat, previous, current));
             }
             _maxFloatProperty = new FloatProperty(Max, _maxFloat, OnMaxFloatChanged);
-
-            void OnKeepAspectChanged(bool current, bool previous)
-            {
-                Owner.CommandQueue.Enqueue(new GenericCommand<bool>(_keepAspectRatio, previous, current));
-            }
-            _keepAspectProperty = new BoolProperty("Keep Aspect Ratio", _keepAspectRatio, OnKeepAspectChanged);
-
         }
 
         private void UpdateArray(GameObject[] objs)

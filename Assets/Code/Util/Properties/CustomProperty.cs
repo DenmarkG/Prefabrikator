@@ -6,7 +6,7 @@ namespace Prefabrikator
 
     public abstract class CustomProperty<T> where T : struct
     {
-        public enum EditMode
+        protected enum EditMode
         {
             Enabled,
             Disabled
