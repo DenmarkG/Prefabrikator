@@ -91,6 +91,7 @@
     <Compile Include="Assets\Code\Modifiers\Random\RandomModifier.cs" />
     <Compile Include="Assets\Code\Util\ArrayHelper.cs" />
     <Compile Include="Assets\Code\Bezier\BezierPoint.cs" />
+    <Compile Include="Assets\Code\Util\Constants.cs" />
     <Compile Include="Assets\Code\Creators\CircularArrayCreator.cs" />
     <Compile Include="Assets\Code\Util\PropertyExtensions.cs" />
     <Compile Include="Assets\Code\Modifiers\Scale\IncrementalScaleModifier.cs" />
@@ -99,7 +100,6 @@
     <Compile Include="Assets\Code\Creators\ArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\SphereArrayCreator.cs" />
-    <Compile Include="Assets\Code\Util\Constants.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UI\PrefabrikatorEditor.uss" />

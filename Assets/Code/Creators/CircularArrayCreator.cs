@@ -36,7 +36,7 @@ namespace Prefabrikator
         public static readonly int MinCount = 3;
         private static readonly int MinCirlceCount = 6;
 
-        private SceneView _sceneView = null;
+        protected SceneView _sceneView = null;
 
         protected bool IsEditMode => _editMode != EditMode.None;
         private EditMode _editMode = EditMode.None;
@@ -136,7 +136,7 @@ namespace Prefabrikator
             {
                 for (int i = 0; i < _createdObjects.Count; ++i)
                 {
-                    _createdObjects[i].transform.localPosition = GetDefaultPositionAtIndex(i) + _center;
+                    _createdObjects[i].transform.localPosition = GetDefaultPositionAtIndex(i);
                 }
             }
         }
@@ -156,7 +156,7 @@ namespace Prefabrikator
             Vector3 forward = Mathf.Sin(t) * _radius * proxy.transform.forward;
 
             //Vector3 position = right + forward;
-            return new Vector3(x, proxy.transform.position.y, z);
+            return new Vector3(x, proxy.transform.position.y, z) + _center;
         }
 
         protected override void CreateClone(int index = 0)

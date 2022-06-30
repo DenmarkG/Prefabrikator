@@ -44,6 +44,7 @@ namespace Prefabrikator
         {
             EditorGUILayout.BeginVertical();
             {
+                _center.Set(_centerProperty.Update());
                 _radius.Set(Mathf.Abs(_radiusProperty.Update()));
 
                 int sectorCount = _sectorCount;
@@ -61,6 +62,11 @@ namespace Prefabrikator
                 }
             }
             EditorGUILayout.EndVertical();
+
+            if (_sceneView != null)
+            {
+                EditorUtility.SetDirty(_sceneView);
+            }
         }
 
         protected override void UpdatePositions()
