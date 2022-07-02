@@ -78,7 +78,7 @@ namespace Prefabrikator
             {
                 _positions = new List<Vector3>(positions);
                 int count = positions.Length;
-                ApplyToAll((go, index) => { go.transform.position = _positions[index] * _radius; });
+                ApplyToAll((go, index) => { go.transform.position = (_positions[index] * _radius) + _center; });
             }
             var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
             CommandQueue.Enqueue(valueChanged);
