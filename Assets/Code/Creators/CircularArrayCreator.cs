@@ -41,7 +41,7 @@ namespace Prefabrikator
         protected bool IsEditMode => _editMode != EditMode.None;
         private EditMode _editMode = EditMode.None;
 
-        SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
+        private SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
 
         public CircularArrayCreator(GameObject target)
             : base(target, MinCirlceCount)
@@ -227,7 +227,7 @@ namespace Prefabrikator
             }
         }
 
-        private void OnSceneGUI(SceneView view)
+        protected virtual void OnSceneGUI(SceneView view)
         {
             if (_sceneView == null || _sceneView != view)
             {

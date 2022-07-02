@@ -32,7 +32,7 @@ Shapes to add:
     [x] Scatter Spherical
     [] Circular 
         [] Rings
-        [] Interactive Layer
+        [x] Interactive Layer
     [] Painter - paint shapes on a surface
 
 Modifiers to Add: 
