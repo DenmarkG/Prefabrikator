@@ -284,6 +284,9 @@ namespace Prefabrikator
                 case ShapeType.Sphere:
                     creator = new SphereArrayCreator(target);
                     break;
+                case ShapeType.Ellipse:
+                    creator = new EllipseArrayCreator(target);
+                    break;
                 case ShapeType.Grid:
                     creator = new GridArrayCreator(target);
                     break;

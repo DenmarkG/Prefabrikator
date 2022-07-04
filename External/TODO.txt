@@ -33,6 +33,8 @@ Shapes to add:
     [] Circular 
         [] Rings
         [x] Interactive Layer
+    [] Elipse
+        [] Rings
     [] Painter - paint shapes on a surface
 
 Modifiers to Add: 

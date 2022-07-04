@@ -11,7 +11,7 @@ namespace Prefabrikator
         Path,
         ScatterSphere,
         ScatterBox,
-        //Elipse,
+        Ellipse,
         // Box
         // polygon
         // bricklay
