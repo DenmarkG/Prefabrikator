@@ -11,6 +11,8 @@
 Automate the process for calling the modifier update and process calls
     - should not need to be called manually by each createor
 
+[] Support Undo for Shape Change
+
 [] Add Global/Local option for rotations
 
 [] Refactor Random Modifiers

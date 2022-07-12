@@ -10,6 +10,7 @@ namespace Prefabrikator
         {
             Circle,
             Path,
+            Ellipse,
         }
 
         protected override string DisplayName => "Follow Curve";
@@ -20,7 +21,11 @@ namespace Prefabrikator
         public FollowCurveModifier(ArrayCreator owner)
             : base(owner)
         {
-            if (owner is CircularArrayCreator)
+            if (owner is EllipseArrayCreator)
+            {
+                _curveMode = CurveMode.Ellipse;
+            }
+            else if (owner is CircularArrayCreator)
             {
                 _curveMode = CurveMode.Circle;
             }
@@ -50,6 +55,9 @@ namespace Prefabrikator
             {
                 case CurveMode.Path:
                     SetRotationFromPath(objs);
+                    break;
+                case CurveMode.Ellipse:
+                    SetRotationFromEllipse(objs);
                     break;
                 case CurveMode.Circle:
                 default:
@@ -87,6 +95,31 @@ namespace Prefabrikator
                         current.transform.localRotation = Quaternion.LookRotation(cross);
                     }
 
+                    _rotations[i] = current.transform.localRotation;
+                }
+            }
+        }
+
+        private void SetRotationFromEllipse(GameObject[] objs)
+        {
+            EllipseArrayCreator ellipse = Owner as EllipseArrayCreator;
+            if (ellipse != null)
+            {
+                int numObjs = objs.Length;
+                GameObject current = null;
+                int n = numObjs - 1;
+
+                const float degrees = Mathf.PI * 2;
+                float angle = (degrees / numObjs);
+
+                for (int i = 0; i < numObjs; ++i)
+                {
+                    float t = angle * i;
+                    current = objs[i];
+                    float xTan = -(ellipse.XRadius * Mathf.Sin(t));
+                    float zTan = ellipse.ZRadius * Mathf.Cos(t);
+                    Vector3 tangent = new Vector3(xTan, 0f, zTan);
+                    current.transform.localRotation = Quaternion.LookRotation(tangent);
                     _rotations[i] = current.transform.localRotation;
                 }
             }

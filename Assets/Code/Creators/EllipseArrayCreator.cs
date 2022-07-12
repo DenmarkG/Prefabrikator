@@ -7,9 +7,11 @@ namespace Prefabrikator
 {
     public class EllipseArrayCreator : CircularArrayCreator
     {
+        public float ZRadius => _zRadius;
         private Shared<float> _zRadius = new Shared<float>(7.5f);
         private FloatProperty _zRadiusProperty = null;
 
+        public float XRadius => _radius;
         private SphereBoundsHandle _xRadiusHandle = new SphereBoundsHandle();
         private SphereBoundsHandle _zRadiusHandle = new SphereBoundsHandle();
 
