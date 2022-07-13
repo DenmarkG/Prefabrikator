@@ -11,9 +11,24 @@
 Automate the process for calling the modifier update and process calls
     - should not need to be called manually by each createor
 
+
+BUGS:
+    - original object flashes when changing Count
+    - curve does not update new objects correctly when count changes
+
 [] Support Undo for Shape Change
+[] Re-add Suppport Editing existing shapes
+    [] Add Component based support
+        [] one component per shape
+        [] use to allow runtime editing
+        [] Performance pass
+[] Change "DisplayCountField" functions to use int property instead of buttons
 
 [] Add Global/Local option for rotations
+
+[] Move OnTargetCountChange to base class only
+
+[] Add button to reset a field to zero or default values
 
 [] Refactor Random Modifiers
 
@@ -43,6 +58,7 @@ Modifiers to Add:
     [x] Incremental Scale
     [x] Incremental Roatation
     [x] Position Noise
+    [] Random Radius (Circle, Sphere, Ellipse)
     [] Checkerboard (grid only)
     [] Random Color
     [] Global Rotator

@@ -76,7 +76,7 @@ namespace Prefabrikator
 
             EstablishHelper(useDefaultData);
 
-            if (_targetCount != _createdObjects.Count)
+            if (TargetCount != _createdObjects.Count)
             {
                 OnTargetCountChanged();
             }
@@ -84,9 +84,9 @@ namespace Prefabrikator
 
         protected override void OnTargetCountChanged()
         {
-            if (_targetCount < _createdObjects.Count)
+            if (TargetCount < _createdObjects.Count)
             {
-                while (_createdObjects.Count > _targetCount)
+                while (_createdObjects.Count > TargetCount)
                 {
                     int index = _createdObjects.Count - 1;
                     if (index >= 0)
@@ -101,7 +101,7 @@ namespace Prefabrikator
             }
             else
             {
-                while (_targetCount > _createdObjects.Count)
+                while (TargetCount > _createdObjects.Count)
                 {
                     CreateClone();
                 }

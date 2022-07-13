@@ -75,7 +75,7 @@ namespace Prefabrikator
                 if (ShouldShowX())
                 {
                     int countX = _countX;
-                    if (Extensions.DisplayCountField(ref countX))
+                    if (DisplayCountField(ref countX))
                     {
                         CommandQueue.Enqueue(new GenericCommand<int>(_countX, _countX, countX));
                     }
@@ -85,7 +85,7 @@ namespace Prefabrikator
                 if (ShouldShowY())
                 {
                     int countY = _countY;
-                    if (Extensions.DisplayCountField(ref countY))
+                    if (DisplayCountField(ref countY))
                     {
                         CommandQueue.Enqueue(new GenericCommand<int>(_countY, _countY, countY));
                     }
@@ -95,16 +95,16 @@ namespace Prefabrikator
                 if (ShouldShowZ())
                 {
                     int countZ = _countZ;
-                    if (Extensions.DisplayCountField(ref countZ))
+                    if (DisplayCountField(ref countZ))
                     {
                         CommandQueue.Enqueue(new GenericCommand<int>(_countZ, _countZ, countZ));
                     }
                     targetCount *= (_countZ > 0) ? _countZ : 1;
                 }
 
-                if (targetCount != _targetCount)
+                if (targetCount != TargetCount)
                 {
-                    _targetCount = targetCount;
+                    SetTargetCount(targetCount);
                 }
 
 
@@ -151,13 +151,13 @@ namespace Prefabrikator
             {
                 int targetCount = GetCount();
 
-                if (targetCount != _targetCount)
+                if (targetCount != TargetCount)
                 {
-                    _targetCount = targetCount;
+                    SetTargetCount(targetCount);
                 }
             }
 
-            if (_targetCount != _createdObjects.Count)
+            if (TargetCount != _createdObjects.Count)
             {
                 OnTargetCountChanged();
             }
@@ -183,7 +183,7 @@ namespace Prefabrikator
                 }
 
                 // Update Counts
-                if (_createdObjects.Count != _targetCount)
+                if (_createdObjects.Count != TargetCount)
                 {
                     OnCountChange();
                 }
@@ -359,15 +359,15 @@ namespace Prefabrikator
                 //_dimension = gridData.Dimension;
                 //_offsetVector.Set(gridData.OffsetVector);
                 _targetRotation = gridData.TargetRotation;
-                _targetCount = gridData.Count;
+                SetTargetCount(gridData.Count);
             }
         }
 
         protected override void OnTargetCountChanged()
         {
-            if (_targetCount < _createdObjects.Count)
+            if (TargetCount < _createdObjects.Count)
             {
-                while (_createdObjects.Count > _targetCount)
+                while (_createdObjects.Count > TargetCount)
                 {
                     int index = _createdObjects.Count - 1;
                     if (index >= 0)
@@ -382,7 +382,7 @@ namespace Prefabrikator
             }
             else
             {
-                while (_targetCount > _createdObjects.Count)
+                while (TargetCount > _createdObjects.Count)
                 {
                     CreateClone();
                 }
@@ -392,6 +392,40 @@ namespace Prefabrikator
         public override Vector3 GetDefaultPositionAtIndex(int index)
         {
             return _defaultPositions[index];
+        }
+
+        public bool DisplayCountField(ref int targetCount, string label = null)
+        {
+            bool needsRefresh = false;
+
+            EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle, GUILayout.Width(PrefabrikatorTool.MaxWidth));
+            {
+                EditorGUILayout.LabelField(label ?? "Count", GUILayout.Width(Extensions.LabelWidth));
+
+                if (GUILayout.Button("-", GUILayout.Width(20)))
+                {
+                    if (targetCount > 0)
+                    {
+                        --targetCount;
+                        needsRefresh = true;
+                    }
+                }
+
+                var style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter };
+                EditorGUILayout.LabelField(targetCount.ToString(), style, GUILayout.ExpandWidth(true), GUILayout.Width(Extensions.LabelWidth));
+
+                if (GUILayout.Button("+", GUILayout.Width(20)))
+                {
+                    if (targetCount < int.MaxValue - 1)
+                    {
+                        ++targetCount;
+                        needsRefresh = true;
+                    }
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
+            return needsRefresh;
         }
     }
 }

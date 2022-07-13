@@ -26,7 +26,9 @@ namespace Prefabrikator
         public CubicBezierCurve Curve => _curve;
         private CubicBezierCurve _curve = new CubicBezierCurve();
 
-        //
+        public override float MaxWindowHeight => 300f;
+
+        public override string Name => "Path";
 
         public BezierArrayCreator(GameObject target)
             : base(target, MinCount)
@@ -54,20 +56,11 @@ namespace Prefabrikator
             base.Teardown();
         }
 
-        public override float MaxWindowHeight => 300f;
-
-        public override string Name => "Path";
-
         public override void DrawEditor()
         {
             EditorGUILayout.BeginVertical();
             {
-                int currentCount = _targetCount;
-                if (Extensions.DisplayCountField(ref currentCount))
-                {
-                    currentCount = Mathf.Max(currentCount, MinCount);
-                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, currentCount));
-                }
+                ShowCountField(MinCount);
 
                 EditorGUILayout.BeginVertical(Extensions.BoxedHeaderStyle);
                 {
@@ -113,7 +106,7 @@ namespace Prefabrikator
 
             EstablishHelper(useDefaultData);
 
-            if (_targetCount != _createdObjects.Count)
+            if (TargetCount != _createdObjects.Count)
             {
                 OnTargetCountChanged();
             }
@@ -151,21 +144,17 @@ namespace Prefabrikator
 
         }
 
-        protected override void CreateClone(int index)
+        protected override void CreateClone(int index = 0)
         {
             GameObject proxy = GetProxy();
 
             if (proxy != null)
             {
                 Quaternion targetRotation = _target.transform.rotation;
-
-                float t = (float)index / (float)_targetCount;
-                Vector3 pointOnCurve = _curve.GetPointOnCurve(t);
-
-                GameObject clone = GameObject.Instantiate(_target, pointOnCurve, targetRotation);
+                GameObject clone = GameObject.Instantiate(_target, proxy.transform.position, targetRotation);
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
-
+                
                 _createdObjects.Add(clone);
             }
         }
@@ -173,7 +162,7 @@ namespace Prefabrikator
         protected override ArrayData GetContainerData()
         {
             BezierArrayData data = new BezierArrayData(_target, _targetRotation);
-            data.Count = _targetCount;
+            data.Count = TargetCount;
             data.Curve = _curve;
 
             return data;
@@ -183,7 +172,7 @@ namespace Prefabrikator
         {
             if (data is BezierArrayData curveData)
             {
-                _targetCount = curveData.Count;
+                SetTargetCount(curveData.Count);
                 _targetRotation = curveData.TargetRotation;
                 _curve = curveData.Curve;
             }
@@ -191,9 +180,9 @@ namespace Prefabrikator
 
         protected override void OnTargetCountChanged()
         {
-            if (_targetCount < _createdObjects.Count)
+            if (TargetCount < _createdObjects.Count)
             {
-                while (_createdObjects.Count > _targetCount)
+                while (_createdObjects.Count > TargetCount)
                 {
                     int index = _createdObjects.Count - 1;
                     if (index >= 0)
@@ -208,13 +197,13 @@ namespace Prefabrikator
             }
             else
             {
-                int index = 0;
-                while (_targetCount > _createdObjects.Count)
+                while (TargetCount > _createdObjects.Count)
                 {
-                    CreateClone(index);
-                    ++index;
+                    CreateClone();
                 }
             }
+
+            Refresh();
         }
 
         private void OnSceneGUI(SceneView view)

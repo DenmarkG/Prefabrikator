@@ -188,11 +188,7 @@ namespace Prefabrikator
 
         protected override void DrawVolumeEditor()
         {
-            int currentCount = _targetCount;
-            if (Extensions.DisplayCountField(ref currentCount))
-            {
-                CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, Mathf.Max(currentCount, MinCount)));
-            }
+            ShowCountField();
 
             Vector3 center = _centerProperty.Update();
             if (center != _center)

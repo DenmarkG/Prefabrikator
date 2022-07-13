@@ -18,7 +18,10 @@ namespace Prefabrikator
         public List<GameObject> CreatedObjects => _createdObjects;
         protected List<GameObject> _createdObjects = null;
 
-        protected int _targetCount = 1;
+        public int TargetCount => _targetCount;
+        private Shared<int> _targetCount = new Shared<int>(1);
+        private IntProperty _countProperty = null;
+        
         protected bool NeedsRefresh => CommandQueue.Count > 0;
 
         public abstract float MaxWindowHeight { get; }
@@ -27,7 +30,6 @@ namespace Prefabrikator
         protected Quaternion _targetRotation = Quaternion.identity;
         protected ArrayData _defaultData = null;
 
-
         private List<Modifier> _modifierStack = new List<Modifier>();
         int _selectedModifier = 0;
 
@@ -35,7 +37,14 @@ namespace Prefabrikator
         {
             _target = target;
 
-            _targetCount = defaultCount;
+            _targetCount.Set(defaultCount);
+            void OnCountChange(int current, int previous)
+            {
+                CommandQueue.Enqueue(new CountChangeCommand(this, previous, current));
+            }
+
+            _countProperty = new IntProperty("Count", _targetCount, OnCountChange);
+
 
             _createdObjects = new List<GameObject>(_targetCount);
             OnTargetCountChanged();
@@ -226,9 +235,16 @@ namespace Prefabrikator
             }
         }
 
+        protected void ShowCountField(int minCount = 0)
+        {
+            int count = Mathf.Abs(_countProperty.Update());
+            count = Mathf.Max(count, minCount);
+            SetTargetCount(count);
+        }
+
         public virtual void SetTargetCount(int targetCount)
         {
-            _targetCount = targetCount;
+            _targetCount.Set(targetCount);
             OnTargetCountChanged();
         }
 

@@ -92,11 +92,7 @@ namespace Prefabrikator
                 _center.Set(_centerProperty.Update());
                 _radius.Set(Mathf.Abs(_radiusProperty.Update()));
 
-                int currentCount = _targetCount;
-                if (Extensions.DisplayCountField(ref currentCount))
-                {
-                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, Mathf.Max(currentCount, MinCount)));
-                }
+                ShowCountField(MinCount);
             }
             EditorGUILayout.EndVertical();
 
@@ -174,7 +170,7 @@ namespace Prefabrikator
         protected override ArrayData GetContainerData()
         {
             CircleArrayData data = new CircleArrayData(_target, Quaternion.identity);
-            data.Count = _targetCount;
+            data.Count = TargetCount;
             data.Radius = _radius;
 
             return data;
@@ -184,14 +180,14 @@ namespace Prefabrikator
         {
             if (data is CircleArrayData circleData)
             {
-                _targetCount = circleData.Count;
+                SetTargetCount(circleData.Count);
                 _radius.Set(circleData.Radius);
             }
         }
 
         protected virtual void VerifyTargetCount()
         {
-            if (_targetCount != _createdObjects.Count)
+            if (TargetCount != _createdObjects.Count)
             {
                 OnTargetCountChanged();
             }
@@ -199,9 +195,9 @@ namespace Prefabrikator
 
         protected override sealed void OnTargetCountChanged()
         {
-            if (_targetCount < _createdObjects.Count)
+            if (TargetCount < _createdObjects.Count)
             {
-                while (_createdObjects.Count > _targetCount)
+                while (_createdObjects.Count > TargetCount)
                 {
                     int index = _createdObjects.Count - 1;
                     if (index >= 0)
@@ -216,7 +212,7 @@ namespace Prefabrikator
             }
             else
             {
-                while (_targetCount > _createdObjects.Count)
+                while (TargetCount > _createdObjects.Count)
                 {
                     CreateClone();
                 }

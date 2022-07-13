@@ -36,7 +36,7 @@ namespace Prefabrikator
         public SphereArrayCreator(GameObject target)
             : base(target)
         {
-            _targetCount = GetTargetCount();
+            SetTargetCount(GetTargetCount());
             _radius.Set(10f);
         }
 
@@ -48,14 +48,14 @@ namespace Prefabrikator
                 _radius.Set(Mathf.Abs(_radiusProperty.Update()));
 
                 int sectorCount = _sectorCount;
-                if (Extensions.DisplayCountField(ref sectorCount, "Segments"))
+                if (DisplayCountField(ref sectorCount, "Segments"))
                 {
                     sectorCount = Mathf.Max(sectorCount, MinCount);
                     CommandQueue.Enqueue(new GenericCommand<int>(_sectorCount, _sectorCount, sectorCount));
                 }
 
                 int stackCount = _stackCount;
-                if (Extensions.DisplayCountField(ref stackCount, "Rings"))
+                if (DisplayCountField(ref stackCount, "Rings"))
                 {
                     stackCount = Mathf.Max(stackCount, MinCount);
                     CommandQueue.Enqueue(new GenericCommand<int>(_stackCount, _stackCount, stackCount));
@@ -71,7 +71,7 @@ namespace Prefabrikator
 
         protected override void UpdatePositions()
         {
-            if (_targetCount < MinCount || _createdObjects.Count < MinCount)
+            if (TargetCount < MinCount || _createdObjects.Count < MinCount)
             {
                 return;
             }
@@ -154,7 +154,7 @@ namespace Prefabrikator
 
         protected override sealed void VerifyTargetCount()
         {
-            _targetCount = GetTargetCount();
+            SetTargetCount(GetTargetCount());
             base.VerifyTargetCount();
         }
 
@@ -166,7 +166,7 @@ namespace Prefabrikator
         protected override ArrayData GetContainerData()
         {
             SphereArrayData data = new SphereArrayData(_target, Quaternion.identity);
-            data.Count = _targetCount;
+            data.Count = TargetCount;
             data.Radius = _radius;
 
             data.StackCount = _stackCount;
@@ -179,13 +179,47 @@ namespace Prefabrikator
         {
             if (data is SphereArrayData sphereData)
             {
-                _targetCount = sphereData.Count;
+                SetTargetCount(sphereData.Count);
                 _radius.Set(sphereData.Radius);
                 _targetRotation = sphereData.TargetRotation;
 
                 _stackCount.Set(sphereData.StackCount);
                 _sectorCount.Set(sphereData.SectorCount);
             }
+        }
+
+        public bool DisplayCountField(ref int targetCount, string label = null)
+        {
+            bool needsRefresh = false;
+
+            EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle, GUILayout.Width(PrefabrikatorTool.MaxWidth));
+            {
+                EditorGUILayout.LabelField(label ?? "Count", GUILayout.Width(Extensions.LabelWidth));
+
+                if (GUILayout.Button("-", GUILayout.Width(20)))
+                {
+                    if (targetCount > 0)
+                    {
+                        --targetCount;
+                        needsRefresh = true;
+                    }
+                }
+
+                var style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter };
+                EditorGUILayout.LabelField(targetCount.ToString(), style, GUILayout.ExpandWidth(true), GUILayout.Width(Extensions.LabelWidth));
+
+                if (GUILayout.Button("+", GUILayout.Width(20)))
+                {
+                    if (targetCount < int.MaxValue - 1)
+                    {
+                        ++targetCount;
+                        needsRefresh = true;
+                    }
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+
+            return needsRefresh;
         }
     }
 }

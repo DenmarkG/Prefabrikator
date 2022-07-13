@@ -42,40 +42,6 @@ namespace Prefabrikator
         }
         private static GUIStyle popupStyle = null;
 
-        public static bool DisplayCountField(ref int targetCount, string label = null)
-        {
-            bool needsRefresh = false;
-
-            EditorGUILayout.BeginHorizontal(BoxedHeaderStyle, GUILayout.Width(PrefabrikatorTool.MaxWidth));
-            {
-                EditorGUILayout.LabelField(label ?? "Count", GUILayout.Width(LabelWidth));
-
-                if (GUILayout.Button("-", GUILayout.Width(20)))
-                {
-                    if (targetCount > 0)
-                    {
-                        --targetCount;
-                        needsRefresh = true;
-                    }
-                }
-
-                var style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter };
-                EditorGUILayout.LabelField(targetCount.ToString(), style, GUILayout.ExpandWidth(true), GUILayout.Width(Extensions.LabelWidth));
-
-                if (GUILayout.Button("+", GUILayout.Width(20)))
-                {
-                    if (targetCount < int.MaxValue - 1)
-                    {
-                        ++targetCount;
-                        needsRefresh = true;
-                    }
-                }
-            }
-            EditorGUILayout.EndHorizontal();
-
-            return needsRefresh;
-        }
-
         public static bool DisplayRotationField(ref Quaternion rotation, string label = null)
         {
             bool needsRefresh = false;

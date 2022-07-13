@@ -76,7 +76,7 @@ namespace Prefabrikator
         protected override ArrayData GetContainerData()
         {
             ArcArrayData data = new ArcArrayData(_target, Quaternion.identity);
-            data.Count = _targetCount;
+            data.Count = TargetCount;
             data.Radius = _radius;
             data.FillPercent = _fillPercent;
 
@@ -87,7 +87,7 @@ namespace Prefabrikator
         {
             if (data is ArcArrayData arcData)
             {
-                _targetCount = arcData.Count;
+                SetTargetCount(arcData.Count);
                 _radius.Set(arcData.Radius);
                 _fillPercent = arcData.FillPercent;
             }

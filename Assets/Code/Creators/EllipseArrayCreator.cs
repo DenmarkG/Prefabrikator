@@ -36,11 +36,7 @@ namespace Prefabrikator
                 _radius.Set(Mathf.Abs(_radiusProperty.Update()));
                 _zRadius.Set(Mathf.Abs(_zRadiusProperty.Update()));
 
-                int currentCount = _targetCount;
-                if (Extensions.DisplayCountField(ref currentCount))
-                {
-                    CommandQueue.Enqueue(new CountChangeCommand(this, _createdObjects.Count, Mathf.Max(currentCount, MinCount)));
-                }
+                ShowCountField(MinCount);
             }
             EditorGUILayout.EndVertical();
 

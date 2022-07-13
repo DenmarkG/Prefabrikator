@@ -48,6 +48,20 @@ namespace Prefabrikator
         }
     }
 
+    public class IntProperty : CustomProperty<int>
+    {
+        public IntProperty(string label, Shared<int> startValue, OnValueSetDelegate onValueSet)
+            : base(label, startValue, onValueSet)
+        {
+            _shouldShowLabel = false;
+        }
+
+        protected override int ShowPropertyField()
+        {
+            return EditorGUILayout.IntField(Label, WorkingValue);
+        }
+    }
+
     //public class BoolProperty : CustomProperty<bool>
     //{
     //    public BoolProperty(string label, Shared<bool> startValue, OnValueSetDelegate onValueSet)
