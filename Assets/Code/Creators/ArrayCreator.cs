@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditorInternal;
 
 namespace Prefabrikator
 {
@@ -31,9 +32,12 @@ namespace Prefabrikator
         protected ArrayData _defaultData = null;
 
         private List<Modifier> _modifierStack = new List<Modifier>();
-        int _selectedModifier = 0;
+        int _indexOfModifierToAdd = 0;
+        private Modifier _activeModifierSelection= null;
 
         public abstract int MinCount { get; }
+
+        private ReorderableList _modifierDisplay = null;
 
         public ArrayCreator(GameObject target, int defaultCount)
         {
@@ -48,6 +52,12 @@ namespace Prefabrikator
 
             _countProperty = new IntProperty("Count", _targetCount, OnCountChange, EnforceValidCount);
 
+            // Modifier Reorderable List Setup
+            _modifierDisplay = new ReorderableList(_modifierStack, typeof(Modifier), true, true, false, false);
+            _modifierDisplay.multiSelect = false;
+            _modifierDisplay.drawElementCallback = DrawElement;
+
+            _modifierDisplay.onSelectCallback = OnModifierSelectionChange;
 
             _createdObjects = new List<GameObject>(_targetCount);
             OnTargetCountChanged();
@@ -323,26 +333,71 @@ namespace Prefabrikator
 
             return mods;
         }
-
+        
         public void DrawModifiers()
         {
-            int numMods = _modifierStack.Count;
-            for (int i = 0; i < numMods; ++i)
-            {
-                _modifierStack[i].UpdateInspector();
-            }
+            // #DG: TODO: make undo work
+            GUILayout.Space(20);
+            EditorGUILayout.LabelField("Modifiers", EditorStyles.boldLabel);
+            //int numMods = _modifierStack.Count;
+            //for (int i = 0; i < numMods; ++i)
+            //{
+            //    _modifierStack[i].UpdateInspector();
+            //}
 
             EditorGUILayout.BeginHorizontal(GUILayout.MaxWidth(PrefabrikatorTool.MaxWidth));
             {
+                GUILayout.Space(20);
                 // #DG: Get the modifier list from the Array itself. 
                 string[] options = GetAllowedModifiers();
-                _selectedModifier = EditorGUILayout.Popup(_selectedModifier, options);
+                _indexOfModifierToAdd = EditorGUILayout.Popup(_indexOfModifierToAdd, options);
                 if (GUILayout.Button(Constants.PlusButton))
                 {
-                    AddModifier(options[_selectedModifier]);
+                    AddModifier(options[_indexOfModifierToAdd]);
                 }
             }
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal(GUILayout.MaxWidth(PrefabrikatorTool.MaxWidth));
+            {
+                GUILayout.Space(20);
+                EditorGUILayout.BeginVertical();
+                {
+                    _modifierDisplay.DoLayoutList();
+                    if (_activeModifierSelection != null)
+                    {
+                        _activeModifierSelection.UpdateInspector();
+                    }
+                }
+                EditorGUILayout.EndVertical();
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawElement(Rect rect, int index, bool isActive, bool isFocused)
+        {
+            //_modifierStack[index].UpdateInspector();
+            if (isActive)
+            {
+                _activeModifierSelection = _modifierStack[index];
+            }
+
+            EditorGUI.LabelField(new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight), _modifierStack[index].GetType().ToString());
+        }
+
+        void OnModifierSelectionChange(ReorderableList list)
+        {
+            if (list.selectedIndices != null && list.selectedIndices.Count > 0)
+            {
+                int index = list.selectedIndices[0];
+                if (_modifierStack != null && _modifierStack.Count > 0 && index < _modifierStack.Count)
+                {
+                    _activeModifierSelection = _modifierStack[index];
+                    return;
+                }
+            }
+
+            _activeModifierSelection = null;
         }
 
         public void ProcessModifiers()
@@ -374,6 +429,11 @@ namespace Prefabrikator
             // #DG: TODO: add some bounds checking here
             Modifier mod = _modifierStack[index];
             _modifierStack.RemoveAt(index);
+
+            if (_modifierStack.Count == 0 || _activeModifierSelection == mod)
+            {
+                _activeModifierSelection = null;
+            }
 
             mod.OnRemoved();
         }

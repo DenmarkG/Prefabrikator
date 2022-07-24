@@ -82,6 +82,7 @@ Undo/Redo should support changing the Shape type
 [] Bug using position noise on off-center circles
 
 [] Validate text when exiting custom property edit mode
+[] Connect Mods to names of mods
 
 EditorGUIUtility.IconContent
 edit: _Menu, d_Preset.Context
