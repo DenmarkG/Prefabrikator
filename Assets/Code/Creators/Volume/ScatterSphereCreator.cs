@@ -6,8 +6,6 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
-    using Prefabrikator.Constants;
-
     public class ScatterSphereCreator : ScatterVolumeCreator
     {
         private static readonly float DefaultRadius = 5f;
@@ -86,7 +84,7 @@ namespace Prefabrikator
 
         protected override void DrawVolumeEditor()
         {
-            ShowCountField(MinCount);
+            ShowCountField();
 
             Vector3 center = _centerProperty.Update();
             if (center != _center)

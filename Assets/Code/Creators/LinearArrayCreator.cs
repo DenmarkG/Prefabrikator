@@ -16,7 +16,8 @@ namespace Prefabrikator
 
     public class LinearArrayCreator : ArrayCreator
     {
-        public static readonly int MinCount = 2;
+        public override int MinCount => DefaultCount;
+        public static readonly int DefaultCount = 2;
 
         public override float MaxWindowHeight => 300f;
         public override string Name => "Line";
@@ -25,7 +26,7 @@ namespace Prefabrikator
         private Vector3Property _offsetProperty = null;
 
         public LinearArrayCreator(GameObject target)
-            : base(target, MinCount)
+            : base(target, DefaultCount)
         {
             void OnValueSet(Vector3 current, Vector3 previous)
             {

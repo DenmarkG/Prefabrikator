@@ -36,7 +36,7 @@ namespace Prefabrikator
                 _radius.Set(Mathf.Abs(_radiusProperty.Update()));
                 _zRadius.Set(Mathf.Abs(_zRadiusProperty.Update()));
 
-                ShowCountField(MinCount);
+                ShowCountField();
             }
             EditorGUILayout.EndVertical();
 

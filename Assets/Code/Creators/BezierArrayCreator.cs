@@ -20,7 +20,8 @@ namespace Prefabrikator
 
     public class BezierArrayCreator : ArrayCreator
     {
-        private static readonly int MinCount = 3;
+        private static readonly int DefaultCount = 3;
+        public override int MinCount => DefaultCount;
         private bool _showControlPoints = false;
 
         public CubicBezierCurve Curve => _curve;
@@ -31,7 +32,7 @@ namespace Prefabrikator
         public override string Name => "Path";
 
         public BezierArrayCreator(GameObject target)
-            : base(target, MinCount)
+            : base(target, DefaultCount)
         {
             SceneView.duringSceneGui += OnSceneGUI;
 
@@ -60,7 +61,7 @@ namespace Prefabrikator
         {
             EditorGUILayout.BeginVertical();
             {
-                ShowCountField(MinCount);
+                ShowCountField();
 
                 EditorGUILayout.BeginVertical(Extensions.BoxedHeaderStyle);
                 {

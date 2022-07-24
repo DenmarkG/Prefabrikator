@@ -13,7 +13,7 @@ namespace Prefabrikator
         public ArcArrayData(GameObject prefab, Quaternion targetRotation)
             : base(ShapeType.Arc, prefab, targetRotation)
         {
-            Count = CircularArrayCreator.MinCount;
+            //Count = CircularArrayCreator.MinCount;
         }
     }
 
@@ -62,7 +62,7 @@ namespace Prefabrikator
 
         public override Vector3 GetDefaultPositionAtIndex(int index)
         {
-            float degrees = (360f * _fillPercent) * Mathf.Deg2Rad; // #DG: TODO multiply this by fill percent
+            float degrees = (360f * _fillPercent) * Mathf.Deg2Rad;
             int n = _createdObjects.Count - 1;
             float angle = (n != 0f) ? (degrees / n) : 0f;
 
@@ -92,7 +92,6 @@ namespace Prefabrikator
                 _fillPercent = arcData.FillPercent;
             }
         }
-
 
         protected override void OnSceneGUI(SceneView view)
         {

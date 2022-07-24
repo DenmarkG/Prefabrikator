@@ -5,14 +5,13 @@ using UnityEditor;
 
 namespace Prefabrikator
 {
-    using Prefabrikator.Constants;
-
     public abstract class ScatterVolumeCreator : ArrayCreator
     {
         public override float MaxWindowHeight => 300f;
         public override string Name => "Scatter";
 
-        protected static readonly int MinCount = 10;
+        public override int MinCount => 1;
+        protected static readonly int DefaultCount = 10;
 
         protected List<Vector3> _positions = new List<Vector3>();
 
@@ -27,7 +26,7 @@ namespace Prefabrikator
         protected Vector3Property _centerProperty = null;
 
         public ScatterVolumeCreator(GameObject target)
-            : base(target, MinCount)
+            : base(target, DefaultCount)
         {
             //
         }

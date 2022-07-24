@@ -50,8 +50,8 @@ namespace Prefabrikator
 
     public class IntProperty : CustomProperty<int>
     {
-        public IntProperty(string label, Shared<int> startValue, OnValueSetDelegate onValueSet)
-            : base(label, startValue, onValueSet)
+        public IntProperty(string label, Shared<int> startValue, OnValueSetDelegate onValueSet, ValidateInputDelegate onValidate)
+            : base(label, startValue, onValueSet, onValidate)
         {
             _shouldShowLabel = false;
         }

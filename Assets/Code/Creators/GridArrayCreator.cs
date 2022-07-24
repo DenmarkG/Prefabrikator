@@ -26,6 +26,8 @@ namespace Prefabrikator
             XYZ
         }
 
+        public override int MinCount => DefaultCount;
+
         public override float MaxWindowHeight => 300f;
         public override string Name => "Grid";
 
@@ -34,7 +36,7 @@ namespace Prefabrikator
         private Shared<float> _offsetY = new Shared<float>(DefaultOffset);
         private Shared<float> _offsetZ = new Shared<float>(DefaultOffset);
 
-        private const int DefaultCount = 3;
+        private static readonly int DefaultCount = 3;
         private Shared<int> _countX = new Shared<int>(DefaultCount);
         private Shared<int> _countY = new Shared<int>(DefaultCount);
         private Shared<int> _countZ = new Shared<int>(DefaultCount);

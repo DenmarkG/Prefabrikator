@@ -33,6 +33,8 @@ namespace Prefabrikator
         private List<Modifier> _modifierStack = new List<Modifier>();
         int _selectedModifier = 0;
 
+        public abstract int MinCount { get; }
+
         public ArrayCreator(GameObject target, int defaultCount)
         {
             _target = target;
@@ -40,10 +42,11 @@ namespace Prefabrikator
             _targetCount.Set(defaultCount);
             void OnCountChange(int current, int previous)
             {
+                current = EnforceValidCount(current);
                 CommandQueue.Enqueue(new CountChangeCommand(this, previous, current));
             }
 
-            _countProperty = new IntProperty("Count", _targetCount, OnCountChange);
+            _countProperty = new IntProperty("Count", _targetCount, OnCountChange, EnforceValidCount);
 
 
             _createdObjects = new List<GameObject>(_targetCount);
@@ -235,11 +238,15 @@ namespace Prefabrikator
             }
         }
 
-        protected void ShowCountField(int minCount = 0)
+        protected void ShowCountField()
         {
-            int count = Mathf.Abs(_countProperty.Update());
-            count = Mathf.Max(count, minCount);
+            int count = EnforceValidCount(_countProperty.Update());
             SetTargetCount(count);
+        }
+
+        private int EnforceValidCount(int count)
+        {
+            return Mathf.Max(count, MinCount);
         }
 
         public virtual void SetTargetCount(int targetCount)
@@ -330,7 +337,7 @@ namespace Prefabrikator
                 // #DG: Get the modifier list from the Array itself. 
                 string[] options = GetAllowedModifiers();
                 _selectedModifier = EditorGUILayout.Popup(_selectedModifier, options);
-                if (GUILayout.Button("Add"))
+                if (GUILayout.Button(Constants.PlusButton))
                 {
                     AddModifier(options[_selectedModifier]);
                 }

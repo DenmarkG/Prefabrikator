@@ -13,8 +13,8 @@ Automate the process for calling the modifier update and process calls
 
 
 BUGS:
-    - original object flashes when changing Count
-    - curve does not update new objects correctly when count changes
+    [] original object flashes when changing Count -> gonna have to live with this one
+    [x] curve does not update new objects correctly when count changes
 
 [] Support Undo for Shape Change
 [] Re-add Suppport Editing existing shapes
@@ -22,7 +22,7 @@ BUGS:
         [] one component per shape
         [] use to allow runtime editing
         [] Performance pass
-[] Change "DisplayCountField" functions to use int property instead of buttons
+[x] Change "DisplayCountField" functions to use int property instead of buttons
 
 [] Add Global/Local option for rotations
 
@@ -80,3 +80,14 @@ Undo/Redo should support changing the Shape type
 
 
 [] Bug using position noise on off-center circles
+
+[] Validate text when exiting custom property edit mode
+
+EditorGUIUtility.IconContent
+edit: _Menu, d_Preset.Context
+plus: d_Toolbar Plus
+minus: d_Toolbar Minus
+check: d_FilterSelectedOnly
+redo: d_tab_next
+undo d_tab_prev
+x: d_winbtn_win_close

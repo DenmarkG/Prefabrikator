@@ -4,8 +4,6 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
-    using Prefabrikator.Constants;
-
     // #DG: Refactor this to extract common data for derived classes
     public class CircleArrayData : ArrayData
     {
@@ -14,7 +12,7 @@ namespace Prefabrikator
         public CircleArrayData(GameObject prefab, Quaternion targetRotation)
             : base(ShapeType.Circle, prefab, targetRotation)
         {
-            Count = CircularArrayCreator.MinCount;
+            //Count = CircularArrayCreator.MinCount;
         }
     }
 
@@ -33,8 +31,9 @@ namespace Prefabrikator
         protected Shared<Vector3> _center = new Shared<Vector3>(Vector3.zero);
         protected Vector3Property _centerProperty = null;
 
-        public static readonly int MinCount = 3;
-        private static readonly int MinCirlceCount = 6;
+
+        public override int MinCount => 5;
+        private static readonly int DefaultCount = 6;
 
         protected SceneView _sceneView = null;
 
@@ -44,7 +43,7 @@ namespace Prefabrikator
         private SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
 
         public CircularArrayCreator(GameObject target)
-            : base(target, MinCirlceCount)
+            : base(target, DefaultCount)
         {
             _center.Set(_target.transform.position);
 
@@ -92,7 +91,7 @@ namespace Prefabrikator
                 _center.Set(_centerProperty.Update());
                 _radius.Set(Mathf.Abs(_radiusProperty.Update()));
 
-                ShowCountField(MinCount);
+                ShowCountField();
             }
             EditorGUILayout.EndVertical();
 
