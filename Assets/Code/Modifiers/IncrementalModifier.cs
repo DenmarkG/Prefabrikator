@@ -20,7 +20,7 @@ namespace Prefabrikator
             {
                 Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(Target, previous, current));
             }
-            _targetProperty = new Vector3Property("Target Rotation", Target, OnTargetChanged);
+            _targetProperty = new Vector3Property("Target", Target, OnTargetChanged);
         }
 
         protected override void OnInspectorUpdate()

@@ -16,8 +16,8 @@ namespace Prefabrikator
 
     public class LinearArrayCreator : ArrayCreator
     {
-        public override int MinCount => DefaultCount;
-        public static readonly int DefaultCount = 2;
+        public override int MinCount => 2;
+        public static readonly int DefaultCount = 5;
 
         public override float MaxWindowHeight => 300f;
         public override string Name => "Line";

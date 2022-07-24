@@ -74,6 +74,7 @@ namespace Prefabrikator
 
                 GUILayout.Space(5);
 
+                // #DG: These need labels
                 if (ShouldShowX())
                 {
                     int countX = _countX;
@@ -400,7 +401,7 @@ namespace Prefabrikator
         {
             bool needsRefresh = false;
 
-            EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle, GUILayout.Width(PrefabrikatorTool.MaxWidth));
+            EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle, GUILayout.ExpandWidth(false)/*GUILayout.Width(PrefabrikatorTool.MaxWidth - Extensions.IndentSize)*/);
             {
                 EditorGUILayout.LabelField(label ?? "Count", GUILayout.Width(Extensions.LabelWidth));
 

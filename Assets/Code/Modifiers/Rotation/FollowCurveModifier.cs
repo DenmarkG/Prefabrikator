@@ -69,6 +69,11 @@ namespace Prefabrikator
         protected override void OnInspectorUpdate()
         {
             // #DG: Add follow axis? 
+            GUILayout.BeginHorizontal(Extensions.LogStyle);
+            {
+                GUILayout.Label("This modifier has no editable options");
+            }
+            GUILayout.EndHorizontal();
         }
 
         private void SetRoationFromCircle(GameObject[] objs)

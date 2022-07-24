@@ -15,7 +15,7 @@ namespace Prefabrikator
         private ShapeType _shapeType = ShapeType.Line;
 
         public const float MaxWidth = 500;
-        public const float MaxHeght = 500;
+        public const float MaxHeght = 750;
 
         private static PrefabrikatorTool _window = null;
 
@@ -29,7 +29,6 @@ namespace Prefabrikator
 
         private UndoStack _undoStack = null;
 
-        // #DG: make this work as another option
         private bool _keepOriginal = false;
 
         [MenuItem("Prefabikator/Duplicator &a")]
@@ -41,8 +40,8 @@ namespace Prefabrikator
         public static void Open(ArrayContainer container = null)
         {
             _window = ScriptableObject.CreateInstance<PrefabrikatorTool>();
-            //_window.maxSize = new Vector2(MaxWidth, MaxHeght);
-            //_window.minSize = _window.maxSize;
+            _window.maxSize = new Vector2(MaxWidth, MaxHeght);
+            _window.minSize = _window.maxSize;
             _window.titleContent = new GUIContent(WindowName);
 
             if (Selection.activeObject is GameObject targetObj)
@@ -158,8 +157,9 @@ namespace Prefabrikator
                 }
 
                 // Selection Field
+                EditorGUILayout.BeginVertical(Extensions.BoxedHeaderStyle);
                 {
-                    EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
+                    EditorGUILayout.BeginHorizontal();
                     {
                         EditorGUILayout.LabelField("Prefab", GUILayout.MaxWidth(100f));
                         GUILayout.FlexibleSpace();
@@ -180,7 +180,7 @@ namespace Prefabrikator
 
                     if (_selectedObject != null && IsPrefab(_selectedObject))
                     {
-                        bool keepOriginal = EditorGUILayout.Toggle("Keep Original", _keepOriginal);
+                        bool keepOriginal = EditorGUILayout.ToggleLeft("Keep Original", _keepOriginal);
                         if (_keepOriginal != keepOriginal)
                         {
                             _selectedObject.SetActive(keepOriginal);
@@ -188,12 +188,18 @@ namespace Prefabrikator
                         }
                     }
                 }
+                EditorGUILayout.EndVertical();
 
+                // Shape Options
+                GUILayout.Space(Extensions.IndentSize);
+                EditorGUILayout.LabelField("Shape Options", EditorStyles.boldLabel);
                 if (_creator != null)
                 {
                     _creator.DrawEditor();
                     _creator.DrawModifiers();
                 }
+
+                GUILayout.FlexibleSpace();
 
                 EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                 {
@@ -256,11 +262,12 @@ namespace Prefabrikator
             }
         }
 
-        //private void ResizeWindow(ArrayCreator creator)
-        //{
-        //    _window.maxSize = new Vector2(MaxWidth, creator.MaxWindowHeight);
-        //    _window.minSize = _window.maxSize;
-        //}
+        private void ResizeWindow(ArrayCreator creator)
+        {
+            float maxHeight = Mathf.Max(creator.MaxWindowHeight, _window.maxSize.y);
+            _window.maxSize = new Vector2(MaxWidth, maxHeight);
+            _window.minSize = _window.maxSize;
+        }
 
         // #DG: Make this Generic
         // then it can be used at runtime by passing params
@@ -305,7 +312,7 @@ namespace Prefabrikator
                     break;
             }
 
-            //ResizeWindow(creator);
+            ResizeWindow(creator);
             creator.OnCommandExecuted += OnCommandExecuted;
             return creator;
         }

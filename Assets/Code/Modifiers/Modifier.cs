@@ -30,23 +30,9 @@ namespace Prefabrikator
 
         public void UpdateInspector()
         {
-            EditorGUILayout.BeginVertical(new GUIStyle("Tooltip"));
+            EditorGUILayout.BeginVertical(new GUIStyle("Tooltip"), GUILayout.MaxWidth(PrefabrikatorTool.MaxWidth - Extensions.IndentSize), GUILayout.ExpandWidth(false));
             {
-                using (new EditorGUI.IndentLevelScope())
-                {
-                    EditorGUILayout.BeginHorizontal();
-                    {
-                        GUILayout.FlexibleSpace();
-                        //GUILayout.Space(20);
-                        if (GUILayout.Button(Constants.MinusButton))
-                        {
-                            _owner.CommandQueue.Enqueue(new ModifierRemoveCommand(this, _owner));
-                        }
-                    }
-                    EditorGUILayout.EndHorizontal();
-
-                    OnInspectorUpdate();
-                }
+                OnInspectorUpdate();
             }
             EditorGUILayout.EndVertical();
         }

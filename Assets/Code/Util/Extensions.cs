@@ -7,6 +7,7 @@ namespace Prefabrikator
     public static class Extensions
     {
         public const float LabelWidth = 50f;
+        public const int IndentSize = 20;
 
         public static GUIStyle BoxedHeaderStyle
         {
@@ -41,6 +42,20 @@ namespace Prefabrikator
             }
         }
         private static GUIStyle popupStyle = null;
+
+        public static GUIStyle LogStyle
+        {
+            get
+            {
+                if (_logStyle == null)
+                {
+                    _logStyle = new GUIStyle("LogStyle");
+                }
+
+                return _logStyle;
+            }
+        }
+        private static GUIStyle _logStyle = null;
 
         public static bool DisplayRotationField(ref Quaternion rotation, string label = null)
         {

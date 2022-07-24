@@ -62,7 +62,7 @@ namespace Prefabrikator
 
         public T Update()
         {
-            EditorGUILayout.BeginHorizontal(GUILayout.Width(PrefabrikatorTool.MaxWidth));
+            EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
             {
                 if (_shouldShowLabel)
                 {
