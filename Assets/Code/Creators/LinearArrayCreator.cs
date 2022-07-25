@@ -42,11 +42,14 @@ namespace Prefabrikator
         {
             EditorGUILayout.BeginVertical();
             {
-                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
+                using (new EditorGUI.IndentLevelScope())
                 {
-                    _offset.Set(_offsetProperty.Update());
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        _offset.Set(_offsetProperty.Update());
+                    }
+                    EditorGUILayout.EndHorizontal();
                 }
-                EditorGUILayout.EndHorizontal();
 
                 ShowCountField();
             }

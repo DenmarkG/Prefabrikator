@@ -51,7 +51,9 @@ namespace Prefabrikator
             }
 
             _countProperty = new IntProperty("Count", _targetCount, OnCountChange, EnforceValidCount);
-
+            _countProperty.AddCustomButton(Constants.PlusButton, (value) => { _targetCount.Set(++value); });
+            _countProperty.AddCustomButton(Constants.MinusButton, (value) => { _targetCount.Set(--value); });
+            
             // Modifier Reorderable List Setup
             _modifierDisplay = new ReorderableList(_modifierStack, typeof(Modifier), true, true, false, true);
             _modifierDisplay.drawHeaderCallback = DrawListHeader;

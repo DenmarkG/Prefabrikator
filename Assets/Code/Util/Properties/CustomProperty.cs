@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 namespace Prefabrikator
 {
@@ -37,6 +38,29 @@ namespace Prefabrikator
         public event System.Action OnEditModeEnter = null;
         public event System.Action OnEditModeExit = null;
 
+        private class CustomButton
+        {
+            private GUIContent _content = null;
+            private System.Action<T> _onClick = null;
+
+            public CustomButton(GUIContent content, System.Action<T> onClick)
+            {
+                _content = content;
+                _onClick = onClick;
+            }
+
+            public bool Show() 
+            {
+                return GUILayout.Button(_content, GUILayout.Width(Extensions.IndentSize));
+            }
+
+            public void Click(T value)
+            {
+                _onClick(value);
+            }
+        }
+        private List<CustomButton> _customButtons = null;
+
         public CustomProperty(string label, T startValue, OnValueSetDelegate onValueSet, ValidateInputDelegate onValidate = null)
         {
             _setValue.Set(startValue);
@@ -72,6 +96,8 @@ namespace Prefabrikator
                 if (_editMode == EditMode.Enabled)
                 {
                     _workingValue = ShowPropertyField();
+                    ShowCustomButtons();
+
                     if (GUILayout.Button(Constants.XButton))
                     {
                         _workingValue = _setValueCopy;
@@ -91,13 +117,13 @@ namespace Prefabrikator
                         _editMode = EditMode.Disabled;
                         OnEditModeExit?.Invoke();
                     }
-
                 }
                 else
                 {
                     EditorGUI.BeginDisabledGroup(true);
                     {
                         ShowPropertyField();
+                        ShowCustomButtons();
                     }
                     EditorGUI.EndDisabledGroup();
                     if (GUILayout.Button(Constants.EditButton, GUILayout.MaxWidth(40)))
@@ -113,6 +139,23 @@ namespace Prefabrikator
             return _workingValue;
         }
 
+        private void ShowCustomButtons()
+        {
+            if (_customButtons != null && _customButtons.Count > 0)
+            {
+                int numControls = _customButtons.Count;
+                CustomButton button = null;
+                for (int i = 0; i < numControls; ++i)
+                {
+                    button = _customButtons[i];
+                    if (button.Show())
+                    {
+                        button.Click(_workingValue);
+                    }
+                }
+            }
+        }
+
         public void SetDefaultValue(T defaultValue)
         {
             _setValue.Set(defaultValue);
@@ -125,6 +168,16 @@ namespace Prefabrikator
             {
                 _workingValue = newSetValue;
             }
+        }
+
+        public void AddCustomButton(GUIContent content, System.Action<T> onClick)
+        {
+            if (_customButtons == null)
+            {
+                _customButtons = new List<CustomButton>();
+            }
+
+            _customButtons.Add(new CustomButton(content, onClick));
         }
 
         protected abstract T ShowPropertyField();

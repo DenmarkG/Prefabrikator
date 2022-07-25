@@ -75,7 +75,7 @@ Modifiers to Add:
         - Some refresh functions require fully formed objects, but the base class calls refresh
 
 [] Make Count field easier to use
-    [] Add buttons back
+    [x] Add buttons back
     [] ensure labels are correct
 [x] Make edit button smaller
 [] 
@@ -84,7 +84,7 @@ Undo/Redo should support changing the Shape type
 
 
 [] Bug using position noise on off-center circles
-[] Off-center bug when using volumes 
+[x] Off-center bug when using volumes 
 
 [] Validate text when exiting custom property edit mode
 [] Connect Mods to names of mods
