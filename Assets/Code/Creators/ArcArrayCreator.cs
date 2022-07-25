@@ -24,14 +24,20 @@ namespace Prefabrikator
 
         // how much of circle to fill; makes arcs possible
         public static readonly float DefaultFillPercent = .375f;
-        private float _fillPercent = DefaultFillPercent;
+        private Shared<float> _fillPercent = new Shared<float>(DefaultFillPercent);
+        private FloatSlider _fillProperty = null;
 
         private ArcHandle _arcHandle = new ArcHandle();
+        private SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
 
         public ArcArrayCreator(GameObject target)
             : base(target)
         {
-            _arcHandle.SetColorWithRadiusHandle(Color.gray, .25f);
+            _arcHandle.SetColorWithoutRadiusHandle(Color.gray, .25f);
+
+            _fillProperty = new FloatSlider("Fill", _fillPercent, OnSliderChange);
+            _fillProperty.OnEditModeEnter += () => { _editMode |= EditMode.Angle; };
+            _fillProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Angle; };
         }
 
         public override void DrawEditor()
@@ -39,12 +45,7 @@ namespace Prefabrikator
             EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
             {
                 EditorGUILayout.LabelField("Fill", GUILayout.Width(Extensions.LabelWidth));
-                float fillPercent = EditorGUILayout.Slider(_fillPercent, 0f, .9999f, null);
-                if (fillPercent != _fillPercent)
-                {
-                    _fillPercent = fillPercent;
-                    //_needsRefresh = true;
-                }
+                _fillPercent.Set(_fillProperty.Update());
             }
             EditorGUILayout.EndHorizontal();
 
@@ -89,8 +90,13 @@ namespace Prefabrikator
             {
                 SetTargetCount(arcData.Count);
                 _radius.Set(arcData.Radius);
-                _fillPercent = arcData.FillPercent;
+                _fillPercent.Set(arcData.FillPercent);
             }
+        }
+
+        private void OnSliderChange(float current, float previous)
+        {
+            CommandQueue.Enqueue(new GenericCommand<float>(_fillPercent, previous, current));
         }
 
         protected override void OnSceneGUI(SceneView view)
@@ -103,25 +109,43 @@ namespace Prefabrikator
             if (IsEditMode)
             {
                 Vector3 center = _center;
-
-                _arcHandle.angle = 360f * _fillPercent;
-                _arcHandle.radius = _radius;
-                _arcHandle.radiusHandleDrawFunction = Handles.CubeHandleCap;
-
-                Vector3 handleDirection = Vector3.right;
-                Vector3 handleNormal = Vector3.Cross(handleDirection, Vector3.forward);
-                Matrix4x4 handleMatrix = Matrix4x4.TRS(
-                    _center,
-                    Quaternion.LookRotation(handleDirection, handleNormal),
-                    Vector3.one
-                );
-
-                using (new Handles.DrawingScope(handleMatrix))
+                EditorGUI.BeginChangeCheck();
                 {
-                    EditorGUI.BeginChangeCheck();
+                    // Position Handle
+                    if (_editMode.HasFlag(EditMode.Center))
                     {
                         center = Handles.PositionHandle(_center, Quaternion.identity);
-                        _arcHandle.DrawHandle();
+                    }
+
+                    // Radius Handle
+                    _radiusHandle.center = center;
+                    _radiusHandle.radius = _radius;
+                    _radiusHandle.axes = PrimitiveBoundsHandle.Axes.X | PrimitiveBoundsHandle.Axes.Z;
+
+                    if (_editMode.HasFlag(EditMode.Size))
+                    {
+                        _radiusHandle.DrawHandle();
+                    }
+
+                    // Arc Handle
+                    _arcHandle.angle = 360f * _fillPercent;
+                    _arcHandle.radius = _radius;
+                    _arcHandle.radiusHandleDrawFunction = Handles.CubeHandleCap;
+
+                    Vector3 handleDirection = Vector3.right;
+                    Vector3 handleNormal = Vector3.Cross(handleDirection, Vector3.forward);
+                    Matrix4x4 handleMatrix = Matrix4x4.TRS(
+                        _center,
+                        Quaternion.LookRotation(handleDirection, handleNormal),
+                        Vector3.one
+                    );
+
+                    using (new Handles.DrawingScope(handleMatrix))
+                    {
+                        if (_editMode.HasFlag(EditMode.Angle))
+                        {
+                            _arcHandle.DrawHandle();
+                        }
                     }
                 }
 
@@ -135,12 +159,12 @@ namespace Prefabrikator
                     float fillPercent = _arcHandle.angle / 360f;
                     if (!Mathf.Approximately(_fillPercent, fillPercent))
                     {
-                        _fillPercent = fillPercent;
+                        _fillPercent.Set(fillPercent);
                     }
 
-                    if (_arcHandle.radius != _radius)
+                    if (_radiusHandle.radius != _radius)
                     {
-                        _radius.Set(_arcHandle.radius);
+                        _radius.Set(_radiusHandle.radius);
                     }
                 }
             }

@@ -48,6 +48,23 @@ namespace Prefabrikator
         }
     }
 
+    public class FloatSlider : CustomProperty<float>
+    {
+        public float Max = .999f;
+        public float Min = .01f;
+
+        public FloatSlider(string label, Shared<float> startValue, OnValueSetDelegate onValueSet)
+            : base(label, startValue, onValueSet)
+        {
+            _shouldShowLabel = false;
+        }
+
+        protected override float ShowPropertyField()
+        {
+            return EditorGUILayout.Slider(WorkingValue, Min, Max, null);
+        }
+    }
+
     public class IntProperty : CustomProperty<int>
     {
         public IntProperty(string label, Shared<int> startValue, OnValueSetDelegate onValueSet, ValidateInputDelegate onValidate)

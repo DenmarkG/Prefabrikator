@@ -38,8 +38,8 @@ BUGS:
 [] Add Interactive views to draw shapes in scene view
     [] Box 
     [] line
-    [] circle
-    [] sphere
+    [x] circle
+    [x] sphere
 
 Shapes to add:
     [] Scatter Circular
@@ -75,6 +75,10 @@ Modifiers to Add:
         - Some refresh functions require fully formed objects, but the base class calls refresh
 
 [] Make Count field easier to use
+    [] Add buttons back
+    [] ensure labels are correct
+[] Make edit button smaller
+[] 
 
 Undo/Redo should support changing the Shape type
 

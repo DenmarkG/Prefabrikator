@@ -38,7 +38,7 @@ namespace Prefabrikator
         protected SceneView _sceneView = null;
 
         protected bool IsEditMode => _editMode != EditMode.None;
-        private EditMode _editMode = EditMode.None;
+        protected EditMode _editMode = EditMode.None;
 
         private SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
 
@@ -86,14 +86,17 @@ namespace Prefabrikator
 
         public override void DrawEditor()
         {
-            EditorGUILayout.BeginVertical();
+            using (new EditorGUI.IndentLevelScope())
             {
-                _center.Set(_centerProperty.Update());
-                _radius.Set(Mathf.Abs(_radiusProperty.Update()));
+                EditorGUILayout.BeginVertical();
+                {
+                    _center.Set(_centerProperty.Update());
+                    _radius.Set(Mathf.Abs(_radiusProperty.Update()));
 
-                ShowCountField();
+                    ShowCountField();
+                }
+                EditorGUILayout.EndVertical();
             }
-            EditorGUILayout.EndVertical();
 
             if (_sceneView != null)
             {
@@ -228,7 +231,6 @@ namespace Prefabrikator
             if (IsEditMode)
             {
                 Vector3 center = _center;
-
                 
                 _radiusHandle.center = center;
                 _radiusHandle.radius = _radius;
@@ -236,9 +238,17 @@ namespace Prefabrikator
 
                 EditorGUI.BeginChangeCheck();
                 {
-                    center = Handles.PositionHandle(_center, Quaternion.identity);
-                    _radiusHandle.DrawHandle();
+                    if (_editMode.HasFlag(EditMode.Center))
+                    {
+                        center = Handles.PositionHandle(_center, Quaternion.identity);
+                    }
+
+                    if (_editMode.HasFlag(EditMode.Size))
+                    {
+                        _radiusHandle.DrawHandle();
+                    }
                 }
+
                 if (EditorGUI.EndChangeCheck())
                 {
                     if (center != _center)

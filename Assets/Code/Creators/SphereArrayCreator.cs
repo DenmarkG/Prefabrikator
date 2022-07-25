@@ -42,26 +42,29 @@ namespace Prefabrikator
 
         public override void DrawEditor()
         {
-            EditorGUILayout.BeginVertical();
+            using (new EditorGUI.IndentLevelScope())
             {
-                _center.Set(_centerProperty.Update());
-                _radius.Set(Mathf.Abs(_radiusProperty.Update()));
-
-                int sectorCount = _sectorCount;
-                if (DisplayCountField(ref sectorCount, "Segments"))
+                EditorGUILayout.BeginVertical();
                 {
-                    sectorCount = Mathf.Max(sectorCount, MinCount);
-                    CommandQueue.Enqueue(new GenericCommand<int>(_sectorCount, _sectorCount, sectorCount));
-                }
+                    _center.Set(_centerProperty.Update());
+                    _radius.Set(Mathf.Abs(_radiusProperty.Update()));
 
-                int stackCount = _stackCount;
-                if (DisplayCountField(ref stackCount, "Rings"))
-                {
-                    stackCount = Mathf.Max(stackCount, MinCount);
-                    CommandQueue.Enqueue(new GenericCommand<int>(_stackCount, _stackCount, stackCount));
+                    int sectorCount = _sectorCount;
+                    if (DisplayCountField(ref sectorCount, "Segments"))
+                    {
+                        sectorCount = Mathf.Max(sectorCount, MinCount);
+                        CommandQueue.Enqueue(new GenericCommand<int>(_sectorCount, _sectorCount, sectorCount));
+                    }
+
+                    int stackCount = _stackCount;
+                    if (DisplayCountField(ref stackCount, "Rings"))
+                    {
+                        stackCount = Mathf.Max(stackCount, MinCount);
+                        CommandQueue.Enqueue(new GenericCommand<int>(_stackCount, _stackCount, stackCount));
+                    }
                 }
+                EditorGUILayout.EndVertical();
             }
-            EditorGUILayout.EndVertical();
 
             if (_sceneView != null)
             {

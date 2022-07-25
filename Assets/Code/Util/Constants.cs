@@ -9,6 +9,7 @@ namespace Prefabrikator
         None = 0,
         Center = 0x1,
         Size = 0x2,
+        Angle = 0x4,
     }
 
     public static class Constants
