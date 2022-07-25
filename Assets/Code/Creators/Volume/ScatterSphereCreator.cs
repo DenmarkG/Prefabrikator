@@ -50,7 +50,7 @@ namespace Prefabrikator
             if (proxy != null)
             {
                 Vector3 position = GetRandomPointInBounds();
-                GameObject clone = GameObject.Instantiate(_target, position * _radius, _target.transform.rotation);
+                GameObject clone = GameObject.Instantiate(_target, (position * _radius) + _center, _target.transform.rotation);
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
 
