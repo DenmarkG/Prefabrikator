@@ -33,12 +33,22 @@ namespace Prefabrikator
 
         public override sealed void DrawEditor()
         {
-            if (GUILayout.Button("Scatter"))
+            using (new EditorGUI.IndentLevelScope())
             {
-                Scatter();
+                EditorGUILayout.BeginHorizontal();
+                {
+                    GUILayout.Space(Extensions.IndentSize);
+                    if (GUILayout.Button("Scatter"))
+                    {
+                        Scatter();
+                    }
+                }
+                EditorGUILayout.EndHorizontal();
+
+                DrawVolumeEditor();
             }
 
-            DrawVolumeEditor();
+            ShowCountField();
         }
 
         protected abstract void DrawVolumeEditor();

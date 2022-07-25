@@ -77,13 +77,14 @@ Modifiers to Add:
 [] Make Count field easier to use
     [] Add buttons back
     [] ensure labels are correct
-[] Make edit button smaller
+[x] Make edit button smaller
 [] 
 
 Undo/Redo should support changing the Shape type
 
 
 [] Bug using position noise on off-center circles
+[] Off-center bug when using volumes 
 
 [] Validate text when exiting custom property edit mode
 [] Connect Mods to names of mods

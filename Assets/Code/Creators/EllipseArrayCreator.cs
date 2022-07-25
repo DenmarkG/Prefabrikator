@@ -30,15 +30,18 @@ namespace Prefabrikator
 
         public override void DrawEditor()
         {
-            EditorGUILayout.BeginVertical();
+            using (new EditorGUI.IndentLevelScope())
             {
-                _center.Set(_centerProperty.Update());
-                _radius.Set(Mathf.Abs(_radiusProperty.Update()));
-                _zRadius.Set(Mathf.Abs(_zRadiusProperty.Update()));
-
-                ShowCountField();
+                EditorGUILayout.BeginVertical();
+                {
+                    _center.Set(_centerProperty.Update());
+                    _radius.Set(Mathf.Abs(_radiusProperty.Update()));
+                    _zRadius.Set(Mathf.Abs(_zRadiusProperty.Update()));
+                }
+                EditorGUILayout.EndVertical();
             }
-            EditorGUILayout.EndVertical();
+
+            ShowCountField();
 
             if (_sceneView != null)
             {

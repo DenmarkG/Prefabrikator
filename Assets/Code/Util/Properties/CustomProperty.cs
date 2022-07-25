@@ -66,7 +66,7 @@ namespace Prefabrikator
             {
                 if (_shouldShowLabel)
                 {
-                    EditorGUILayout.LabelField(_label, GUILayout.Width(Extensions.LabelWidth));
+                    EditorGUILayout.LabelField(_label, GUILayout.MaxWidth(Extensions.LabelWidth));
                 }
 
                 if (_editMode == EditMode.Enabled)
@@ -100,7 +100,7 @@ namespace Prefabrikator
                         ShowPropertyField();
                     }
                     EditorGUI.EndDisabledGroup();
-                    if (GUILayout.Button(Constants.EditButton))
+                    if (GUILayout.Button(Constants.EditButton, GUILayout.MaxWidth(40)))
                     {
                         _editMode = EditMode.Enabled;
                         _setValueCopy = _setValue;

@@ -6,7 +6,7 @@ namespace Prefabrikator
 {
     public static class Extensions
     {
-        public const float LabelWidth = 50f;
+        public const float LabelWidth = 60f;
         public const int IndentSize = 20;
 
         public static GUIStyle BoxedHeaderStyle

@@ -42,12 +42,15 @@ namespace Prefabrikator
 
         public override void DrawEditor()
         {
-            EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
+            using (new EditorGUI.IndentLevelScope())
             {
-                EditorGUILayout.LabelField("Fill", GUILayout.Width(Extensions.LabelWidth));
-                _fillPercent.Set(_fillProperty.Update());
+                EditorGUILayout.BeginHorizontal();
+                {
+                    EditorGUILayout.LabelField("Fill", GUILayout.Width(Extensions.LabelWidth));
+                    _fillPercent.Set(_fillProperty.Update());
+                }
+                EditorGUILayout.EndHorizontal();
             }
-            EditorGUILayout.EndHorizontal();
 
             base.DrawEditor();
         }

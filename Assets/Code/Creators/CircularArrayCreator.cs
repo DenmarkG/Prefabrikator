@@ -92,11 +92,11 @@ namespace Prefabrikator
                 {
                     _center.Set(_centerProperty.Update());
                     _radius.Set(Mathf.Abs(_radiusProperty.Update()));
-
-                    ShowCountField();
                 }
                 EditorGUILayout.EndVertical();
             }
+
+            ShowCountField();
 
             if (_sceneView != null)
             {

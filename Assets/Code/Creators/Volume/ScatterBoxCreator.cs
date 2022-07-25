@@ -186,8 +186,6 @@ namespace Prefabrikator
 
         protected override void DrawVolumeEditor()
         {
-            ShowCountField();
-
             Vector3 center = _centerProperty.Update();
             if (center != _center)
             {
