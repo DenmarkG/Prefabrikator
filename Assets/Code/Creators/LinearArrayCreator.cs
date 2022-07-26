@@ -225,10 +225,11 @@ namespace Prefabrikator
                 _sceneView = view;
             }
 
+            
             if (_editMode.HasFlag(EditMode.Position))
             {
                 GameObject proxy = GetProxy();
-                Handles.color = Color.white;
+                Handles.color = Color.green;
                 const float offsetHeight = 2f;
                 Vector3 verticalOffset = offsetHeight * Vector3.up;
                 Vector3 start = proxy.transform.position;
@@ -238,8 +239,15 @@ namespace Prefabrikator
                 Handles.DrawLine(start, start + verticalOffset);
                 Handles.DrawLine(end, end + verticalOffset);
 
-                Vector3 start2 = Handles.PositionHandle(start + verticalOffset, Quaternion.identity) - verticalOffset;
-                Vector3 end2 = Handles.PositionHandle(end + verticalOffset, Quaternion.identity) - verticalOffset;
+                Handles.CapFunction cap = Handles.SphereHandleCap;
+                int startID = GUIUtility.GetControlID(FocusType.Passive);
+                
+                Vector3 startHndPos = start + verticalOffset;
+                const float handleSize = .75f;
+                Vector3 start2 = Handles.FreeMoveHandle(startHndPos, handleSize, Vector3.zero, cap) - verticalOffset;
+
+                Vector3 endHndPos = end + verticalOffset;
+                Vector3 end2 = Handles.FreeMoveHandle(endHndPos, handleSize, Vector3.zero, cap) - verticalOffset;
 
                 if (start2 != start || end2 != end)
                 {

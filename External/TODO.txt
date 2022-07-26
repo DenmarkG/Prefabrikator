@@ -90,6 +90,8 @@ Modifiers to Add:
 [] Validate text when exiting custom property edit mode
 [] Connect Mods to names of mods
 
+[] Use shapes to generate geometry when the prefab is empty
+
 EditorGUIUtility.IconContent
 edit: _Menu, d_Preset.Context
 plus: d_Toolbar Plus
