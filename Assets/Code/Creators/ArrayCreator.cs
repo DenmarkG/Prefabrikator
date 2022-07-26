@@ -261,7 +261,7 @@ namespace Prefabrikator
             }
         }
 
-        private int EnforceValidCount(int count)
+        protected int EnforceValidCount(int count)
         {
             return Mathf.Max(count, MinCount);
         }

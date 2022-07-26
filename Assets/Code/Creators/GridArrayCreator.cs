@@ -38,8 +38,13 @@ namespace Prefabrikator
 
         private static readonly int DefaultCount = 3;
         private Shared<int> _countX = new Shared<int>(DefaultCount);
+        private IntProperty _xCountProperty = null;
+
         private Shared<int> _countY = new Shared<int>(DefaultCount);
+        private IntProperty _yCountProperty = null;
+
         private Shared<int> _countZ = new Shared<int>(DefaultCount);
+        private IntProperty _zCountProperty = null;
 
         private Shared<Dimension> _dimension = new Shared<Dimension>(Dimension.XY);
 
@@ -77,31 +82,19 @@ namespace Prefabrikator
                 // #DG: These need labels
                 if (ShouldShowX())
                 {
-                    int countX = _countX;
-                    if (DisplayCountField(ref countX))
-                    {
-                        CommandQueue.Enqueue(new GenericCommand<int>(_countX, _countX, countX));
-                    }
+                    _countX.Set(_xCountProperty.Update());
                     targetCount *= (_countX > 0) ? _countX : 1;
                 }
 
                 if (ShouldShowY())
                 {
-                    int countY = _countY;
-                    if (DisplayCountField(ref countY))
-                    {
-                        CommandQueue.Enqueue(new GenericCommand<int>(_countY, _countY, countY));
-                    }
+                    _countY.Set(_yCountProperty.Update());
                     targetCount *= (_countY > 0) ? _countY : 1;
                 }
 
                 if (ShouldShowZ())
                 {
-                    int countZ = _countZ;
-                    if (DisplayCountField(ref countZ))
-                    {
-                        CommandQueue.Enqueue(new GenericCommand<int>(_countZ, _countZ, countZ));
-                    }
+                    _countZ.Set(_zCountProperty.Update());
                     targetCount *= (_countZ > 0) ? _countZ : 1;
                 }
 
@@ -317,17 +310,44 @@ namespace Prefabrikator
             }
             _xOffsetProperty = new FloatProperty("X", _offsetX, OnXChanged);
 
+            void OnXCountChange(int current, int previous)
+            {
+                current = EnforceValidCount(current);
+                CommandQueue.Enqueue(new GenericCommand<int>(_countX, previous, current));
+            }
+            _xCountProperty = new IntProperty("Count X", _countX, OnXCountChange, EnforceValidCount);
+            _xCountProperty.AddCustomButton(Constants.PlusButton, (value) => { _countX.Set(++value); });
+            _xCountProperty.AddCustomButton(Constants.MinusButton, (value) => { _countX.Set(--value); });
+
             void OnYChanged(float current, float previous)
             {
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetY, previous, current));
             }
             _yOffsetProperty = new FloatProperty("Y", _offsetY, OnYChanged);
 
+            void OnYCountChange(int current, int previous)
+            {
+                current = EnforceValidCount(current);
+                CommandQueue.Enqueue(new GenericCommand<int>(_countY, previous, current));
+            }
+            _yCountProperty = new IntProperty("Count Y", _countY, OnYCountChange, EnforceValidCount);
+            _yCountProperty.AddCustomButton(Constants.PlusButton, (value) => { _countY.Set(++value); });
+            _yCountProperty.AddCustomButton(Constants.MinusButton, (value) => { _countY.Set(--value); });
+
             void OnZChanged(float current, float previous)
             {
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetZ, previous, current));
             }
             _zOffsetProperty = new FloatProperty("Z", _offsetZ, OnZChanged);
+
+            void OnZCountChange(int current, int previous)
+            {
+                current = EnforceValidCount(current);
+                CommandQueue.Enqueue(new GenericCommand<int>(_countZ, previous, current));
+            }
+            _zCountProperty = new IntProperty("Count Z", _countZ, OnZCountChange, EnforceValidCount);
+            _zCountProperty.AddCustomButton(Constants.PlusButton, (value) => { _countZ.Set(++value); });
+            _zCountProperty.AddCustomButton(Constants.MinusButton, (value) => { _countZ.Set(--value); });
         }
 
         protected override void CreateClone(int index = 0)
