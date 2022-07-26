@@ -79,8 +79,9 @@ Modifiers to Add:
     [] ensure labels are correct
 [x] Make edit button smaller
 [] 
+[] Allow Start position to change for line 
 
-Undo/Redo should support changing the Shape type
+[] Undo/Redo should support changing the Shape type
 
 
 [] Bug using position noise on off-center circles

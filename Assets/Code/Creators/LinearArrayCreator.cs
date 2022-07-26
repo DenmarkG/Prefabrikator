@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
@@ -25,6 +26,10 @@ namespace Prefabrikator
 
         private Vector3Property _offsetProperty = null;
 
+        private EditMode _editMode = EditMode.None;
+
+        protected SceneView _sceneView = null;
+
         public LinearArrayCreator(GameObject target)
             : base(target, DefaultCount)
         {
@@ -32,10 +37,25 @@ namespace Prefabrikator
             {
                 CommandQueue.Enqueue(new GenericCommand<Vector3>(_offset, previous, current));
             };
-
             _offsetProperty = new Vector3Property("Offset", _offset, OnValueSet);
+            _offsetProperty.OnEditModeEnter += () => { _editMode = EditMode.Position; };
+            _offsetProperty.OnEditModeExit += () => { _editMode = EditMode.None; };
+
+            SceneView.duringSceneGui += OnSceneGUI;
 
             Refresh();
+        }
+
+        ~LinearArrayCreator()
+        {
+            Teardown();
+        }
+
+        public override void Teardown()
+        {
+            SceneView.duringSceneGui -= OnSceneGUI;
+            SceneView.RepaintAll();
+            base.Teardown();
         }
 
         public override void DrawEditor()
@@ -54,6 +74,11 @@ namespace Prefabrikator
                 ShowCountField();
             }
             EditorGUILayout.EndVertical();
+
+            if (_sceneView != null)
+            {
+                EditorUtility.SetDirty(_sceneView);
+            }
         }
 
         public override void UpdateEditor()
@@ -189,6 +214,37 @@ namespace Prefabrikator
                 while (TargetCount > _createdObjects.Count)
                 {
                     CreateClone();
+                }
+            }
+        }
+
+        protected void OnSceneGUI(SceneView view)
+        {
+            if (_sceneView == null || _sceneView != view)
+            {
+                _sceneView = view;
+            }
+
+            if (_editMode.HasFlag(EditMode.Position))
+            {
+                GameObject proxy = GetProxy();
+                Handles.color = Color.white;
+                const float offsetHeight = 2f;
+                Vector3 verticalOffset = offsetHeight * Vector3.up;
+                Vector3 start = proxy.transform.position;
+                Vector3 end = start + (_offset.Get() * (_createdObjects.Count - 1));
+
+                Handles.DrawLine(start, end);
+                Handles.DrawLine(start, start + verticalOffset);
+                Handles.DrawLine(end, end + verticalOffset);
+
+                Vector3 start2 = Handles.PositionHandle(start + verticalOffset, Quaternion.identity) - verticalOffset;
+                Vector3 end2 = Handles.PositionHandle(end + verticalOffset, Quaternion.identity) - verticalOffset;
+
+                if (start2 != start || end2 != end)
+                {
+                    proxy.transform.position = start2;
+                    _offset.Set((end2 - start2) / (_createdObjects.Count - 1));
                 }
             }
         }
