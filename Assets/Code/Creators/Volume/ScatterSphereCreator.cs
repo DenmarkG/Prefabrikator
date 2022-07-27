@@ -25,22 +25,10 @@ namespace Prefabrikator
             SceneView.duringSceneGui += OnSceneGUI;
         }
 
-        ~ScatterSphereCreator()
-        {
-            Teardown();
-        }
-
         protected override void OnSave()
         {
             SceneView.duringSceneGui -= OnSceneGUI;
             SceneView.RepaintAll();
-        }
-
-        public override void Teardown()
-        {
-            SceneView.duringSceneGui -= OnSceneGUI;
-            SceneView.RepaintAll();
-            base.Teardown();
         }
 
         protected override void CreateClone(int index = 0)
@@ -148,7 +136,7 @@ namespace Prefabrikator
             }
         }
 
-        private void OnSceneGUI(SceneView view)
+        protected override void OnSceneGUI(SceneView view)
         {
             if (_sceneView == null || _sceneView != view)
             {

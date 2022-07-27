@@ -39,22 +39,10 @@ namespace Prefabrikator
             Refresh();
         }
 
-        ~BezierArrayCreator()
-        {
-            Teardown();
-        }
-
         protected override void OnSave()
         {
             SceneView.duringSceneGui -= OnSceneGUI;
             SceneView.RepaintAll();
-        }
-
-        public override void Teardown()
-        {
-            SceneView.duringSceneGui -= OnSceneGUI;
-            SceneView.RepaintAll();
-            base.Teardown();
         }
 
         public override void DrawEditor()
@@ -207,7 +195,7 @@ namespace Prefabrikator
             Refresh();
         }
 
-        private void OnSceneGUI(SceneView view)
+        protected override void OnSceneGUI(SceneView view)
         {
             if (_showControlPoints)
             {

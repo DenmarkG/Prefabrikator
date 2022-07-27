@@ -39,6 +39,10 @@ namespace Prefabrikator
 
         private ReorderableList _modifierDisplay = null;
 
+        protected bool IsEditMode => _editMode != EditMode.None;
+        protected EditMode _editMode = EditMode.None;
+        protected SceneView _sceneView = null;
+
         public ArrayCreator(GameObject target, int defaultCount)
         {
             _target = target;
@@ -66,11 +70,16 @@ namespace Prefabrikator
             _createdObjects = new List<GameObject>(_targetCount);
             OnTargetCountChanged();
 
+            SceneView.duringSceneGui += OnSceneGUI;
+
             Refresh();
         }
 
-        public virtual void Teardown()
+        public void Teardown()
         {
+            SceneView.duringSceneGui -= OnSceneGUI;
+            SceneView.RepaintAll();
+
             OnCommandExecuted = null;
             DestroyAll();
         }
@@ -323,9 +332,19 @@ namespace Prefabrikator
             }
         }
 
+        protected void SetSceneViewDirty()
+        {
+            if (_sceneView != null)
+            {
+                EditorUtility.SetDirty(_sceneView);
+            }
+        }
+
+        protected virtual void OnSceneGUI(SceneView view) { }
+
         //
         // Modifiers
-            // #DG: move this to a unified dictionary, keyed by modifier type
+        // #DG: move this to a unified dictionary, keyed by modifier type
         protected virtual string[] GetAllowedModifiers()
         {
             string[] mods =

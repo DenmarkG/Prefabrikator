@@ -26,10 +26,6 @@ namespace Prefabrikator
 
         private Vector3Property _offsetProperty = null;
 
-        private EditMode _editMode = EditMode.None;
-
-        protected SceneView _sceneView = null;
-
         public LinearArrayCreator(GameObject target)
             : base(target, DefaultCount)
         {
@@ -44,18 +40,6 @@ namespace Prefabrikator
             SceneView.duringSceneGui += OnSceneGUI;
 
             Refresh();
-        }
-
-        ~LinearArrayCreator()
-        {
-            Teardown();
-        }
-
-        public override void Teardown()
-        {
-            SceneView.duringSceneGui -= OnSceneGUI;
-            SceneView.RepaintAll();
-            base.Teardown();
         }
 
         public override void DrawEditor()
@@ -218,7 +202,7 @@ namespace Prefabrikator
             }
         }
 
-        protected void OnSceneGUI(SceneView view)
+        protected override void OnSceneGUI(SceneView view)
         {
             if (_sceneView == null || _sceneView != view)
             {

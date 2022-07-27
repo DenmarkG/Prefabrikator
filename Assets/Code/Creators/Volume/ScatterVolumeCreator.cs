@@ -15,11 +15,6 @@ namespace Prefabrikator
 
         protected List<Vector3> _positions = new List<Vector3>();
 
-        protected bool IsEditMode => _editMode != EditMode.None;
-        protected EditMode _editMode = EditMode.None;
-
-        protected SceneView _sceneView = null;
-
         protected bool IsDirty { get; private set; }
         
         protected Shared<Vector3> _center = new Shared<Vector3>();

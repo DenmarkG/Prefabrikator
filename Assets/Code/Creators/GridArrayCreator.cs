@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
@@ -55,6 +56,9 @@ namespace Prefabrikator
         private FloatProperty _zOffsetProperty = null;
 
         private List<Vector3> _defaultPositions = new List<Vector3>();
+
+        private int _editsEnabled = 0;
+        private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
 
         public GridArrayCreator(GameObject target)
             : base(target, DefaultCount * DefaultCount)
@@ -130,6 +134,8 @@ namespace Prefabrikator
                 }
             }
             EditorGUILayout.EndVertical();
+
+            SetSceneViewDirty();
         }
 
         private bool ShouldShowX() => _dimension != Dimension.YZ;
@@ -309,6 +315,8 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetX, previous, current));
             }
             _xOffsetProperty = new FloatProperty("X", _offsetX, OnXChanged);
+            _xOffsetProperty.OnEditModeEnter += () => { ++_editsEnabled; };
+            _xOffsetProperty.OnEditModeExit += () => { --_editsEnabled; };
 
             void OnXCountChange(int current, int previous)
             {
@@ -324,6 +332,8 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetY, previous, current));
             }
             _yOffsetProperty = new FloatProperty("Y", _offsetY, OnYChanged);
+            _yOffsetProperty.OnEditModeEnter += () => { ++_editsEnabled; };
+            _yOffsetProperty.OnEditModeExit += () => { --_editsEnabled; };
 
             void OnYCountChange(int current, int previous)
             {
@@ -339,6 +349,8 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetZ, previous, current));
             }
             _zOffsetProperty = new FloatProperty("Z", _offsetZ, OnZChanged);
+            _zOffsetProperty.OnEditModeEnter += () => { ++_editsEnabled; };
+            _zOffsetProperty.OnEditModeExit += () => { --_editsEnabled; };
 
             void OnZCountChange(int current, int previous)
             {
@@ -417,38 +429,34 @@ namespace Prefabrikator
             return _defaultPositions[index];
         }
 
-        public bool DisplayCountField(ref int targetCount, string label = null)
+        protected override void OnSceneGUI(SceneView view)
         {
-            bool needsRefresh = false;
-
-            EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle, GUILayout.ExpandWidth(false)/*GUILayout.Width(PrefabrikatorTool.MaxWidth - Extensions.IndentSize)*/);
+            if (_sceneView == null || _sceneView != view)
             {
-                EditorGUILayout.LabelField(label ?? "Count", GUILayout.Width(Extensions.LabelWidth));
+                _sceneView = view;
+            }
 
-                if (GUILayout.Button("-", GUILayout.Width(20)))
+            GameObject proxy = GetProxy();
+            if (_editsEnabled > 0 && proxy != null)
+            {
+                Vector3 size = new Vector3();
+                size.x = _offsetX * _countX;
+                size.y = _offsetY * _countY;
+                size.z = _offsetZ * _countZ;
+                _boundsHandle.size = size;
+
+                Vector3 center = (size / 2f) + proxy.transform.position;
+                _boundsHandle.center = center;                
+
+                EditorGUI.BeginChangeCheck();
                 {
-                    if (targetCount > 0)
-                    {
-                        --targetCount;
-                        needsRefresh = true;
-                    }
+                    _boundsHandle.DrawHandle();
                 }
-
-                var style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter };
-                EditorGUILayout.LabelField(targetCount.ToString(), style, GUILayout.ExpandWidth(true), GUILayout.Width(Extensions.LabelWidth));
-
-                if (GUILayout.Button("+", GUILayout.Width(20)))
+                if (EditorGUI.EndChangeCheck())
                 {
-                    if (targetCount < int.MaxValue - 1)
-                    {
-                        ++targetCount;
-                        needsRefresh = true;
-                    }
+                    //
                 }
             }
-            EditorGUILayout.EndHorizontal();
-
-            return needsRefresh;
         }
     }
 }

@@ -31,14 +31,8 @@ namespace Prefabrikator
         protected Shared<Vector3> _center = new Shared<Vector3>(Vector3.zero);
         protected Vector3Property _centerProperty = null;
 
-
         public override int MinCount => 5;
         private static readonly int DefaultCount = 6;
-
-        protected SceneView _sceneView = null;
-
-        protected bool IsEditMode => _editMode != EditMode.None;
-        protected EditMode _editMode = EditMode.None;
 
         private SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
 
@@ -66,22 +60,10 @@ namespace Prefabrikator
             SceneView.duringSceneGui += OnSceneGUI;
         }
 
-        ~CircularArrayCreator()
-        {
-            Teardown();
-        }
-
         protected override void OnSave()
         {
             SceneView.duringSceneGui -= OnSceneGUI;
             SceneView.RepaintAll();
-        }
-
-        public override void Teardown()
-        {
-            SceneView.duringSceneGui -= OnSceneGUI;
-            SceneView.RepaintAll();
-            base.Teardown();
         }
 
         public override void DrawEditor()
@@ -221,7 +203,7 @@ namespace Prefabrikator
             }
         }
 
-        protected virtual void OnSceneGUI(SceneView view)
+        protected override void OnSceneGUI(SceneView view)
         {
             if (_sceneView == null || _sceneView != view)
             {
