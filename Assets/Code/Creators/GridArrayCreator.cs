@@ -27,20 +27,13 @@ namespace Prefabrikator
             XYZ
         }
 
-        [System.Flags]
-        private enum OffsetEditMode : int
-        {
-            None = 0x0,
-            X = 0x1,
-            Y = 0x2,
-            Z = 0x4,
-        }
-
-
         public override int MinCount => 2;
 
         public override float MaxWindowHeight => 300f;
         public override string Name => "Grid";
+
+        private Shared<Vector3> _center = new Shared<Vector3>();
+        private Vector3Property _centerProperty = null;
 
         public static readonly float DefaultOffset = 2f;
         private Shared<float> _offsetX = new Shared<float>(DefaultOffset);
@@ -67,12 +60,12 @@ namespace Prefabrikator
 
         private List<Vector3> _defaultPositions = new List<Vector3>();
 
-        private OffsetEditMode _offsetEditMode = OffsetEditMode.None;
         private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
 
         public GridArrayCreator(GameObject target)
             : base(target, DefaultCount * DefaultCount)
         {
+            _center.Set(target.transform.position);
             SetupProperties();
         }
 
@@ -140,6 +133,9 @@ namespace Prefabrikator
                         _offsetZ.Set(_zOffsetProperty.Update());
                     }
                 }
+
+                GUILayout.Space(Extensions.IndentSize / 2);
+                _center.Set(_centerProperty.Update());
             }
             EditorGUILayout.EndVertical();
 
@@ -216,8 +212,7 @@ namespace Prefabrikator
 
         private void UpdatePositions()
         {
-            GameObject proxy = GetProxy();
-            if (_createdObjects.Count > 0 && proxy != null)
+            if (_createdObjects.Count > 0)
             {
                 int index = 0;
                 GameObject currentObj = null;
@@ -232,40 +227,34 @@ namespace Prefabrikator
                     float rowOffset = _dimension == Dimension.YZ ? _offsetZ : _offsetX;
                     float colOffset = _dimension == Dimension.XZ ? _offsetZ: _offsetY;
 
-                    for (int x = 0; x < rowCount; ++x)
+                    for (int x = rowCount / -2; x <= rowCount / 2; ++x)
                     {
                         Vector3 offsetX = rowVector * (rowOffset * x);
-                        currentObj = _createdObjects[index];
-                        currentObj.transform.position = proxy.transform.position + offsetX;
-                        ++index;
 
-                        for (int y = 1; y < colCount; ++y)
+                        for (int y = colCount / -2; y <= colCount / 2; ++y)
                         {
                             Vector3 offsetY = (colVector * (colOffset * y)) + offsetX;
                             currentObj = _createdObjects[index];
-                            currentObj.transform.position = proxy.transform.position + offsetY;
+                            currentObj.transform.position = _center + offsetY;
                             ++index;
                         }
                     }
                 }
                 else
                 {
-                    for (int z = 0; z < _countZ; ++z)
+                    for (int z = _countZ / -2; z <= _countZ / 2; ++z)
                     {
                         Vector3 offsetZ = Vector3.forward * (_offsetZ * z);
 
-                        for (int x = 0; x < _countX; ++x)
+                        for (int x = _countX / -2; x <= _countX / 2; ++x)
                         {
                             Vector3 offsetX = (Vector3.right * (_offsetX * x)) + offsetZ;
-                            currentObj = _createdObjects[index];
-                            currentObj.transform.position = proxy.transform.position + offsetX;
-                            ++index;
 
-                            for (int y = 1; y < _countY; ++y)
+                            for (int y = _countY / -2; y <= _countY / 2; ++y)
                             {
                                 Vector3 offsetY = (Vector3.up * (_offsetY * y)) + offsetX;
                                 currentObj = _createdObjects[index];
-                                currentObj.transform.position = proxy.transform.position + offsetY;
+                                currentObj.transform.position = _center + offsetY;
                                 ++index;
                             }
                         }
@@ -318,13 +307,21 @@ namespace Prefabrikator
 
         private void SetupProperties()
         {
+            void OnCenterChanged(Vector3 current, Vector3 previous)
+            {
+                CommandQueue.Enqueue(new GenericCommand<Vector3>(_center, previous, current));
+            }
+            _centerProperty = new Vector3Property("Center", _center, OnCenterChanged);
+            _centerProperty.OnEditModeEnter += () => { _editMode |= EditMode.Center; };
+            _centerProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
+
             void OnXChanged(float current, float previous)
             {
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetX, previous, current));
             }
             _xOffsetProperty = new FloatProperty("X", _offsetX, OnXChanged);
-            _xOffsetProperty.OnEditModeEnter += () => { _offsetEditMode |= OffsetEditMode.X; };
-            _xOffsetProperty.OnEditModeExit += () => { _offsetEditMode &= ~OffsetEditMode.X; };
+            _xOffsetProperty.OnEditModeEnter += () => { _editMode |= EditMode.OffsetX; };
+            _xOffsetProperty.OnEditModeExit += () => { _editMode &= ~EditMode.OffsetX; };
 
             void OnXCountChange(int current, int previous)
             {
@@ -340,8 +337,8 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetY, previous, current));
             }
             _yOffsetProperty = new FloatProperty("Y", _offsetY, OnYChanged);
-            _yOffsetProperty.OnEditModeEnter += () => { _offsetEditMode |= OffsetEditMode.Y; };
-            _yOffsetProperty.OnEditModeExit += () => { _offsetEditMode &= ~OffsetEditMode.Y; };
+            _yOffsetProperty.OnEditModeEnter += () => { _editMode |= EditMode.OffsetY; };
+            _yOffsetProperty.OnEditModeExit += () => { _editMode &= ~EditMode.OffsetY; };
 
             void OnYCountChange(int current, int previous)
             {
@@ -357,8 +354,8 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetZ, previous, current));
             }
             _zOffsetProperty = new FloatProperty("Z", _offsetZ, OnZChanged);
-            _zOffsetProperty.OnEditModeEnter += () => { _offsetEditMode |= OffsetEditMode.Z; };
-            _zOffsetProperty.OnEditModeExit += () => { _offsetEditMode &= ~OffsetEditMode.Z; };
+            _zOffsetProperty.OnEditModeEnter += () => { _editMode |= EditMode.OffsetZ; };
+            _zOffsetProperty.OnEditModeExit += () => { _editMode &= ~EditMode.OffsetZ; };
 
             void OnZCountChange(int current, int previous)
             {
@@ -445,7 +442,7 @@ namespace Prefabrikator
             }
 
             GameObject proxy = GetProxy();
-            if (_offsetEditMode != OffsetEditMode.None && proxy != null)
+            if (_editMode != EditMode.None && proxy != null)
             {
                 Vector3 size = new Vector3();
                 size.x = _offsetX * (ShouldShowX() ? (_countX - 1) : 0);
@@ -453,29 +450,40 @@ namespace Prefabrikator
                 size.z = _offsetZ * (ShouldShowZ() ? (_countZ - 1) : 0);
                 _boundsHandle.size = size;
 
-                Vector3 center = (size / 2f) + proxy.transform.position;
-                _boundsHandle.center = center;
+                _boundsHandle.center = _center;
                 _boundsHandle.SetColor(Color.cyan);
+
+                Vector3 center = _center;
 
                 EditorGUI.BeginChangeCheck();
                 {
                     _boundsHandle.DrawHandle();
+
+                    if (_editMode.HasFlag(EditMode.Center))
+                    {
+                        center = Handles.PositionHandle(_center, Quaternion.identity);
+                    }
                 }
                 if (EditorGUI.EndChangeCheck())
                 {
-                    if (_offsetEditMode.HasFlag(OffsetEditMode.X))
+                    if (_editMode.HasFlag(EditMode.OffsetX))
                     {
                         _offsetX.Set(_boundsHandle.size.x / (_countX - 1));
                     }
                     
-                    if (_offsetEditMode.HasFlag(OffsetEditMode.Y))
+                    if (_editMode.HasFlag(EditMode.OffsetY))
                     {
                         _offsetY.Set(_boundsHandle.size.y / (_countY - 1));
                     }
                     
-                    if (_offsetEditMode.HasFlag(OffsetEditMode.Z))
+                    if (_editMode.HasFlag(EditMode.OffsetZ))
                     {
                         _offsetZ.Set(_boundsHandle.size.z / (_countZ - 1));
+                    }
+
+                    if (_editMode.HasFlag(EditMode.Center))
+                    {
+                        _center.Set(center);
                     }
                 }
             }

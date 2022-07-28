@@ -11,6 +11,10 @@ namespace Prefabrikator
         Size = 0x2,
         Angle = 0x4,
         Position = 0x8,
+
+        OffsetX = 0x10,
+        OffsetY = 0x20,
+        OffsetZ = 0x40,
     }
 
     public static class Constants
