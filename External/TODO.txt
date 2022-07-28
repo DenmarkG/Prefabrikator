@@ -37,7 +37,8 @@ BUGS:
 
 [] Add Interactive views to draw shapes in scene view
     [] Box 
-    [] line
+        [] Allow box to have a center, (prevent offset in one direction only
+    [x] line
     [x] circle
     [x] sphere
 
@@ -64,6 +65,8 @@ Modifiers to Add:
     [] Global Rotator
     [] Global Offset
     [] Global Scale
+    [] Random offset (line, grid)
+    [] Lathe (separate tool?)
     [] Drop To Floor    
         [] Select floor? 
 

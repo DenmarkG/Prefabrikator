@@ -27,7 +27,17 @@ namespace Prefabrikator
             XYZ
         }
 
-        public override int MinCount => DefaultCount;
+        [System.Flags]
+        private enum OffsetEditMode : int
+        {
+            None = 0x0,
+            X = 0x1,
+            Y = 0x2,
+            Z = 0x4,
+        }
+
+
+        public override int MinCount => 2;
 
         public override float MaxWindowHeight => 300f;
         public override string Name => "Grid";
@@ -57,7 +67,7 @@ namespace Prefabrikator
 
         private List<Vector3> _defaultPositions = new List<Vector3>();
 
-        private int _editsEnabled = 0;
+        private OffsetEditMode _offsetEditMode = OffsetEditMode.None;
         private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
 
         public GridArrayCreator(GameObject target)
@@ -80,8 +90,6 @@ namespace Prefabrikator
                 }
 
                 int targetCount = 1;
-
-                GUILayout.Space(5);
 
                 // #DG: These need labels
                 if (ShouldShowX())
@@ -107,8 +115,8 @@ namespace Prefabrikator
                     SetTargetCount(targetCount);
                 }
 
-
-                EditorGUILayout.LabelField("Offsets");
+                GUILayout.Space(Extensions.IndentSize);
+                EditorGUILayout.LabelField("Offsets", EditorStyles.boldLabel);
                 if (ShouldShowX())
                 {
                     using (new EditorGUI.DisabledGroupScope(_countX == 0))
@@ -315,8 +323,8 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetX, previous, current));
             }
             _xOffsetProperty = new FloatProperty("X", _offsetX, OnXChanged);
-            _xOffsetProperty.OnEditModeEnter += () => { ++_editsEnabled; };
-            _xOffsetProperty.OnEditModeExit += () => { --_editsEnabled; };
+            _xOffsetProperty.OnEditModeEnter += () => { _offsetEditMode |= OffsetEditMode.X; };
+            _xOffsetProperty.OnEditModeExit += () => { _offsetEditMode &= ~OffsetEditMode.X; };
 
             void OnXCountChange(int current, int previous)
             {
@@ -332,8 +340,8 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetY, previous, current));
             }
             _yOffsetProperty = new FloatProperty("Y", _offsetY, OnYChanged);
-            _yOffsetProperty.OnEditModeEnter += () => { ++_editsEnabled; };
-            _yOffsetProperty.OnEditModeExit += () => { --_editsEnabled; };
+            _yOffsetProperty.OnEditModeEnter += () => { _offsetEditMode |= OffsetEditMode.Y; };
+            _yOffsetProperty.OnEditModeExit += () => { _offsetEditMode &= ~OffsetEditMode.Y; };
 
             void OnYCountChange(int current, int previous)
             {
@@ -349,8 +357,8 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new GenericCommand<float>(_offsetZ, previous, current));
             }
             _zOffsetProperty = new FloatProperty("Z", _offsetZ, OnZChanged);
-            _zOffsetProperty.OnEditModeEnter += () => { ++_editsEnabled; };
-            _zOffsetProperty.OnEditModeExit += () => { --_editsEnabled; };
+            _zOffsetProperty.OnEditModeEnter += () => { _offsetEditMode |= OffsetEditMode.Z; };
+            _zOffsetProperty.OnEditModeExit += () => { _offsetEditMode &= ~OffsetEditMode.Z; };
 
             void OnZCountChange(int current, int previous)
             {
@@ -437,16 +445,17 @@ namespace Prefabrikator
             }
 
             GameObject proxy = GetProxy();
-            if (_editsEnabled > 0 && proxy != null)
+            if (_offsetEditMode != OffsetEditMode.None && proxy != null)
             {
                 Vector3 size = new Vector3();
-                size.x = _offsetX * _countX;
-                size.y = _offsetY * _countY;
-                size.z = _offsetZ * _countZ;
+                size.x = _offsetX * (ShouldShowX() ? (_countX - 1) : 0);
+                size.y = _offsetY * (ShouldShowY() ? (_countY - 1) : 0);
+                size.z = _offsetZ * (ShouldShowZ() ? (_countZ - 1) : 0);
                 _boundsHandle.size = size;
 
                 Vector3 center = (size / 2f) + proxy.transform.position;
-                _boundsHandle.center = center;                
+                _boundsHandle.center = center;
+                _boundsHandle.SetColor(Color.cyan);
 
                 EditorGUI.BeginChangeCheck();
                 {
@@ -454,7 +463,20 @@ namespace Prefabrikator
                 }
                 if (EditorGUI.EndChangeCheck())
                 {
-                    //
+                    if (_offsetEditMode.HasFlag(OffsetEditMode.X))
+                    {
+                        _offsetX.Set(_boundsHandle.size.x / (_countX - 1));
+                    }
+                    
+                    if (_offsetEditMode.HasFlag(OffsetEditMode.Y))
+                    {
+                        _offsetY.Set(_boundsHandle.size.y / (_countY - 1));
+                    }
+                    
+                    if (_offsetEditMode.HasFlag(OffsetEditMode.Z))
+                    {
+                        _offsetZ.Set(_boundsHandle.size.z / (_countZ - 1));
+                    }
                 }
             }
         }
