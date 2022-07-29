@@ -457,7 +457,12 @@ namespace Prefabrikator
 
                 EditorGUI.BeginChangeCheck();
                 {
-                    _boundsHandle.DrawHandle();
+                    EditMode offsetFlag = EditMode.OffsetX | EditMode.OffsetY | EditMode.OffsetZ;
+
+                    if ((_editMode & offsetFlag) != 0)
+                    {
+                        _boundsHandle.DrawHandle();
+                    }
 
                     if (_editMode.HasFlag(EditMode.Center))
                     {
