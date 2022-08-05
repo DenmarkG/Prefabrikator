@@ -15,6 +15,8 @@ namespace Prefabrikator
         OffsetX = 0x10,
         OffsetY = 0x20,
         OffsetZ = 0x40,
+
+        RadiusII = 0x80,
     }
 
     public static class Constants
