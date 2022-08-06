@@ -32,7 +32,7 @@ namespace Prefabrikator
         protected Vector3Property _centerProperty = null;
 
         public override int MinCount => 5;
-        private static readonly int DefaultCount = 6;
+        private static readonly int DefaultCount = 8;
 
         private SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
 
