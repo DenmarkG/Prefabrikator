@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using RNG = UnityEngine.Random;
 
+#if PATH
 namespace Prefabrikator
 {
     [System.Serializable]
@@ -266,3 +267,4 @@ namespace Prefabrikator
         }
     }
 }
+#endif // PATH

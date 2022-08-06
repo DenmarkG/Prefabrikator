@@ -81,8 +81,7 @@ Modifiers to Add:
     [x] Add buttons back
     [] ensure labels are correct
 [x] Make edit button smaller
-[] 
-[] Allow Start position to change for line 
+[x] Allow Start position to change for line 
 
 [] Undo/Redo should support changing the Shape type
 

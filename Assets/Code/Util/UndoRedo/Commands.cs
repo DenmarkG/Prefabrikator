@@ -133,6 +133,31 @@ namespace Prefabrikator
         }
     }
 
+
+    internal class ShapeChangeCommand : ICommand
+    {
+        private ShapeType _previousType;
+        private ArrayCreator _previousShape = null;
+        private ShapeType _nextShapeType;
+
+        private System.Action _onShapeChange = null;
+
+        public ShapeChangeCommand(ShapeType next, ArrayCreator previous)
+        {
+            //
+        }
+
+        public void Execute()
+        {
+            //
+        }
+
+        public void Revert()
+        {
+            //
+        }
+    }
+
     internal class ValueChangedCommand<T> : ICommand
     {
         private T _previous = default(T);

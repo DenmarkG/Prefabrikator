@@ -29,10 +29,12 @@ namespace Prefabrikator
             {
                 _curveMode = CurveMode.Circle;
             }
+#if PATH
             else if (owner is BezierArrayCreator)
             {
                 _curveMode = CurveMode.Path;
             }
+#endif // PATH
             else
             {
                 Debug.LogError("Attempting to an invalid curve modifier");
@@ -132,6 +134,7 @@ namespace Prefabrikator
 
         private void SetRotationFromPath(GameObject[] objs)
         {
+#if PATH
             BezierArrayCreator path = Owner as BezierArrayCreator;
 
             if (path != null)
@@ -149,6 +152,7 @@ namespace Prefabrikator
                     _rotations[i] = rotation;
                 }
             }
+#endif // PATH
         }
 
         public Quaternion GetRotationAtIndex(int index)

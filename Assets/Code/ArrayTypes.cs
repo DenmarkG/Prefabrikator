@@ -8,7 +8,10 @@ namespace Prefabrikator
         Circle,
         Arc,
         Sphere,
+
+#if PATH
         Path,
+#endif
         ScatterSphere,
         ScatterBox,
         Ellipse,
