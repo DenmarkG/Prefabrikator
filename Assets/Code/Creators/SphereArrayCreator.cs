@@ -19,6 +19,7 @@ namespace Prefabrikator
 
     public class SphereArrayCreator : CircularArrayCreator
     {
+        public override ShapeType Shape => ShapeType.Sphere;
         public override float MaxWindowHeight => 350f;
         public override string Name => "Sphere";
 

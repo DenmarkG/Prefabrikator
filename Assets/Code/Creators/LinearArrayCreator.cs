@@ -17,6 +17,7 @@ namespace Prefabrikator
 
     public class LinearArrayCreator : ArrayCreator
     {
+        public override ShapeType Shape => ShapeType.Line;
         public override int MinCount => 2;
         public static readonly int DefaultCount = 5;
 
@@ -36,8 +37,6 @@ namespace Prefabrikator
             _offsetProperty = new Vector3Property("Offset", _offset, OnValueSet);
             _offsetProperty.OnEditModeEnter += () => { _editMode = EditMode.Position; };
             _offsetProperty.OnEditModeExit += () => { _editMode = EditMode.None; };
-
-            SceneView.duringSceneGui += OnSceneGUI;
 
             Refresh();
         }

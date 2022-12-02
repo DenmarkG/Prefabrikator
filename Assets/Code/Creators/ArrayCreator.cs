@@ -43,6 +43,8 @@ namespace Prefabrikator
         protected EditMode _editMode = EditMode.None;
         protected SceneView _sceneView = null;
 
+        public abstract ShapeType Shape { get; }
+
         public ArrayCreator(GameObject target, int defaultCount)
         {
             _target = target;
@@ -362,7 +364,6 @@ namespace Prefabrikator
         
         public void DrawModifiers()
         {
-            // #DG: TODO: make undo work
             int indentLevel = 20;
             GUILayout.Space(indentLevel);
             EditorGUILayout.LabelField("Modifiers", EditorStyles.boldLabel);

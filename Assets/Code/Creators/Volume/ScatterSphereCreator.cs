@@ -8,6 +8,7 @@ namespace Prefabrikator
 {
     public class ScatterSphereCreator : ScatterVolumeCreator
     {
+        public override ShapeType Shape => ShapeType.ScatterSphere;
         private static readonly float DefaultRadius = 5f;
         
         private Shared<float> _radius = new Shared<float>(DefaultRadius);
@@ -21,8 +22,6 @@ namespace Prefabrikator
             _center.Set(target.transform.position);
 
             SetupProperties();
-
-            SceneView.duringSceneGui += OnSceneGUI;
         }
 
         protected override void OnSave()

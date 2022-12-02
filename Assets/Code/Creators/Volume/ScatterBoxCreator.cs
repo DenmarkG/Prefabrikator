@@ -7,6 +7,7 @@ namespace Prefabrikator
 {
     public class ScatterBoxCreator : ScatterVolumeCreator
     {
+        public override ShapeType Shape => ShapeType.ScatterBox;
         private static readonly Vector3 DefaultSize = new Vector3(5f, 2f, 5f);
 
         private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();

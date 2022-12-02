@@ -19,6 +19,7 @@ namespace Prefabrikator
 
     public class ArcArrayCreator : CircularArrayCreator
     {
+        public override ShapeType Shape => ShapeType.Arc;
         public override float MaxWindowHeight => 400f;
         public override string Name => "Arc";
 

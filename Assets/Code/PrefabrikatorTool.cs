@@ -140,11 +140,29 @@ namespace Prefabrikator
                         ShapeType type = (ShapeType)EditorGUILayout.EnumPopup("Shape", _shapeType);
                         if (type != _shapeType)
                         {
-                            _shapeType = type;
-
-                            if (_selectedObject != null)
+                            bool undoStackIsEmpty = (_undoStack.UndoOperationsAvailable == 0) && (_undoStack.RedoOperationsAvailable == 0);
+                            if (_creator == null || undoStackIsEmpty)
                             {
-                                _creator = GetCreator(_shapeType, _selectedObject);
+                                _shapeType = type;
+
+                                if (_selectedObject != null)
+                                {
+                                    _creator = GetCreator(_shapeType, _selectedObject);
+                                }
+                            }
+                            else
+                            {
+                                if (ShowShapeChangeDialog())
+                                {
+                                    _shapeType = type;
+
+                                    if (_selectedObject != null)
+                                    {
+                                        _creator.Teardown();
+                                        _creator = GetCreator(_shapeType, _selectedObject);
+                                        _undoStack.Clear();
+                                    }
+                                }
                             }
 
                             if (_creator != null)
@@ -345,6 +363,11 @@ namespace Prefabrikator
         {
             _undoStack.Redo();
             RefreshArray();
+        }
+
+        private bool ShowShapeChangeDialog()
+        {
+            return EditorUtility.DisplayDialog("Change Shape Type?", "Changing shapes will lose current progress. \nDo you want to continue?", "Change", "Cancel");
         }
 
         private static bool IsPrefab(GameObject obj)

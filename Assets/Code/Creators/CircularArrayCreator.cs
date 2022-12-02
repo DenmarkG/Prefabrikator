@@ -19,6 +19,8 @@ namespace Prefabrikator
     // #DG: TODO create object to act as center, 
     public class CircularArrayCreator : ArrayCreator
     {
+        public override ShapeType Shape => ShapeType.Circle;
+
         public override float MaxWindowHeight => 350f;
         public override string Name => "Circle";
 
@@ -56,8 +58,6 @@ namespace Prefabrikator
             _centerProperty = new Vector3Property("Center", _center, OnCenterChanged);
             _centerProperty.OnEditModeEnter += () => { _editMode |= EditMode.Center; };
             _centerProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
-
-            SceneView.duringSceneGui += OnSceneGUI;
         }
 
         protected override void OnSave()

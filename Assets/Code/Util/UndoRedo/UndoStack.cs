@@ -48,5 +48,11 @@ namespace Prefabrikator
 
             _undoStack.Push(command);
         }
+
+        public void Clear()
+        {
+            _undoStack.Clear();
+            _redoStack.Clear();
+        }
     }
 }

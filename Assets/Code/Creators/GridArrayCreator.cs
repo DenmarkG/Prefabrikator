@@ -19,6 +19,7 @@ namespace Prefabrikator
 
     public class GridArrayCreator : ArrayCreator
     {
+        public override ShapeType Shape => ShapeType.Grid;
         public enum Dimension
         {
             XY,
