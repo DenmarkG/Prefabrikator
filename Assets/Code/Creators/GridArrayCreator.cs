@@ -250,19 +250,27 @@ namespace Prefabrikator
                 }
                 else
                 {
-                    for (int z = _countZ / -2; z <= _countZ / 2; ++z)
+                    float length = (_countX - 1) * _offsetX;
+                    float height = (_countY - 1) * _offsetY;
+                    float depth = (_countZ - 1) * _offsetZ;
+
+                    Vector3 rowStart = _center.Get() - ((length / 2f) * Vector3.right);
+                    Vector3 colStart = _center.Get() - ((height / 2f) * Vector3.up);
+                    Vector3 depthStart = _center.Get() - ((depth / 2f) * Vector3.forward);
+                    for (int z = 0; z < _countZ; ++z)
                     {
-                        Vector3 offsetZ = Vector3.forward * (_offsetZ * z);
+                        Vector3 posZ = depthStart + (Vector3.forward * _offsetZ * z);
 
-                        for (int x = _countX / -2; x <= _countX / 2; ++x)
+                        for (int x = 0; x < _countX; ++x)
                         {
-                            Vector3 offsetX = (Vector3.right * (_offsetX * x)) + offsetZ;
+                            Vector3 posX = rowStart + (Vector3.right * _offsetX * x);
 
-                            for (int y = _countY / -2; y <= _countY / 2; ++y)
+                            for (int y = 0; y < _countY; ++y)
                             {
-                                Vector3 offsetY = (Vector3.up * (_offsetY * y)) + offsetX;
+                                Vector3 posY = colStart + (Vector3.up * _offsetY * y);
+
                                 currentObj = _createdObjects[index];
-                                currentObj.transform.position = _center + offsetY;
+                                currentObj.transform.position = posX + posY + posZ;
                                 ++index;
                             }
                         }
