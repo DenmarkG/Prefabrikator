@@ -219,24 +219,32 @@ namespace Prefabrikator
                 GameObject currentObj = null;
                 if (_dimension != Dimension.XYZ)
                 {
-                    Vector3 rowVector = _dimension == Dimension.YZ ? Vector3.forward : Vector3.right;
-                    Vector3 colVector = _dimension == Dimension.XZ ? Vector3.forward : Vector3.up;
+                    Vector3 rowDirection = _dimension == Dimension.YZ ? Vector3.forward : Vector3.right;
+                    Vector3 colDirection = _dimension == Dimension.XZ ? Vector3.forward : Vector3.up;
 
                     int rowCount = _dimension == Dimension.YZ ? _countZ : _countX;
                     int colCount = _dimension == Dimension.XZ ? _countZ : _countY;
 
-                    float rowOffset = _dimension == Dimension.YZ ? _offsetZ : _offsetX;
-                    float colOffset = _dimension == Dimension.XZ ? _offsetZ: _offsetY;
+                    float rowOffsetDistance = _dimension == Dimension.YZ ? _offsetZ : _offsetX;
+                    float colOffsetDistance = _dimension == Dimension.XZ ? _offsetZ: _offsetY;
 
-                    for (int x = rowCount / -2; x <= rowCount / 2; ++x)
+                    float length = (rowCount - 1) * rowOffsetDistance;
+                    float height = (colCount - 1) * colOffsetDistance;
+
+                    Vector3 rowStart = _center.Get() - ((length / 2f) * rowDirection);
+                    Vector3 colStart = _center.Get() - ((length / 2f) * colDirection);
+
+                    Debug.Log($"start = {rowStart}");
+                    for (int x = 0; x < rowCount; ++x)
                     {
-                        Vector3 offsetX = rowVector * (rowOffset * x);
-
-                        for (int y = colCount / -2; y <= colCount / 2; ++y)
+                        Vector3 posX = rowStart + (rowDirection * rowOffsetDistance * x);
+                        
+                        for (int y = 0; y < colCount; ++y)
                         {
-                            Vector3 offsetY = (colVector * (colOffset * y)) + offsetX;
+                            Vector3 posY = colStart + (colDirection * colOffsetDistance * y);
+                            Vector3 position = posX + posY;
                             currentObj = _createdObjects[index];
-                            currentObj.transform.position = _center + offsetY;
+                            currentObj.transform.position = position;
                             ++index;
                         }
                     }
