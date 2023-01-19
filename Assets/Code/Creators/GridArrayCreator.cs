@@ -232,9 +232,8 @@ namespace Prefabrikator
                     float height = (colCount - 1) * colOffsetDistance;
 
                     Vector3 rowStart = _center.Get() - ((length / 2f) * rowDirection);
-                    Vector3 colStart = _center.Get() - ((length / 2f) * colDirection);
+                    Vector3 colStart = _center.Get() - ((height / 2f) * colDirection);
 
-                    Debug.Log($"start = {rowStart}");
                     for (int x = 0; x < rowCount; ++x)
                     {
                         Vector3 posX = rowStart + (rowDirection * rowOffsetDistance * x);
