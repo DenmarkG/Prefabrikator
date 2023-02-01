@@ -108,6 +108,58 @@ namespace Prefabrikator
             return Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
         }
 
+        private const int kMaxSamples = 30;
+        private float _defaultRadius = 2f;
+
+        private Vector3 ScatterPoisson()
+        {
+            float cellSize = _defaultRadius / Mathf.Sqrt(TargetCount);
+
+            int[,] grid = new int[TargetCount, TargetCount]; // #DG: Need to account for Region Size
+            for (int x = 0; x < grid.GetLength(0); ++x)
+            {
+                for (int y = 0; y < grid.GetLength(1); ++y)
+                {
+                    grid[x, y] = -1;
+                }
+            }
+
+            List<Vector3> activePoints = new(TargetCount);
+
+            Vector3 initialSample = Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
+
+            activePoints.Add(initialSample);
+
+            for (int i = 1; i < TargetCount; ++i)
+            {
+                Vector3[] samplePoints = GenerateSampleSet(activePoints[i], _defaultRadius, 2f * _defaultRadius);
+                foreach (Vector3 sample in samplePoints)
+                {
+                    if 
+                }
+            }
+
+
+
+            return default;
+        }
+
+        private Vector3[] GenerateSampleSet(Vector3 center, float minRadius, float maxRadius)
+        {
+            Vector3[] samples = new Vector3[kMaxSamples];
+            for (int i = 0; i < kMaxSamples; ++i)
+            {
+                float x = Random.Range(minRadius, maxRadius);
+                float y = Random.Range(minRadius, maxRadius);
+                float z = Random.Range(minRadius, maxRadius);
+
+                Vector3 sample = new Vector3(x, y, z);
+                samples[i] = sample;
+            }
+
+            return samples;
+        }
+
         protected override void PopulateFromExistingData(ArrayData data)
         {
             // #DG: TODO
