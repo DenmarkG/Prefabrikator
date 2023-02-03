@@ -80,13 +80,15 @@ namespace Prefabrikator
             Vector3[] previous = _positions.ToArray();
             _positions.Clear();
 
-            int count = _createdObjects.Count;
+            //int count = _createdObjects.Count;
 
-            for (int i = 0; i < count; ++i)
-            {
-                Vector3 position = GetRandomPointInBounds();
-                _positions.Add(ConvertPointToShapeRelative(position));
-            }
+            //for (int i = 0; i < count; ++i)
+            //{
+            //    Vector3 position = GetRandomPointInBounds();
+            //    _positions.Add(ConvertPointToShapeRelative(position));
+            //}
+
+            _positions = ScatterPoisson();
 
             void Apply(Vector3[] positions)
             {
@@ -111,7 +113,7 @@ namespace Prefabrikator
         private const int kMaxSamples = 30;
         private float _defaultRadius = 2f;
 
-        private Vector3 ScatterPoisson()
+        private List<Vector3> ScatterPoisson()
         {
             float cellSize = _defaultRadius / Mathf.Sqrt(TargetCount);
 
@@ -132,16 +134,37 @@ namespace Prefabrikator
 
             for (int i = 1; i < TargetCount; ++i)
             {
-                Vector3[] samplePoints = GenerateSampleSet(activePoints[i], _defaultRadius, 2f * _defaultRadius);
+                Vector3[] samplePoints = GenerateSampleSet(initialSample, _defaultRadius, 2f * _defaultRadius);
                 foreach (Vector3 sample in samplePoints)
                 {
-                    if 
+                    // #DG: Check if point is valid
+                    // optimize later
+                    bool isValid = true;
+                    Vector3 testPosition = sample + initialSample;
+                    foreach (Vector3 point in activePoints)
+                    {
+                        Debug.Log($"testing sample {sample}");
+                        float distance = Vector3.Distance(point, testPosition);
+                        if (distance < _defaultRadius)
+                        {
+                            isValid = false;
+                            Debug.Log($"sample {testPosition} is {distance} away from active point {point}");
+                            break;
+                        }
+                    }
+
+                    if (isValid)
+                    {
+                        activePoints.Add(testPosition);
+                        Debug.Log($"Adding {testPosition}");
+                        break;
+                    }
                 }
+
+                initialSample = activePoints[Random.Range(0, activePoints.Count - 1)];
             }
 
-
-
-            return default;
+            return activePoints;
         }
 
         private Vector3[] GenerateSampleSet(Vector3 center, float minRadius, float maxRadius)
@@ -149,12 +172,9 @@ namespace Prefabrikator
             Vector3[] samples = new Vector3[kMaxSamples];
             for (int i = 0; i < kMaxSamples; ++i)
             {
-                float x = Random.Range(minRadius, maxRadius);
-                float y = Random.Range(minRadius, maxRadius);
-                float z = Random.Range(minRadius, maxRadius);
-
-                Vector3 sample = new Vector3(x, y, z);
-                samples[i] = sample;
+                Vector3 direction = Random.insideUnitSphere;
+                direction *= Random.Range(minRadius, maxRadius);
+                samples[i] = direction;
             }
 
             return samples;
