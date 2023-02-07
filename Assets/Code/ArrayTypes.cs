@@ -14,6 +14,7 @@ namespace Prefabrikator
 #endif
         ScatterSphere,
         ScatterBox,
+        ScatterPlane,
         Ellipse,
         // Box
         // polygon
