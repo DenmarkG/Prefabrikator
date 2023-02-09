@@ -327,7 +327,8 @@ namespace Prefabrikator
                     creator = new ScatterSphereCreator(target);
                     break;
                 case ShapeType.ScatterPlane:
-                    return new ScatterPlaneCreator(target);
+                    creator = new ScatterPlaneCreator(target);
+                    break;
                 case ShapeType.Line:
                 default:
                     creator = new LinearArrayCreator(target);

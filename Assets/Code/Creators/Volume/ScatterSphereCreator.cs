@@ -30,20 +30,22 @@ namespace Prefabrikator
             SceneView.RepaintAll();
         }
 
-        protected override void CreateClone(int index = 0)
+        protected override bool CreateClone(int index = 0)
         {
             GameObject proxy = GetProxy();
 
             if (proxy != null)
             {
-                Vector3 position = GetRandomPointInBounds();
-                GameObject clone = GameObject.Instantiate(_target, (position * _radius) + _center, _target.transform.rotation);
+                Vector3? position = GetRandomPointInBounds();
+                GameObject clone = GameObject.Instantiate(_target, (position.Value * _radius) + _center, _target.transform.rotation);
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
 
-                _positions.Add(position);
+                _positions.Add(position.Value);
                 _createdObjects.Add(clone);
             }
+
+            return true;
         }
 
         protected override void Scatter()
@@ -55,8 +57,8 @@ namespace Prefabrikator
 
             for (int i = 0; i < count; ++i)
             {
-                Vector3 position = GetRandomPointInBounds();
-                _positions.Add(position);
+                Vector3? position = GetRandomPointInBounds();
+                _positions.Add(position.Value);
             }
 
             void Apply(Vector3[] positions)
@@ -102,7 +104,7 @@ namespace Prefabrikator
             // #DG: TODO
         }
 
-        protected override Vector3 GetRandomPointInBounds()
+        protected override Vector3? GetRandomPointInBounds()
         {
             return Random.insideUnitSphere;
         }

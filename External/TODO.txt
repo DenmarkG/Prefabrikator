@@ -25,7 +25,8 @@ BUGS:
         [] use to allow runtime editing
         [] Performance pass
 [x] Change "DisplayCountField" functions to use int property instead of buttons
-
+[] Add validation for changes to shared fields
+[] Add info logging to bottom part of tool
 [] Add Global/Local option for rotations
 
 [] Move OnTargetCountChange to base class only
@@ -61,6 +62,7 @@ Modifiers to Add:
     [x] Incremental Scale
     [x] Incremental Roatation
     [x] Position Noise
+    [] Shape Boolean
     [] Random Radius (Circle, Sphere, Ellipse)
     [] Checkerboard (grid only)
     [] Random Color

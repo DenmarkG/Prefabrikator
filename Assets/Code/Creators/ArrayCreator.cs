@@ -180,7 +180,12 @@ namespace Prefabrikator
             }
         }
 
-        protected abstract void CreateClone(int index = 0);
+        /// <summary>
+        /// Attempts to clone the target object
+        /// </summary>
+        /// <param name="index">The position in the list of created objects to create the clone</param>
+        /// <returns>true if the clone was created successfully</returns>
+        protected abstract bool CreateClone(int index = 0);
 
         protected void DestroyClone(GameObject clone)
         {
@@ -281,6 +286,16 @@ namespace Prefabrikator
         {
             _targetCount.Set(targetCount);
             OnTargetCountChanged();
+        }
+
+        protected virtual void IncrementTargetCount()
+        {
+            _targetCount.Set(_targetCount + 1);
+        }
+
+        protected virtual void DecrementTargetCount()
+        {
+            _targetCount.Set(_targetCount - 1);
         }
 
         protected abstract void OnTargetCountChanged();

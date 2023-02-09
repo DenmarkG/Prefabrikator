@@ -121,7 +121,7 @@ namespace Prefabrikator
 
         protected abstract void UpdatePositions();
 
-        protected abstract Vector3 GetRandomPointInBounds();
+        protected abstract Vector3? GetRandomPointInBounds();
 
         protected override string[] GetAllowedModifiers()
         {

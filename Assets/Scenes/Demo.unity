@@ -267,6 +267,7 @@ MonoBehaviour:
   _targetCount: 10
   _center: {x: 0, y: 0, z: 0}
   _size: {x: 10, y: 0, z: 10}
+  _defaultRadius: 2
   _prefab: {fileID: 176732026}
 --- !u!1 &705507993
 GameObject:

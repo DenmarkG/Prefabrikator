@@ -135,7 +135,7 @@ namespace Prefabrikator
             return new Vector3(x, proxy.transform.position.y, z) + _center;
         }
 
-        protected override void CreateClone(int index = 0)
+        protected override bool CreateClone(int index = 0)
         {
             Quaternion targetRotation = _target.transform.rotation;
 
@@ -149,6 +149,8 @@ namespace Prefabrikator
             }
 
             _createdObjects.Add(clone);
+
+            return true;
         }
 
         protected override ArrayData GetContainerData()

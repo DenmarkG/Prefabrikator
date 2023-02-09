@@ -29,23 +29,30 @@ namespace Prefabrikator
             SceneView.RepaintAll();
         }
 
-        protected override void CreateClone(int index = 0)
+        protected override bool CreateClone(int index = 0)
         {
             GameObject proxy = GetProxy();
 
             if (proxy != null)
             {
-                Vector3 position = GetRandomPointInBounds();
+                Vector3? position = GetRandomPointInBounds();
 
-                Vector3 relativePos = ConvertPointToShapeRelative(position);
+                if (position != null)
+                {
+                    Vector3 relativePos = ConvertPointToShapeRelative(position.Value);
 
-                GameObject clone = GameObject.Instantiate(_target, position, _target.transform.rotation);
-                clone.SetActive(true);
-                clone.transform.SetParent(proxy.transform);
+                    GameObject clone = GameObject.Instantiate(_target, position.Value, _target.transform.rotation);
+                    clone.SetActive(true);
+                    clone.transform.SetParent(proxy.transform);
 
-                _positions.Add(relativePos);
-                _createdObjects.Add(clone);
+                    _positions.Add(relativePos);
+                    _createdObjects.Add(clone);
+
+                    return true;
+                }
             }
+
+            return false;
         }
 
         private Vector3 ConvertPointToShapeRelative(Vector3 point)
@@ -105,7 +112,7 @@ namespace Prefabrikator
             return null;
         }
 
-        protected override Vector3 GetRandomPointInBounds()
+        protected override Vector3? GetRandomPointInBounds()
         {
             return Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
         }
