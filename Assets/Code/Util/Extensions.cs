@@ -131,7 +131,8 @@ namespace Prefabrikator
             Vector3 max = bounds.center + bounds.extents;
 
             float x = RNG.Range(min.x, max.x);
-            float y = RNG.Range(min.y, max.y);
+            //float y = RNG.Range(min.y, max.y);
+            float y = 0f;
             float z = RNG.Range(min.z, max.z);
 
             return new Vector3(x, y, z);

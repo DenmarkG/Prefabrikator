@@ -73,8 +73,10 @@
     <Compile Include="Assets\Code\Modifiers\Modifier.cs" />
     <Compile Include="Assets\Code\Modifiers\Uniform\UniformModifier.cs" />
     <Compile Include="Assets\Code\Modifiers\Position\CheckerBoardModifier.cs" />
+    <Compile Include="Assets\Code\Creators\Volume\ScatterPlaneCreator.cs" />
     <Compile Include="Assets\Code\Util\UndoRedo\Commands.cs" />
     <Compile Include="Assets\Code\Runtime\ArrayContainer.cs" />
+    <Compile Include="Assets\Code\PoissonTest.cs" />
     <Compile Include="Assets\Code\Util\Properties\CustomProperty.cs" />
     <Compile Include="Assets\Code\Creators\Volume\ScatterVolumeCreator.cs" />
     <Compile Include="Assets\Code\Modifiers\Rotation\IncrementalRotationModifier.cs" />
@@ -101,8 +103,6 @@
     <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\EllipseArrayCreator.cs" />
     <Compile Include="Assets\Code\Creators\SphereArrayCreator.cs" />
-    <Compile Include="Assets\Code\Creators\Volume\ScatterPlaneCreator.cs" />
-    <Compile Include="Assets\Code\PoissonTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\UI\PrefabrikatorEditor.uss" />
