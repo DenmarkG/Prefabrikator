@@ -174,33 +174,6 @@ namespace Prefabrikator
             {
                 SetTargetCount(lineData.Count);
                 _offset.Set(lineData.Offset);
-                _targetRotation = lineData.TargetRotation;
-            }
-        }
-
-        protected override void OnTargetCountChanged()
-        {
-            if (TargetCount < _createdObjects.Count)
-            {
-                while (_createdObjects.Count > TargetCount)
-                {
-                    int index = _createdObjects.Count - 1;
-                    if (index >= 0)
-                    {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                while (TargetCount > _createdObjects.Count)
-                {
-                    CreateClone();
-                }
             }
         }
 

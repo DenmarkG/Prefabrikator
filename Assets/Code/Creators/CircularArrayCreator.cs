@@ -179,32 +179,6 @@ namespace Prefabrikator
             }
         }
 
-        protected override sealed void OnTargetCountChanged()
-        {
-            if (TargetCount < _createdObjects.Count)
-            {
-                while (_createdObjects.Count > TargetCount)
-                {
-                    int index = _createdObjects.Count - 1;
-                    if (index >= 0)
-                    {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                while (TargetCount > _createdObjects.Count)
-                {
-                    CreateClone();
-                }
-            }
-        }
-
         protected override void OnSceneGUI(SceneView view)
         {
             if (_sceneView == null || _sceneView != view)

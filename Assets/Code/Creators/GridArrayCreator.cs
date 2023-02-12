@@ -418,34 +418,7 @@ namespace Prefabrikator
                 //_countVector = gridData.CountVector;
                 //_dimension = gridData.Dimension;
                 //_offsetVector.Set(gridData.OffsetVector);
-                _targetRotation = gridData.TargetRotation;
                 SetTargetCount(gridData.Count);
-            }
-        }
-
-        protected override void OnTargetCountChanged()
-        {
-            if (TargetCount < _createdObjects.Count)
-            {
-                while (_createdObjects.Count > TargetCount)
-                {
-                    int index = _createdObjects.Count - 1;
-                    if (index >= 0)
-                    {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                while (TargetCount > _createdObjects.Count)
-                {
-                    CreateClone();
-                }
             }
         }
 

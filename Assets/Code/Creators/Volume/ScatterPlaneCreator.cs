@@ -10,6 +10,17 @@ namespace Prefabrikator
 {
     public class ScatterPlaneCreator : ScatterVolumeCreator
     {
+        public class ScatterPlaneData : ArrayData
+        {
+            public Vector3[] Positions = null;
+
+            public ScatterPlaneData(GameObject prefab, Quaternion targetRotation, int positionCount)
+                : base(ShapeType.ScatterPlane, prefab, targetRotation)
+            {
+                //
+            }
+        }
+
         private const int MaxSamples = 30;
 
         public override ShapeType Shape => ShapeType.ScatterPlane;
@@ -250,7 +261,6 @@ namespace Prefabrikator
             
             if (distance < _radius)
             {
-                Debug.Log($"Distance = {distance}");
                 return false;
             }
 
@@ -271,32 +281,29 @@ namespace Prefabrikator
             return samples;
         }
 
-        protected override void OnTargetCountChanged()
+        public override ArrayData GetStateData()
         {
-            if (TargetCount < _createdObjects.Count)
+            var stateData = new ScatterPlaneData(GetProxy(), Quaternion.identity, _createdObjects.Count) 
+            { 
+                Count = TargetCount,
+            };
+
+            stateData.Positions = new Vector3[_createdObjects.Count];
+
+            for (int i = 0; i < _createdObjects.Count; ++i)
             {
-                while (_createdObjects.Count > TargetCount)
-                {
-                    int index = _createdObjects.Count - 1;
-                    if (index >= 0)
-                    {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+                stateData.Positions[i] = _createdObjects[i].transform.position;
             }
-            else
+
+            return stateData;
+        }
+
+        public override void SetStateData(ArrayData stateData)
+        {
+            if (stateData is ScatterPlaneData data)
             {
-                while (TargetCount > _createdObjects.Count)
-                {
-                    if (CreateClone() == false)
-                    {
-                        DecrementTargetCount();
-                    }
-                }
+                //_positions = data.Positions;
+                Debug.Log($"Position count = {_positions.Count}");
             }
         }
 

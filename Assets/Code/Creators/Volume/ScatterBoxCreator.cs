@@ -87,15 +87,15 @@ namespace Prefabrikator
             Vector3[] previous = _positions.ToArray();
             _positions.Clear();
 
-            //int count = _createdObjects.Count;
+            int count = _createdObjects.Count;
 
-            //for (int i = 0; i < count; ++i)
-            //{
-            //    Vector3 position = GetRandomPointInBounds();
-            //    _positions.Add(ConvertPointToShapeRelative(position));
-            //}
+            for (int i = 0; i < count; ++i)
+            {
+                Vector3? position = GetRandomPointInBounds();
+                _positions.Add(ConvertPointToShapeRelative(position.Value));
+            }
 
-            _positions = ScatterPoisson();
+            //_positions = ScatterPoisson();
 
             void Apply(Vector3[] positions)
             {

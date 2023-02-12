@@ -185,7 +185,6 @@ namespace Prefabrikator
             {
                 SetTargetCount(sphereData.Count);
                 _radius.Set(sphereData.Radius);
-                _targetRotation = sphereData.TargetRotation;
 
                 _stackCount.Set(sphereData.StackCount);
                 _sectorCount.Set(sphereData.SectorCount);

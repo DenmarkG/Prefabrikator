@@ -86,42 +86,10 @@ namespace Prefabrikator
             }
         }
 
-        protected override void OnTargetCountChanged()
-        {
-            if (TargetCount < _createdObjects.Count)
-            {
-                while (_createdObjects.Count > TargetCount)
-                {
-                    int index = _createdObjects.Count - 1;
-                    if (index >= 0)
-                    {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                while (TargetCount > _createdObjects.Count)
-                {
-                    CreateClone();
-                }
-            }
-        }
-
-        protected abstract void Scatter();
-
         protected void MarkDirty()
         {
             IsDirty = true;
         }
-
-        protected abstract void UpdatePositions();
-
-        protected abstract Vector3? GetRandomPointInBounds();
 
         protected override string[] GetAllowedModifiers()
         {
@@ -136,5 +104,9 @@ namespace Prefabrikator
 
             return mods;
         }
+
+        protected abstract void Scatter();
+        protected abstract void UpdatePositions();
+        protected abstract Vector3? GetRandomPointInBounds();
     }
 }

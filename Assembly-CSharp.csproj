@@ -80,6 +80,7 @@
     <Compile Include="Assets\Code\Util\Properties\CustomProperty.cs" />
     <Compile Include="Assets\Code\Creators\Volume\ScatterVolumeCreator.cs" />
     <Compile Include="Assets\Code\Modifiers\Rotation\IncrementalRotationModifier.cs" />
+    <Compile Include="Assets\Code\Util\UndoRedo\Commands\StateChangeCommand.cs" />
     <Compile Include="Assets\Code\Util\Extensions.cs" />
     <Compile Include="Assets\Code\Creators\ArcArrayCreator.cs" />
     <Compile Include="Assets\Code\Modifiers\ModifierFactory.cs" />

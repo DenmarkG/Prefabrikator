@@ -47,10 +47,10 @@ public class PoissonTest : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawCube(_center, _size);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.DrawCube(_center, _size);
+    //}
 
     private List<Vector3> ScatterPoisson()
     {

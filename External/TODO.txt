@@ -17,6 +17,10 @@ Automate the process for calling the modifier update and process calls
 BUGS:
     [] original object flashes when changing Count -> gonna have to live with this one
     [x] curve does not update new objects correctly when count changes
+    [] Volumes do not account for position array changes when target count changes
+        - Track object state with state class + StateChangeCommand
+        - use nullable fields to only apply what is needed to get from current state to next state
+    [] Remove scaling ability auto-update position from volumes (simpler)
 
 [] Support Undo for Shape Change
 [] Re-add Suppport Editing existing shapes

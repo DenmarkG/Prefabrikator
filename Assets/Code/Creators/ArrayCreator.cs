@@ -7,7 +7,12 @@ namespace Prefabrikator
 {
     public abstract class ArrayCreator
     {
+        public abstract class CreatorState { }
+
         public event System.Action<ICommand> OnCommandExecuted = null;
+
+        public delegate void ApplicatorDelegate(GameObject go);
+        public delegate void IndexedApplicatorDelegate(GameObject go, int index);
 
         public Queue<ICommand> CommandQueue => _commandQueue;
         private Queue<ICommand> _commandQueue = new Queue<ICommand>();
@@ -29,7 +34,6 @@ namespace Prefabrikator
         public abstract string Name { get; }
 
         protected Quaternion _targetRotation = Quaternion.identity;
-        protected ArrayData _defaultData = null;
 
         private List<Modifier> _modifierStack = new List<Modifier>();
         int _indexOfModifierToAdd = 0;
@@ -44,6 +48,8 @@ namespace Prefabrikator
         protected SceneView _sceneView = null;
 
         public abstract ShapeType Shape { get; }
+
+        public ArrayData StateData { get; private set; }
 
         public ArrayCreator(GameObject target, int defaultCount)
         {
@@ -150,13 +156,12 @@ namespace Prefabrikator
             OnSave();
             _targetProxy = null;
             _createdObjects.Clear();
-            _defaultData = null;
             Refresh(true);
         }
 
         public void CancelPendingEdits()
         {
-            PopulateFromExistingData(_defaultData);
+            PopulateFromExistingData(StateData);
             Refresh();
         }
 
@@ -222,7 +227,7 @@ namespace Prefabrikator
             }
 
             ArrayContainer container = GetOrAddContainer(_targetProxy);
-            container.SetData((useDefaultData && _defaultData != null) ? _defaultData : GetContainerData());
+            container.SetData((useDefaultData && StateData != null) ? StateData : GetContainerData());
         }
 
         protected virtual void UpdateLocalRotations()
@@ -244,15 +249,22 @@ namespace Prefabrikator
         }
 
         protected abstract ArrayData GetContainerData();
+        protected abstract void PopulateFromExistingData(ArrayData data);
+        
         public void PopulateFromExistingContainer(ArrayContainer container)
         {
-            _defaultData = container.Data;
+            SetStateData(container.Data);
             PopulateFromExistingData(container.Data);
             PopulateFromExistingClones(container.gameObject);
             Refresh();
         }
+        
+        public virtual void SetStateData(ArrayData stateData)
+        {
+            StateData = stateData;
+        }
 
-        protected abstract void PopulateFromExistingData(ArrayData data);
+        public virtual ArrayData GetStateData() => null;
 
         protected void PopulateFromExistingClones(GameObject targetProxy)
         {
@@ -298,7 +310,34 @@ namespace Prefabrikator
             _targetCount.Set(_targetCount - 1);
         }
 
-        protected abstract void OnTargetCountChanged();
+        protected void OnTargetCountChanged()
+        {
+            if (TargetCount < _createdObjects.Count)
+            {
+                while (_createdObjects.Count > TargetCount)
+                {
+                    int index = _createdObjects.Count - 1;
+                    if (index >= 0)
+                    {
+                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                while (TargetCount > _createdObjects.Count)
+                {
+                    if (CreateClone() == false)
+                    {
+                        DecrementTargetCount();
+                    }
+                }
+            }
+        }
 
         protected void ExecuteCommand(ICommand command)
         {
@@ -326,11 +365,6 @@ namespace Prefabrikator
             return Quaternion.identity;
         }
 
-        public abstract Vector3 GetDefaultPositionAtIndex(int index);
-
-        public delegate void ApplicatorDelegate(GameObject go);
-        public delegate void IndexedApplicatorDelegate(GameObject go, int index);
-
         public void ApplyToAll(ApplicatorDelegate applicator)
         {
             int numObjs = _createdObjects.Count;
@@ -357,8 +391,10 @@ namespace Prefabrikator
             }
         }
 
+        public abstract Vector3 GetDefaultPositionAtIndex(int index);
         protected virtual void OnSceneGUI(SceneView view) { }
 
+        #region Modifiers
         //
         // Modifiers
         // #DG: move this to a unified dictionary, keyed by modifier type
@@ -531,5 +567,7 @@ namespace Prefabrikator
 
             return default(T);
         }
+
+        #endregion // Modifiers
     }
 }
