@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace Prefabrikator
 {
-    public class SphereArrayData : ArrayData
+    public class SphereArrayData : ArrayState
     {
         public float Radius = CircularArrayCreator.DefaultRadius;
         public int SectorCount = SphereArrayCreator.DefaultSectorCount;
         public int StackCount = SphereArrayCreator.DefaultStackCount;
 
         public SphereArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ShapeType.Sphere, prefab, targetRotation)
+            : base(ShapeType.Sphere)
         {
             //
         }
@@ -167,7 +167,7 @@ namespace Prefabrikator
             return ((_stackCount * _sectorCount) - _sectorCount) + 2; // #DG: +2 for end caps
         }
 
-        protected override ArrayData GetContainerData()
+        protected override ArrayState GetContainerData()
         {
             SphereArrayData data = new SphereArrayData(_target, Quaternion.identity);
             data.Count = TargetCount;
@@ -179,7 +179,7 @@ namespace Prefabrikator
             return data;
         }
 
-        protected override void PopulateFromExistingData(ArrayData data)
+        protected override void PopulateFromExistingData(ArrayState data)
         {
             if (data is SphereArrayData sphereData)
             {

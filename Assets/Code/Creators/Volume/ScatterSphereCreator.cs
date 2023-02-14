@@ -93,13 +93,13 @@ namespace Prefabrikator
             }
         }
 
-        protected override ArrayData GetContainerData()
+        protected override ArrayState GetContainerData()
         {
             // #DG: TODO
             return null;
         }
 
-        protected override void PopulateFromExistingData(ArrayData data)
+        protected override void PopulateFromExistingData(ArrayState data)
         {
             // #DG: TODO
         }
@@ -185,6 +185,11 @@ namespace Prefabrikator
                 //Handles.DrawWireDisc(_center, Vector3.right, _radius);
                 Handles.DrawWireDisc(_center, Vector3.forward, _radius);
             }
+        }
+
+        public override void OnStateSet(ArrayState stateData)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

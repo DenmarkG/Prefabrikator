@@ -7,8 +7,6 @@ namespace Prefabrikator
 {
     public abstract class ArrayCreator
     {
-        public abstract class CreatorState { }
-
         public event System.Action<ICommand> OnCommandExecuted = null;
 
         public delegate void ApplicatorDelegate(GameObject go);
@@ -49,7 +47,7 @@ namespace Prefabrikator
 
         public abstract ShapeType Shape { get; }
 
-        public ArrayData StateData { get; private set; }
+        public ArrayState State { get; private set; }
 
         public ArrayCreator(GameObject target, int defaultCount)
         {
@@ -161,7 +159,7 @@ namespace Prefabrikator
 
         public void CancelPendingEdits()
         {
-            PopulateFromExistingData(StateData);
+            PopulateFromExistingData(State);
             Refresh();
         }
 
@@ -227,7 +225,7 @@ namespace Prefabrikator
             }
 
             ArrayContainer container = GetOrAddContainer(_targetProxy);
-            container.SetData((useDefaultData && StateData != null) ? StateData : GetContainerData());
+            container.SetData((useDefaultData && State != null) ? State : GetContainerData());
         }
 
         protected virtual void UpdateLocalRotations()
@@ -248,23 +246,26 @@ namespace Prefabrikator
             return container;
         }
 
-        protected abstract ArrayData GetContainerData();
-        protected abstract void PopulateFromExistingData(ArrayData data);
+        protected abstract ArrayState GetContainerData();
+        protected abstract void PopulateFromExistingData(ArrayState data);
         
         public void PopulateFromExistingContainer(ArrayContainer container)
         {
-            SetStateData(container.Data);
+            SetState(container.Data);
             PopulateFromExistingData(container.Data);
             PopulateFromExistingClones(container.gameObject);
             Refresh();
         }
-        
-        public virtual void SetStateData(ArrayData stateData)
+
+        public abstract void OnStateSet(ArrayState stateData);
+        public void SetState(ArrayState stateData)
         {
-            StateData = stateData;
+            State = stateData;
+            OnStateSet(stateData);
+            Refresh();
         }
 
-        public virtual ArrayData GetStateData() => null;
+        public virtual ArrayState GetState() => null;
 
         protected void PopulateFromExistingClones(GameObject targetProxy)
         {
@@ -294,10 +295,14 @@ namespace Prefabrikator
             return Mathf.Max(count, MinCount);
         }
 
-        public virtual void SetTargetCount(int targetCount)
+        public virtual void SetTargetCount(int targetCount, bool shouldTriggerCallback = true)
         {
             _targetCount.Set(targetCount);
-            OnTargetCountChanged();
+
+            if (shouldTriggerCallback)
+            {
+                OnTargetCountChanged();
+            }
         }
 
         protected virtual void IncrementTargetCount()
@@ -393,6 +398,8 @@ namespace Prefabrikator
 
         public abstract Vector3 GetDefaultPositionAtIndex(int index);
         protected virtual void OnSceneGUI(SceneView view) { }
+        //protected abstract void OnEditModeEnter(EditMode mode);
+        //protected abstract void OnEditModeExit();
 
         #region Modifiers
         //

@@ -65,8 +65,8 @@ namespace Prefabrikator
         private int _previousCount;
         private int _nextCount;
 
-        ArrayData _previousState = null;
-        ArrayData _nextState = null;
+        ArrayState _previousState = null;
+        ArrayState _nextState = null;
 
         public CountChangeCommand(ArrayCreator creator, int previousCount, int nextCount)
             : base(creator)
@@ -77,14 +77,21 @@ namespace Prefabrikator
 
         public override void Execute()
         {
-            _previousState = Creator.GetStateData();
-            Creator.SetTargetCount(_nextCount);
-            Creator.Refresh();
+            if (_nextState == null)
+            {
+                _previousState = Creator.GetState();
+                Creator.SetTargetCount(_nextCount);
+                Creator.Refresh();
+            }
+            else
+            {
+                Creator.SetState(_nextState);
+            }
         }
 
         public override void Revert()
         {
-            Creator.SetStateData(_previousState);
+            Creator.SetState(_previousState);
             Creator.SetTargetCount(_previousCount);
             Creator.Refresh();
         }

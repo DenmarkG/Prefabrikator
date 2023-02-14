@@ -345,8 +345,7 @@ namespace Prefabrikator
             if (container.Data != null)
             {
                 _shapeType = container.Data.Type;
-                _selectedObject = container.Data.Prefab;
-                _creator = GetCreator(_shapeType, container.Data.Prefab);
+                //_creator = GetCreator(_shapeType, container.Data.Prefab);
                 _creator.PopulateFromExistingContainer(container);
             }
         }

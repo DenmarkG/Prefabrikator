@@ -106,7 +106,7 @@ namespace Prefabrikator
             CommandQueue.Enqueue(valueChanged);
         }
 
-        protected override ArrayData GetContainerData()
+        protected override ArrayState GetContainerData()
         {
             // #DG: TODO
             return null;
@@ -187,7 +187,7 @@ namespace Prefabrikator
             return samples;
         }
 
-        protected override void PopulateFromExistingData(ArrayData data)
+        protected override void PopulateFromExistingData(ArrayState data)
         {
             // #DG: TODO
         }
@@ -286,6 +286,11 @@ namespace Prefabrikator
             _sizeProperty = new Vector3Property("Size", _size, OnSizeChanged);
             _sizeProperty.OnEditModeEnter += () => { _editMode |= EditMode.Size; };
             _sizeProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Size; };
+        }
+
+        public override void OnStateSet(ArrayState stateData)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -6,10 +6,10 @@ namespace Prefabrikator
 {
     internal class StateChangeCommand : CreatorCommand
     {
-        private ArrayData _previousState = null;
-        private ArrayData _nextState = null;
+        private ArrayState _previousState = null;
+        private ArrayState _nextState = null;
 
-        public StateChangeCommand(ArrayCreator creator, ArrayData currentState, ArrayData nextState)
+        public StateChangeCommand(ArrayCreator creator, ArrayState currentState, ArrayState nextState)
             : base(creator)
         {
             _previousState = currentState;
@@ -18,13 +18,13 @@ namespace Prefabrikator
 
         public override void Execute()
         {
-            Creator.SetStateData(_nextState);
+            Creator.SetState(_nextState);
             Creator.Refresh();
         }
 
         public override void Revert()
         {
-            Creator.SetStateData(_previousState);
+            Creator.SetState(_previousState);
             Creator.Refresh();
         }
     }

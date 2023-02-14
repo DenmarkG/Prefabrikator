@@ -5,13 +5,13 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
-    public class GridArrayData : ArrayData
+    public class GridArrayData : ArrayState
     {
         public GridArrayCreator.Dimension Dimension = GridArrayCreator.Dimension.XY;
         //public Vector3 OffsetVector = GridArrayCreator.DefaultOffset;
 
         public GridArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ShapeType.Grid, prefab, targetRotation)
+            : base(ShapeType.Grid)
         {
             //
         }
@@ -400,7 +400,7 @@ namespace Prefabrikator
             return false;
         }
 
-        protected override ArrayData GetContainerData()
+        protected override ArrayState GetContainerData()
         {
             GridArrayData data = new GridArrayData(_target, _targetRotation);
             data.Count = GetCount();
@@ -411,7 +411,7 @@ namespace Prefabrikator
             return data;
         }
 
-        protected override void PopulateFromExistingData(ArrayData data)
+        protected override void PopulateFromExistingData(ArrayState data)
         {
             if (data is GridArrayData gridData)
             {
@@ -485,6 +485,11 @@ namespace Prefabrikator
                     }
                 }
             }
+        }
+
+        public override void OnStateSet(ArrayState stateData)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

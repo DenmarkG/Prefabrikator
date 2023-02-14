@@ -5,12 +5,12 @@ using UnityEditor.IMGUI.Controls;
 namespace Prefabrikator
 {
     // #DG: Refactor this to extract common data for derived classes
-    public class CircleArrayData : ArrayData
+    public class CircleArrayData : ArrayState
     {
         public float Radius = CircularArrayCreator.DefaultRadius;
 
         public CircleArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ShapeType.Circle, prefab, targetRotation)
+            : base(ShapeType.Circle)
         {
             //Count = CircularArrayCreator.MinCount;
         }
@@ -153,7 +153,7 @@ namespace Prefabrikator
             return true;
         }
 
-        protected override ArrayData GetContainerData()
+        protected override ArrayState GetContainerData()
         {
             CircleArrayData data = new CircleArrayData(_target, Quaternion.identity);
             data.Count = TargetCount;
@@ -162,7 +162,7 @@ namespace Prefabrikator
             return data;
         }
 
-        protected override void PopulateFromExistingData(ArrayData data)
+        protected override void PopulateFromExistingData(ArrayState data)
         {
             if (data is CircleArrayData circleData)
             {
@@ -237,6 +237,11 @@ namespace Prefabrikator
             };
 
             return mods;
+        }
+
+        public override void OnStateSet(ArrayState stateData)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

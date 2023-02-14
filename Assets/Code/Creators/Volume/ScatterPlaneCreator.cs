@@ -10,12 +10,10 @@ namespace Prefabrikator
 {
     public class ScatterPlaneCreator : ScatterVolumeCreator
     {
-        public class ScatterPlaneData : ArrayData
+        public class ScatterPlaneData : ArrayState
         {
-            public Vector3[] Positions = null;
-
-            public ScatterPlaneData(GameObject prefab, Quaternion targetRotation, int positionCount)
-                : base(ShapeType.ScatterPlane, prefab, targetRotation)
+            public ScatterPlaneData()
+                : base(ShapeType.ScatterPlane)
             {
                 //
             }
@@ -32,8 +30,8 @@ namespace Prefabrikator
         private Vector3Property _sizeProperty = null;
 
         private Shared<float> _radius = new Shared<float>(2f);
-        private Vector3Property _initalPositionProperty = null;
-        private Shared<Vector3> _initialPosition = new Shared<Vector3>();
+        //private Vector3Property _initalPositionProperty = null;
+        //private Shared<Vector3> _initialPosition = new Shared<Vector3>();
 
         public ScatterPlaneCreator(GameObject target) 
             : base(target)
@@ -133,7 +131,7 @@ namespace Prefabrikator
             SetSceneViewDirty();
         }
 
-        protected override ArrayData GetContainerData()
+        protected override ArrayState GetContainerData()
         {
             return default;
         }
@@ -163,7 +161,7 @@ namespace Prefabrikator
             return null;
         }
 
-        protected override void PopulateFromExistingData(ArrayData data)
+        protected override void PopulateFromExistingData(ArrayState data)
         {
             throw new NotImplementedException();
         }
@@ -281,29 +279,29 @@ namespace Prefabrikator
             return samples;
         }
 
-        public override ArrayData GetStateData()
+        public override ArrayState GetState()
         {
-            var stateData = new ScatterPlaneData(GetProxy(), Quaternion.identity, _createdObjects.Count) 
+            var stateData = new ScatterPlaneData() 
             { 
                 Count = TargetCount,
             };
 
-            stateData.Positions = new Vector3[_createdObjects.Count];
-
-            for (int i = 0; i < _createdObjects.Count; ++i)
-            {
-                stateData.Positions[i] = _createdObjects[i].transform.position;
-            }
+            stateData.CreatedObjects = _createdObjects.ToArray();
 
             return stateData;
         }
 
-        public override void SetStateData(ArrayData stateData)
+        public override void OnStateSet(ArrayState stateData)
         {
             if (stateData is ScatterPlaneData data)
             {
-                //_positions = data.Positions;
-                Debug.Log($"Position count = {_positions.Count}");
+                SetTargetCount(data.Count, shouldTriggerCallback: false);
+                _positions = new List<Vector3>(data.Count);
+                for (int i = 0; i < data.Count; ++i)
+                {
+                    _positions.Add(data.CreatedObjects[i].transform.position);
+                    _createdObjects[i].transform.position = data.CreatedObjects[i].transform.position;
+                }
             }
         }
 
