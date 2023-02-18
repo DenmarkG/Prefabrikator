@@ -19,8 +19,6 @@ namespace Prefabrikator
             }
         }
 
-        private const int MaxSamples = 30;
-
         public override ShapeType Shape => ShapeType.ScatterPlane;
         private static readonly Vector3 DefaultSize = new Vector3(10f, 0f, 10f);
 
@@ -29,7 +27,7 @@ namespace Prefabrikator
         private Shared<Vector3> _size = new Shared<Vector3>(DefaultSize);
         private Vector3Property _sizeProperty = null;
 
-        private Shared<float> _radius = new Shared<float>(2f);
+        
         //private Vector3Property _initalPositionProperty = null;
         //private Shared<Vector3> _initialPosition = new Shared<Vector3>();
 
@@ -46,18 +44,14 @@ namespace Prefabrikator
 
             if (proxy != null)
             {
-                Vector3? position = GetRandomPointInBounds();
-                if (position != null)
-                {
-                    //Vector3 relativePos = ConvertPointToShapeRelative(position);
+                Vector3 position = GetRandomPointInBounds();
 
-                    GameObject clone = GameObject.Instantiate(_target, position.Value, _target.transform.rotation);
-                    clone.SetActive(true);
-                    clone.transform.SetParent(proxy.transform);
+                GameObject clone = GameObject.Instantiate(_target, position, _target.transform.rotation);
+                clone.SetActive(true);
+                clone.transform.SetParent(proxy.transform);
 
-                    _positions.Add(position.Value);
-                    _createdObjects.Add(clone);
-                }
+                _positions.Add(position);
+                _createdObjects.Add(clone);
             }
         }
 
@@ -68,7 +62,6 @@ namespace Prefabrikator
                 _sceneView = view;
             }
 
-            // #DG: wrap this in an edit mode boolean
             if (IsEditMode)
             {
                 Vector3 center = _center;
@@ -136,10 +129,10 @@ namespace Prefabrikator
 
         protected override Vector3 GetRandomPointInBounds()
         {
-            return GetRandomPoisson() ?? new Bounds(_center, _size).GetRandomPointInBounds();
+            return GetRandomPoisson() ?? Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
         }
 
-        private Vector3? GetRandomPoisson()
+        protected override Vector3? GetRandomPoisson()
         {
             Bounds bounds = new Bounds(_center, _size);
             if (_createdObjects.Count == 0)
@@ -150,7 +143,7 @@ namespace Prefabrikator
             foreach (GameObject activeObject in _createdObjects)
             {
                 Vector3 initialSample = activeObject.transform.position;
-                Vector3[] samplePoints = GenerateSampleSet(initialSample, _radius, 2f * _radius);
+                Vector3[] samplePoints = GenerateSampleSet(initialSample, _scatterRadius, 2f * _scatterRadius);
                 foreach (Vector3 sample in samplePoints)
                 {
                     Vector3 testPosition = sample + initialSample;
@@ -161,6 +154,7 @@ namespace Prefabrikator
                 }
             }
 
+            Debug.LogWarning("Failed to get random Poisson");
             return null;
         }
 
@@ -173,6 +167,7 @@ namespace Prefabrikator
         {
             Vector3[] previous = _positions.ToArray();
             _positions = ScatterPoisson();
+            ValidateScatter();
 
             void Apply(Vector3[] positions)
             {
@@ -181,6 +176,18 @@ namespace Prefabrikator
             }
             var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
             CommandQueue.Enqueue(valueChanged);
+        }
+
+        private void ValidateScatter()
+        {
+            Bounds testBounds = new Bounds(_center, _size);
+            foreach (Vector3 point in _positions)
+            {
+                if (!testBounds.Contains(point))
+                {
+                    Debug.Log($"Point {point} is invalid");
+                }
+            }
         }
 
         protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
@@ -217,62 +224,26 @@ namespace Prefabrikator
             }
         }
 
-        private List<Vector3> ScatterPoisson(Vector3? initialPosition = null)
+        protected override bool IsValidPoint(List<Vector3> scatteredPoints, Vector3 testPoint)
         {
-            List<Vector3> scatteredPoints = new();
+            Bounds testBounds = new Bounds(_center, _size);
 
-            List<Vector3> activePoints = new(TargetCount);
-
-            // #DG: Make this a user controlled variable
-            Vector3 initialSample = initialPosition ?? Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
-
-            activePoints.Add(initialSample);
-
-            while (activePoints.Count > 0 && scatteredPoints.Count < TargetCount)
+            if (scatteredPoints.Count > 0)
             {
-                bool sampleFound = false;
-                Vector3[] samplePoints = GenerateSampleSet(initialSample, _radius, 2f * _radius);
-                foreach (Vector3 sample in samplePoints)
+                foreach (Vector3 point in scatteredPoints)
                 {
-                    Vector3 testPosition = sample + initialSample;
-
-                    if (IsValidPoint(scatteredPoints, testPosition))
+                    if (IsValidPoint(testBounds, point, testPoint) == false)
                     {
-                        activePoints.Add(testPosition);
-                        scatteredPoints.Add(testPosition);
-
-                        sampleFound = true;
-                        break;
+                        return false;
                     }
                 }
 
-                if (!sampleFound)
-                {
-                    activePoints.Remove(initialSample);
-                }
-
-                if (activePoints.Count > 0)
-                {
-                    initialSample = activePoints[Random.Range(0, activePoints.Count)];
-                }
+                return true;
             }
-
-            Debug.Log($"Created {scatteredPoints.Count} / {TargetCount} points");
-            return scatteredPoints;
-        }
-
-        private bool IsValidPoint(List<Vector3> scatteredPoints, Vector3 testPoint)
-        {
-            Bounds testBounds = new Bounds(_center, _size);
-            foreach (Vector3 point in scatteredPoints)
+            else
             {
-                if (IsValidPoint(testBounds, point, testPoint) ==  false)
-                {
-                    return false;
-                }
+                return testBounds.Contains(testPoint);
             }
-
-            return true;
         }
 
         private bool IsValidPoint(Bounds testBounds, Vector3 activePoint, Vector3 testPoint)
@@ -283,8 +254,8 @@ namespace Prefabrikator
             }
 
             float distance = Vector3.Distance(activePoint, testPoint);
-            
-            if (distance < _radius)
+
+            if (distance < _scatterRadius)
             {
                 return false;
             }
@@ -292,18 +263,13 @@ namespace Prefabrikator
             return true;
         }
 
-        private Vector3[] GenerateSampleSet(Vector3 center, float minRadius, float maxRadius)
+        protected override void ValidatePoint(Vector3 point) 
         {
-            Vector3[] samples = new Vector3[MaxSamples];
-            for (int i = 0; i < MaxSamples; ++i)
+            Bounds test = new Bounds(_center, _size);
+            if (!test.Contains(point))
             {
-                Vector2 random = Random.insideUnitCircle;
-                Vector3 direction = new Vector3(random.x, 0f, random.y);
-                direction *= Random.Range(minRadius, maxRadius);
-                samples[i] = direction;
+                Debug.Log($"Added invalid point {point}");
             }
-
-            return samples;
         }
 
         public override ArrayState GetState()
@@ -357,6 +323,11 @@ namespace Prefabrikator
             _sizeProperty = new Vector3Property("Size", _size, OnSizeChanged);
             _sizeProperty.OnEditModeEnter += () => { _editMode |= EditMode.Size; };
             _sizeProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Size; };
+        }
+
+        protected override Vector3 GetInitialPosition()
+        {
+            return Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
         }
     }
 }

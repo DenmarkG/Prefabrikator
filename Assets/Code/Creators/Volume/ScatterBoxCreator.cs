@@ -170,19 +170,6 @@ namespace Prefabrikator
             return activePoints;
         }
 
-        private Vector3[] GenerateSampleSet(Vector3 center, float minRadius, float maxRadius)
-        {
-            Vector3[] samples = new Vector3[kMaxSamples];
-            for (int i = 0; i < kMaxSamples; ++i)
-            {
-                Vector3 direction = Random.insideUnitSphere;
-                direction *= Random.Range(minRadius, maxRadius);
-                samples[i] = direction;
-            }
-
-            return samples;
-        }
-
         protected override void PopulateFromExistingData(ArrayState data)
         {
             // #DG: TODO
@@ -286,7 +273,68 @@ namespace Prefabrikator
 
         public override void OnStateSet(ArrayState stateData)
         {
-            throw new System.NotImplementedException();
+            //
+        }
+
+        protected override Vector3? GetRandomPoisson()
+        {
+            Bounds bounds = new Bounds(_center, _size);
+            if (_createdObjects.Count == 0)
+            {
+                return Extensions.GetRandomPointInBounds(bounds);
+            }
+
+            foreach (GameObject activeObject in _createdObjects)
+            {
+                Vector3 initialSample = activeObject.transform.position;
+                Vector3[] samplePoints = GenerateSampleSet(initialSample, _scatterRadius, 2f * _scatterRadius);
+                foreach (Vector3 sample in samplePoints)
+                {
+                    Vector3 testPosition = sample + initialSample;
+                    if (IsValidPoint(_positions, testPosition))
+                    {
+                        return testPosition;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        protected override bool IsValidPoint(List<Vector3> scatteredPoints, Vector3 testPoint)
+        {
+            Bounds testBounds = new Bounds(_center, _size);
+            foreach (Vector3 point in scatteredPoints)
+            {
+                if (IsValidPoint(testBounds, point, testPoint) == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsValidPoint(Bounds testBounds, Vector3 activePoint, Vector3 testPoint)
+        {
+            if (!testBounds.Contains(testPoint))
+            {
+                return false;
+            }
+
+            float distance = Vector3.Distance(activePoint, testPoint);
+
+            if (distance < _scatterRadius)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        protected override Vector3 GetInitialPosition()
+        {
+            return Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
         }
     }
 }

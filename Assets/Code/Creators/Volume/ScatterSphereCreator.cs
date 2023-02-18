@@ -189,5 +189,20 @@ namespace Prefabrikator
         {
             throw new System.NotImplementedException();
         }
+
+        protected override Vector3? GetRandomPoisson()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override bool IsValidPoint(List<Vector3> scatteredPoints, Vector3 testPoint)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override Vector3 GetInitialPosition()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
