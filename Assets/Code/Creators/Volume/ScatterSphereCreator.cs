@@ -30,7 +30,7 @@ namespace Prefabrikator
             SceneView.RepaintAll();
         }
 
-        protected override bool CreateClone(int index = 0)
+        protected override void CreateClone(int index = 0)
         {
             GameObject proxy = GetProxy();
 
@@ -44,8 +44,6 @@ namespace Prefabrikator
                 _positions.Add(position.Value);
                 _createdObjects.Add(clone);
             }
-
-            return true;
         }
 
         protected override void Scatter()
@@ -104,7 +102,7 @@ namespace Prefabrikator
             // #DG: TODO
         }
 
-        protected override Vector3? GetRandomPointInBounds()
+        protected override Vector3 GetRandomPointInBounds()
         {
             return Random.insideUnitSphere;
         }

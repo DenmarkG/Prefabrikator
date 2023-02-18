@@ -40,7 +40,7 @@ namespace Prefabrikator
             SetupProperties();
         }
 
-        protected override bool CreateClone(int index = 0)
+        protected override void CreateClone(int index = 0)
         {
             GameObject proxy = GetProxy();
 
@@ -57,11 +57,8 @@ namespace Prefabrikator
 
                     _positions.Add(position.Value);
                     _createdObjects.Add(clone);
-                    return true;
                 }
             }
-
-            return false;
         }
 
         protected override void OnSceneGUI(SceneView view)
@@ -136,7 +133,13 @@ namespace Prefabrikator
             return default;
         }
 
-        protected override Vector3? GetRandomPointInBounds()
+
+        protected override Vector3 GetRandomPointInBounds()
+        {
+            return GetRandomPoisson() ?? new Bounds(_center, _size).GetRandomPointInBounds();
+        }
+
+        private Vector3? GetRandomPoisson()
         {
             Bounds bounds = new Bounds(_center, _size);
             if (_createdObjects.Count == 0)
@@ -178,6 +181,30 @@ namespace Prefabrikator
             }
             var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
             CommandQueue.Enqueue(valueChanged);
+        }
+
+        protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
+        {
+            base.OnRefreshStart(hardRefresh, useDefaultData);
+
+            if (_positions.Count != _createdObjects.Count)
+            {
+                int countDiff = _createdObjects.Count - _positions.Count;
+                if (countDiff > 0)
+                {
+                    for (int i = _positions.Count - 1; i < _createdObjects.Count; ++i)
+                    {
+                        _positions.Add(_createdObjects[i].transform.position);
+                    }
+                }
+                else
+                {
+                    while (_positions.Count != _createdObjects.Count)
+                    {
+                        _positions.RemoveAt(_positions.Count - 1);
+                    }
+                }
+            }
         }
 
         protected override void UpdatePositions()
@@ -286,7 +313,12 @@ namespace Prefabrikator
                 Count = TargetCount,
             };
 
-            stateData.CreatedObjects = _createdObjects.ToArray();
+            stateData.Positions = new Vector3[stateData.Count];
+            for (int i = 0; i < stateData.Count; ++i)
+            {
+                stateData.Positions[i] = _createdObjects[i].transform.position;
+            }
+
 
             return stateData;
         }
@@ -296,11 +328,14 @@ namespace Prefabrikator
             if (stateData is ScatterPlaneData data)
             {
                 SetTargetCount(data.Count, shouldTriggerCallback: false);
+
+                Debug.Assert(data.Count == _createdObjects.Count, "Counts are not equal, cannot apply state change");
+
                 _positions = new List<Vector3>(data.Count);
                 for (int i = 0; i < data.Count; ++i)
                 {
-                    _positions.Add(data.CreatedObjects[i].transform.position);
-                    _createdObjects[i].transform.position = data.CreatedObjects[i].transform.position;
+                    _positions.Add(data.Positions[i]);
+                    _createdObjects[i].transform.position = data.Positions[i];
                 }
             }
         }

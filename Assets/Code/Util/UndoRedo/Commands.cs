@@ -77,21 +77,12 @@ namespace Prefabrikator
 
         public override void Execute()
         {
-            if (_nextState == null)
-            {
-                _previousState = Creator.GetState();
-                Creator.SetTargetCount(_nextCount);
-                Creator.Refresh();
-            }
-            else
-            {
-                Creator.SetState(_nextState);
-            }
+            Creator.SetTargetCount(_nextCount);
+            Creator.Refresh();
         }
 
         public override void Revert()
         {
-            Creator.SetState(_previousState);
             Creator.SetTargetCount(_previousCount);
             Creator.Refresh();
         }

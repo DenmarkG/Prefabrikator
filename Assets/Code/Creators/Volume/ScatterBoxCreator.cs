@@ -29,7 +29,7 @@ namespace Prefabrikator
             SceneView.RepaintAll();
         }
 
-        protected override bool CreateClone(int index = 0)
+        protected override void CreateClone(int index = 0)
         {
             GameObject proxy = GetProxy();
 
@@ -47,12 +47,8 @@ namespace Prefabrikator
 
                     _positions.Add(relativePos);
                     _createdObjects.Add(clone);
-
-                    return true;
                 }
             }
-
-            return false;
         }
 
         private Vector3 ConvertPointToShapeRelative(Vector3 point)
@@ -112,7 +108,7 @@ namespace Prefabrikator
             return null;
         }
 
-        protected override Vector3? GetRandomPointInBounds()
+        protected override Vector3 GetRandomPointInBounds()
         {
             return Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
         }

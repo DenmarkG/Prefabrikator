@@ -10,7 +10,7 @@ namespace Prefabrikator
     {
         public ShapeType Type { get; }
         public int Count = 0;
-        public GameObject[] CreatedObjects;
+        public Vector3[] Positions;
 
         public ArrayState(ShapeType type)
         {

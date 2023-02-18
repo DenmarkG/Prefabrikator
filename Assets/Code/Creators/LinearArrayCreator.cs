@@ -130,7 +130,7 @@ namespace Prefabrikator
             UpdatePositions();
         }
 
-        protected override bool CreateClone(int index = 0)
+        protected override void CreateClone(int index = 0)
         {
             GameObject proxy = GetProxy();
 
@@ -154,10 +154,7 @@ namespace Prefabrikator
                 }
 
                 _createdObjects.Add(clone);
-                return true;
             }
-
-            return false;
         }
 
         protected override ArrayState GetContainerData()

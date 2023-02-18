@@ -383,7 +383,7 @@ namespace Prefabrikator
             _zCountProperty.AddCustomButton(Constants.MinusButton, (value) => { _countZ.Set(--value); });
         }
 
-        protected override bool CreateClone(int index = 0)
+        protected override void CreateClone(int index = 0)
         {
             GameObject proxy = GetProxy();
 
@@ -393,11 +393,7 @@ namespace Prefabrikator
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
                 _createdObjects.Add(clone);
-
-                return true;
             }
-
-            return false;
         }
 
         protected override ArrayState GetContainerData()

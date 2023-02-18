@@ -100,6 +100,7 @@ namespace Prefabrikator
                 ModifierType.ScaleUniform,
                 ModifierType.RotationRandom,
                 ModifierType.RotationUniform,
+                ModifierType.PositionNoise,
             };
 
             return mods;
@@ -107,6 +108,6 @@ namespace Prefabrikator
 
         protected abstract void Scatter();
         protected abstract void UpdatePositions();
-        protected abstract Vector3? GetRandomPointInBounds();
+        protected abstract Vector3 GetRandomPointInBounds();
     }
 }

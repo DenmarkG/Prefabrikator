@@ -20,7 +20,11 @@ BUGS:
     [] Volumes do not account for position array changes when target count changes
         - Track object state with state class + StateChangeCommand
         - use nullable fields to only apply what is needed to get from current state to next state
-    [] Remove scaling ability auto-update position from volumes (simpler)
+    [-] Remove scaling ability auto-update position from volumes (simpler)
+    [] Create warning/log system
+        [] Log message when count for scatter cannot be increased
+            - Abort operation
+            - Exit edit mode (?)
 
 [] Support Undo for Shape Change
 [] Re-add Suppport Editing existing shapes
