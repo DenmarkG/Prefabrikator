@@ -4,12 +4,12 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
-    public class LinearArrayData : ArrayData
+    public class LinearArrayData : ArrayState
     {
         public Vector3 Offset;
 
         public LinearArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ShapeType.Line, prefab, targetRotation)
+            : base(ShapeType.Line)
         {
             //
         }
@@ -157,7 +157,7 @@ namespace Prefabrikator
             }
         }
 
-        protected override ArrayData GetContainerData()
+        protected override ArrayState GetContainerData()
         {
             LinearArrayData data = new LinearArrayData(_target, _targetRotation);
             data.Count = TargetCount;
@@ -165,39 +165,12 @@ namespace Prefabrikator
             return data;
         }
 
-        protected override void PopulateFromExistingData(ArrayData data)
+        protected override void PopulateFromExistingData(ArrayState data)
         {
             if (data is LinearArrayData lineData)
             {
                 SetTargetCount(lineData.Count);
                 _offset.Set(lineData.Offset);
-                _targetRotation = lineData.TargetRotation;
-            }
-        }
-
-        protected override void OnTargetCountChanged()
-        {
-            if (TargetCount < _createdObjects.Count)
-            {
-                while (_createdObjects.Count > TargetCount)
-                {
-                    int index = _createdObjects.Count - 1;
-                    if (index >= 0)
-                    {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                while (TargetCount > _createdObjects.Count)
-                {
-                    CreateClone();
-                }
             }
         }
 
@@ -240,6 +213,15 @@ namespace Prefabrikator
             }
         }
 
+
+        public override void OnStateSet(ArrayState stateData)
+        {
+            if (stateData is LinearArrayData data)
+            {
+                _offset.Set(data.Offset);
+            }
+        }
+
         protected override string[] GetAllowedModifiers()
         {
             string[] mods =
@@ -256,6 +238,5 @@ namespace Prefabrikator
 
             return mods;
         }
-
     }
 }

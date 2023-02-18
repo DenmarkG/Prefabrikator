@@ -4,14 +4,14 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
-    public class ArcArrayData : ArrayData
+    public class ArcArrayData : ArrayState
     {
         public float FillPercent = ArcArrayCreator.DefaultFillPercent;
         public bool CapEnd = false;
         public float Radius = CircularArrayCreator.DefaultRadius;
 
         public ArcArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ShapeType.Arc, prefab, targetRotation)
+            : base(ShapeType.Arc)
         {
             //Count = CircularArrayCreator.MinCount;
         }
@@ -78,7 +78,7 @@ namespace Prefabrikator
             return new Vector3(x, _target.transform.position.y, z);
         }
 
-        protected override ArrayData GetContainerData()
+        protected override ArrayState GetContainerData()
         {
             ArcArrayData data = new ArcArrayData(_target, Quaternion.identity);
             data.Count = TargetCount;
@@ -88,7 +88,7 @@ namespace Prefabrikator
             return data;
         }
 
-        protected override void PopulateFromExistingData(ArrayData data)
+        protected override void PopulateFromExistingData(ArrayState data)
         {
             if (data is ArcArrayData arcData)
             {

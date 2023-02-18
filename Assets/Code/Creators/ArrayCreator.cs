@@ -9,6 +9,9 @@ namespace Prefabrikator
     {
         public event System.Action<ICommand> OnCommandExecuted = null;
 
+        public delegate void ApplicatorDelegate(GameObject go);
+        public delegate void IndexedApplicatorDelegate(GameObject go, int index);
+
         public Queue<ICommand> CommandQueue => _commandQueue;
         private Queue<ICommand> _commandQueue = new Queue<ICommand>();
 
@@ -29,7 +32,6 @@ namespace Prefabrikator
         public abstract string Name { get; }
 
         protected Quaternion _targetRotation = Quaternion.identity;
-        protected ArrayData _defaultData = null;
 
         private List<Modifier> _modifierStack = new List<Modifier>();
         int _indexOfModifierToAdd = 0;
@@ -44,6 +46,8 @@ namespace Prefabrikator
         protected SceneView _sceneView = null;
 
         public abstract ShapeType Shape { get; }
+
+        public ArrayState State { get; private set; }
 
         public ArrayCreator(GameObject target, int defaultCount)
         {
@@ -150,13 +154,12 @@ namespace Prefabrikator
             OnSave();
             _targetProxy = null;
             _createdObjects.Clear();
-            _defaultData = null;
             Refresh(true);
         }
 
         public void CancelPendingEdits()
         {
-            PopulateFromExistingData(_defaultData);
+            PopulateFromExistingData(State);
             Refresh();
         }
 
@@ -180,6 +183,11 @@ namespace Prefabrikator
             }
         }
 
+        /// <summary>
+        /// Attempts to clone the target object
+        /// </summary>
+        /// <param name="index">The position in the list of created objects to create the clone</param>
+        /// <returns>true if the clone was created successfully</returns>
         protected abstract void CreateClone(int index = 0);
 
         protected void DestroyClone(GameObject clone)
@@ -217,7 +225,7 @@ namespace Prefabrikator
             }
 
             ArrayContainer container = GetOrAddContainer(_targetProxy);
-            container.SetData((useDefaultData && _defaultData != null) ? _defaultData : GetContainerData());
+            container.SetData((useDefaultData && State != null) ? State : GetContainerData());
         }
 
         protected virtual void UpdateLocalRotations()
@@ -238,16 +246,26 @@ namespace Prefabrikator
             return container;
         }
 
-        protected abstract ArrayData GetContainerData();
+        protected abstract ArrayState GetContainerData();
+        protected abstract void PopulateFromExistingData(ArrayState data);
+        
         public void PopulateFromExistingContainer(ArrayContainer container)
         {
-            _defaultData = container.Data;
+            SetState(container.Data);
             PopulateFromExistingData(container.Data);
             PopulateFromExistingClones(container.gameObject);
             Refresh();
         }
 
-        protected abstract void PopulateFromExistingData(ArrayData data);
+        public abstract void OnStateSet(ArrayState stateData);
+        public void SetState(ArrayState stateData)
+        {
+            State = stateData;
+            OnStateSet(stateData);
+            Refresh();
+        }
+
+        public virtual ArrayState GetState() => null;
 
         protected void PopulateFromExistingClones(GameObject targetProxy)
         {
@@ -277,13 +295,41 @@ namespace Prefabrikator
             return Mathf.Max(count, MinCount);
         }
 
-        public virtual void SetTargetCount(int targetCount)
+        public virtual void SetTargetCount(int targetCount, bool shouldTriggerCallback = true)
         {
             _targetCount.Set(targetCount);
-            OnTargetCountChanged();
+
+            if (shouldTriggerCallback)
+            {
+                OnTargetCountChanged();
+            }
         }
 
-        protected abstract void OnTargetCountChanged();
+        protected void OnTargetCountChanged()
+        {
+            if (TargetCount < _createdObjects.Count)
+            {
+                while (_createdObjects.Count > TargetCount)
+                {
+                    int index = _createdObjects.Count - 1;
+                    if (index >= 0)
+                    {
+                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                while (TargetCount > _createdObjects.Count)
+                {
+                    CreateClone();
+                }
+            }
+        }
 
         protected void ExecuteCommand(ICommand command)
         {
@@ -311,11 +357,6 @@ namespace Prefabrikator
             return Quaternion.identity;
         }
 
-        public abstract Vector3 GetDefaultPositionAtIndex(int index);
-
-        public delegate void ApplicatorDelegate(GameObject go);
-        public delegate void IndexedApplicatorDelegate(GameObject go, int index);
-
         public void ApplyToAll(ApplicatorDelegate applicator)
         {
             int numObjs = _createdObjects.Count;
@@ -342,8 +383,12 @@ namespace Prefabrikator
             }
         }
 
+        public abstract Vector3 GetDefaultPositionAtIndex(int index);
         protected virtual void OnSceneGUI(SceneView view) { }
+        //protected abstract void OnEditModeEnter(EditMode mode);
+        //protected abstract void OnEditModeExit();
 
+        #region Modifiers
         //
         // Modifiers
         // #DG: move this to a unified dictionary, keyed by modifier type
@@ -516,5 +561,7 @@ namespace Prefabrikator
 
             return default(T);
         }
+
+        #endregion // Modifiers
     }
 }

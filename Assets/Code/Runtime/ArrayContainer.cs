@@ -6,10 +6,10 @@ namespace Prefabrikator
 {
     public class ArrayContainer : MonoBehaviour
     {
-        public ArrayData Data => _data;
-        [SerializeReference] private ArrayData _data = null;
+        public ArrayState Data => _data;
+        [SerializeReference] private ArrayState _data = null;
 
-        public void SetData(ArrayData data)
+        public void SetData(ArrayState data)
         {
             _data = data;
         }

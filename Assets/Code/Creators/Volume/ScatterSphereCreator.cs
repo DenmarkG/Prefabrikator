@@ -36,12 +36,12 @@ namespace Prefabrikator
 
             if (proxy != null)
             {
-                Vector3 position = GetRandomPointInBounds();
-                GameObject clone = GameObject.Instantiate(_target, (position * _radius) + _center, _target.transform.rotation);
+                Vector3? position = GetRandomPointInBounds();
+                GameObject clone = GameObject.Instantiate(_target, (position.Value * _radius) + _center, _target.transform.rotation);
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
 
-                _positions.Add(position);
+                _positions.Add(position.Value);
                 _createdObjects.Add(clone);
             }
         }
@@ -55,8 +55,8 @@ namespace Prefabrikator
 
             for (int i = 0; i < count; ++i)
             {
-                Vector3 position = GetRandomPointInBounds();
-                _positions.Add(position);
+                Vector3? position = GetRandomPointInBounds();
+                _positions.Add(position.Value);
             }
 
             void Apply(Vector3[] positions)
@@ -91,13 +91,13 @@ namespace Prefabrikator
             }
         }
 
-        protected override ArrayData GetContainerData()
+        protected override ArrayState GetContainerData()
         {
             // #DG: TODO
             return null;
         }
 
-        protected override void PopulateFromExistingData(ArrayData data)
+        protected override void PopulateFromExistingData(ArrayState data)
         {
             // #DG: TODO
         }
@@ -183,6 +183,11 @@ namespace Prefabrikator
                 //Handles.DrawWireDisc(_center, Vector3.right, _radius);
                 Handles.DrawWireDisc(_center, Vector3.forward, _radius);
             }
+        }
+
+        public override void OnStateSet(ArrayState stateData)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

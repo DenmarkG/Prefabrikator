@@ -326,6 +326,9 @@ namespace Prefabrikator
                 case ShapeType.ScatterSphere:
                     creator = new ScatterSphereCreator(target);
                     break;
+                case ShapeType.ScatterPlane:
+                    creator = new ScatterPlaneCreator(target);
+                    break;
                 case ShapeType.Line:
                 default:
                     creator = new LinearArrayCreator(target);
@@ -342,8 +345,7 @@ namespace Prefabrikator
             if (container.Data != null)
             {
                 _shapeType = container.Data.Type;
-                _selectedObject = container.Data.Prefab;
-                _creator = GetCreator(_shapeType, container.Data.Prefab);
+                //_creator = GetCreator(_shapeType, container.Data.Prefab);
                 _creator.PopulateFromExistingContainer(container);
             }
         }

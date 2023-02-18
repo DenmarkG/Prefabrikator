@@ -65,6 +65,9 @@ namespace Prefabrikator
         private int _previousCount;
         private int _nextCount;
 
+        ArrayState _previousState = null;
+        ArrayState _nextState = null;
+
         public CountChangeCommand(ArrayCreator creator, int previousCount, int nextCount)
             : base(creator)
         {
