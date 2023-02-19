@@ -26,9 +26,6 @@ namespace Prefabrikator
         private Shared<Vector3> _size = new Shared<Vector3>(new Vector3(10f, 0f, 10f));
         private Vector3Property _sizeProperty = null;
 
-        //private Vector3Property _initalPositionProperty = null;
-        //private Shared<Vector3> _initialPosition = new Shared<Vector3>();
-
         public ScatterPlaneCreator(GameObject target) 
             : base(target)
         {
@@ -140,6 +137,11 @@ namespace Prefabrikator
         {
             Vector3[] previous = _positions.ToArray();
             _positions = ScatterPoisson();
+
+            while (_positions.Count < _createdObjects.Count)
+            {
+                _positions.Add(GetRandomPointInBounds());
+            }
 
             void Apply(Vector3[] positions)
             {
@@ -257,8 +259,9 @@ namespace Prefabrikator
             }
         }
 
-        private void SetupProperties()
+        protected override void SetupProperties()
         {
+            base.SetupProperties();
             void OnCenterChanged(Vector3 current, Vector3 previous)
             {
                 CommandQueue.Enqueue(new GenericCommand<Vector3>(_center, previous, current));

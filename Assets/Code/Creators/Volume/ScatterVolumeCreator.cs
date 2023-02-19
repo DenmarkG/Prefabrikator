@@ -29,6 +29,7 @@ namespace Prefabrikator
         protected Vector3Property _centerProperty = null;
 
         protected Shared<float> _scatterRadius = new Shared<float>(2f);
+        protected FloatProperty _scatterRadiusProperty = null;
 
         public ScatterVolumeCreator(GameObject target)
             : base(target, DefaultCount)
@@ -42,6 +43,7 @@ namespace Prefabrikator
             {
                 EditorGUILayout.BeginHorizontal();
                 {
+                    _scatterRadius.Set(_scatterRadiusProperty.Update());
                     GUILayout.Space(Extensions.IndentSize);
                     if (GUILayout.Button("Scatter"))
                     {
@@ -207,6 +209,15 @@ namespace Prefabrikator
             }
 
             return samples;
+        }
+
+        protected virtual void SetupProperties()
+        {
+            void OnScatterRadiusChanged(float current, float previous)
+            {
+                CommandQueue.Enqueue(new GenericCommand<float>(_scatterRadius, previous, current));
+            }
+            _scatterRadiusProperty = new FloatProperty("Scatter Radius", _scatterRadius, OnScatterRadiusChanged);
         }
 
         protected abstract void Scatter();

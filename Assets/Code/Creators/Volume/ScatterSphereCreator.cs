@@ -107,8 +107,9 @@ namespace Prefabrikator
             return Random.insideUnitSphere;
         }
 
-        private void SetupProperties()
+        protected override void SetupProperties()
         {
+            base.SetupProperties();
             void OnCenterChanged(Vector3 current, Vector3 previous)
             {
                 CommandQueue.Enqueue(new GenericCommand<Vector3>(_center, previous, current));

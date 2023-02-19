@@ -34,58 +34,30 @@ namespace Prefabrikator
 
             if (proxy != null)
             {
-                Vector3? position = GetRandomPointInBounds();
+                Vector3 position = GetRandomPointInBounds();
+                
+                GameObject clone = GameObject.Instantiate(_target, position, _target.transform.rotation);
+                clone.SetActive(true);
+                clone.transform.SetParent(proxy.transform);
 
-                if (position != null)
-                {
-                    Vector3 relativePos = ConvertPointToShapeRelative(position.Value);
-
-                    GameObject clone = GameObject.Instantiate(_target, position.Value, _target.transform.rotation);
-                    clone.SetActive(true);
-                    clone.transform.SetParent(proxy.transform);
-
-                    _positions.Add(relativePos);
-                    _createdObjects.Add(clone);
-                }
+                _positions.Add(position);
+                _createdObjects.Add(clone);
             }
-        }
-
-        private Vector3 ConvertPointToShapeRelative(Vector3 point)
-        {
-            Vector3 extents = (_size.Get() / 2f);
-            Vector3 min = _center - extents;
-            Vector3 max = _center + extents;
-
-            Vector3 relativePos = new Vector3();
-            relativePos.x = point.x.Normalize(min.x, max.x);
-            relativePos.y = point.y.Normalize(min.y, max.y);
-            relativePos.z = point.z.Normalize(min.z, max.z);
-
-            return relativePos;
-        }
-
-        private Vector3 ConvertPointToWorldRelative(Vector3 point)
-        {
-            Vector3 extents = (_size.Get() / 2f);
-            Vector3 min = _center - extents;
-            Vector3 max = _center + extents;
-            
-            float x = Mathf.Lerp(min.x, max.x, point.x);
-            float y = Mathf.Lerp(min.y, max.y, point.y);
-            float z = Mathf.Lerp(min.z, max.z, point.z);
-
-            return new Vector3(x, y, z);
         }
 
         protected override void Scatter()
         {
             Vector3[] previous = _positions.ToArray();
             _positions = ScatterPoisson();
+            while (_positions.Count < _createdObjects.Count)
+            {
+                _positions.Add(GetRandomPointInBounds());
+            }
 
             void Apply(Vector3[] positions)
             {
                 _positions = new List<Vector3>(positions);
-                ApplyToAll((go, index) => { go.transform.position = ConvertPointToWorldRelative(_positions[index]); });
+                ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
             }
             var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
             CommandQueue.Enqueue(valueChanged);
@@ -99,7 +71,7 @@ namespace Prefabrikator
 
         protected override Vector3 GetRandomPointInBounds()
         {
-            return Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
+            return GetRandomPoisson() ?? Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
         }
 
 
@@ -114,7 +86,7 @@ namespace Prefabrikator
 
             for (int i = 0; i < count; ++i)
             {
-                _createdObjects[i].transform.position = ConvertPointToWorldRelative(_positions[i]);
+                _createdObjects[i].transform.position = _positions[i];
             }
         }
 
@@ -185,8 +157,10 @@ namespace Prefabrikator
             SetSceneViewDirty();
         }
 
-        private void SetupProperties()
+        protected override void SetupProperties()
         {
+            base.SetupProperties();
+
             void OnCenterChanged(Vector3 current, Vector3 previous)
             {
                 CommandQueue.Enqueue(new GenericCommand<Vector3>(_center, previous, current));
@@ -212,15 +186,23 @@ namespace Prefabrikator
         protected override bool IsValidPoint(List<Vector3> scatteredPoints, Vector3 testPoint)
         {
             Bounds testBounds = new Bounds(_center, _size);
-            foreach (Vector3 point in scatteredPoints)
-            {
-                if (IsValidPoint(testBounds, point, testPoint) == false)
-                {
-                    return false;
-                }
-            }
 
-            return true;
+            if (scatteredPoints.Count > 0)
+            {
+                foreach (Vector3 point in scatteredPoints)
+                {
+                    if (IsValidPoint(testBounds, point, testPoint) == false)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else
+            {
+                return testBounds.Contains(testPoint);
+            }
         }
 
         private bool IsValidPoint(Bounds testBounds, Vector3 activePoint, Vector3 testPoint)
