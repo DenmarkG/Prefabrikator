@@ -36,6 +36,23 @@ namespace Prefabrikator
         {
             //
         }
+        
+        protected override void CreateClone(int index = 0)
+        {
+            GameObject proxy = GetProxy();
+
+            if (proxy != null)
+            {
+                Vector3 position = GetRandomPointInBounds();
+
+                GameObject clone = GameObject.Instantiate(_target, position, _target.transform.rotation);
+                clone.SetActive(true);
+                clone.transform.SetParent(proxy.transform);
+
+                _positions.Add(position);
+                _createdObjects.Add(clone);
+            }
+        }
 
         public override sealed void DrawEditor()
         {
@@ -118,6 +135,25 @@ namespace Prefabrikator
             return mods;
         }
 
+        protected void Scatter()
+        {
+            Vector3[] previous = _positions.ToArray();
+            _positions = ScatterPoisson();
+
+            while (_positions.Count < _createdObjects.Count)
+            {
+                _positions.Add(GetRandomPointInBounds());
+            }
+
+            void Apply(Vector3[] positions)
+            {
+                _positions = new List<Vector3>(positions);
+                ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
+            }
+            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
+            CommandQueue.Enqueue(valueChanged);
+        }
+
         protected List<Vector3> ScatterPoisson(Vector3? initialPosition = null)
         {
             List<Vector3> scatteredPoints = new();
@@ -161,7 +197,7 @@ namespace Prefabrikator
             return scatteredPoints;
         }
         
-        protected virtual Vector3? GetRandomPoisson()
+        protected Vector3? GetRandomPoisson()
         {
             if (_createdObjects.Count == 0)
             {
@@ -186,7 +222,15 @@ namespace Prefabrikator
             return null;
         }
 
-        
+        private void UpdatePositions()
+        {
+            int count = _createdObjects.Count;
+
+            for (int i = 0; i < _createdObjects.Count; ++i)
+            {
+                _createdObjects[i].transform.position = _positions[i];
+            }
+        }
 
         protected Vector3[] GenerateSampleSet(Vector3 center, float minRadius, float maxRadius, Dimension dimension)
         {
@@ -220,8 +264,6 @@ namespace Prefabrikator
             _scatterRadiusProperty = new FloatProperty("Scatter Radius", _scatterRadius, OnScatterRadiusChanged);
         }
 
-        protected abstract void Scatter();
-        protected abstract void UpdatePositions();
         protected abstract Vector3 GetRandomPointInBounds();
         protected abstract bool IsValidPoint(List<Vector3> scatteredPoints, Vector3 testPoint);
         protected abstract Vector3 GetInitialPosition();

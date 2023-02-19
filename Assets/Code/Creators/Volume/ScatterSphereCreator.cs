@@ -16,6 +16,8 @@ namespace Prefabrikator
 
         private SphereBoundsHandle _sphereHandle = new SphereBoundsHandle();
 
+        private float SqRadius => _radius * _radius;
+
         public ScatterSphereCreator(GameObject target)
             : base(target)
         {
@@ -28,45 +30,6 @@ namespace Prefabrikator
         {
             SceneView.duringSceneGui -= OnSceneGUI;
             SceneView.RepaintAll();
-        }
-
-        protected override void CreateClone(int index = 0)
-        {
-            GameObject proxy = GetProxy();
-
-            if (proxy != null)
-            {
-                Vector3? position = GetRandomPointInBounds();
-                GameObject clone = GameObject.Instantiate(_target, (position.Value * _radius) + _center, _target.transform.rotation);
-                clone.SetActive(true);
-                clone.transform.SetParent(proxy.transform);
-
-                _positions.Add(position.Value);
-                _createdObjects.Add(clone);
-            }
-        }
-
-        protected override void Scatter()
-        {
-            Vector3[] previous = _positions.ToArray();
-            _positions.Clear();
-
-            int count = _createdObjects.Count;
-
-            for (int i = 0; i < count; ++i)
-            {
-                Vector3? position = GetRandomPointInBounds();
-                _positions.Add(position.Value);
-            }
-
-            void Apply(Vector3[] positions)
-            {
-                _positions = new List<Vector3>(positions);
-                int count = positions.Length;
-                ApplyToAll((go, index) => { go.transform.position = (_positions[index] * _radius) + _center; });
-            }
-            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
-            CommandQueue.Enqueue(valueChanged);
         }
 
         protected override void DrawVolumeEditor()
@@ -104,7 +67,7 @@ namespace Prefabrikator
 
         protected override Vector3 GetRandomPointInBounds()
         {
-            return Random.insideUnitSphere;
+            return GetRandomPoisson() ?? Extensions.RandomInsideSphere(_radius);
         }
 
         protected override void SetupProperties()
@@ -125,15 +88,6 @@ namespace Prefabrikator
             _radiusProperty = new FloatProperty("Radius", _radius, OnRadiusChanged);
             _radiusProperty.OnEditModeEnter += () => { _editMode |= EditMode.Size; };
             _radiusProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Size; };
-        }
-
-        protected override void UpdatePositions()
-        {
-            int count = _createdObjects.Count;
-            for (int i = 0; i < count; ++i)
-            {
-                _createdObjects[i].transform.position = (_positions[i] * _radius) + _center;
-            }
         }
 
         protected override void OnSceneGUI(SceneView view)
@@ -191,19 +145,46 @@ namespace Prefabrikator
             throw new System.NotImplementedException();
         }
 
-        protected override Vector3? GetRandomPoisson()
-        {
-            throw new System.NotImplementedException();
-        }
-
         protected override bool IsValidPoint(List<Vector3> scatteredPoints, Vector3 testPoint)
         {
-            throw new System.NotImplementedException();
+            if (scatteredPoints.Count > 0)
+            {
+                foreach (Vector3 point in scatteredPoints)
+                {
+                    if (IsValidPoint(point, testPoint) == false)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else
+            {
+                return (testPoint - _center).sqrMagnitude > SqRadius;
+            }
+        }
+
+        private bool IsValidPoint(Vector3 activePoint, Vector3 testPoint)
+        {
+            if ((testPoint - _center).sqrMagnitude > SqRadius)
+            {
+                return false;
+            }
+
+            float distance = Vector3.Distance(activePoint, testPoint);
+
+            if (distance < _scatterRadius)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         protected override Vector3 GetInitialPosition()
         {
-            throw new System.NotImplementedException();
+            return Extensions.RandomInsideSphere(_radius);
         }
 
         protected override Dimension GetDimension()

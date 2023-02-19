@@ -141,25 +141,6 @@ namespace Prefabrikator
             throw new NotImplementedException();
         }
 
-        protected override void Scatter()
-        {
-            Vector3[] previous = _positions.ToArray();
-            _positions = ScatterPoisson();
-
-            while (_positions.Count < _createdObjects.Count)
-            {
-                _positions.Add(GetRandomPointInBounds());
-            }
-
-            void Apply(Vector3[] positions)
-            {
-                _positions = new List<Vector3>(positions);
-                ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
-            }
-            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
-            CommandQueue.Enqueue(valueChanged);
-        }
-
         protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
         {
             base.OnRefreshStart(hardRefresh, useDefaultData);
@@ -181,16 +162,6 @@ namespace Prefabrikator
                         _positions.RemoveAt(_positions.Count - 1);
                     }
                 }
-            }
-        }
-
-        protected override void UpdatePositions()
-        {
-            int count = _createdObjects.Count;
-            
-            for (int i = 0; i < _createdObjects.Count; ++i)
-            {
-                _createdObjects[i].transform.position = _positions[i];
             }
         }
 

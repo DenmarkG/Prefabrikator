@@ -138,6 +138,11 @@ namespace Prefabrikator
             return new Vector3(x, y, z);
         }
 
+        public static Vector3 RandomInsideSphere(float maxRadius)
+        {
+            return RNG.insideUnitSphere * Random.Range(0f, maxRadius);
+        }
+
         public static Vector3 Clamp(Vector3 vect, Vector3 min, Vector3 max)
         {
             vect.x = Mathf.Clamp(vect.x, min.x, max.x);
