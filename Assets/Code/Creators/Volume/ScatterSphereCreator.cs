@@ -204,5 +204,10 @@ namespace Prefabrikator
         {
             throw new System.NotImplementedException();
         }
+
+        protected override Dimension GetDimension()
+        {
+            return Dimension.Three;
+        }
     }
 }

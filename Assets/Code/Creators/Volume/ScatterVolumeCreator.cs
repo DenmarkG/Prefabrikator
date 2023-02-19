@@ -7,6 +7,12 @@ namespace Prefabrikator
 {
     public abstract class ScatterVolumeCreator : ArrayCreator
     {
+        protected enum Dimension
+        {
+            Two,
+            Three
+        }
+
         private const int MaxSamples = 30;
 
         public override float MaxWindowHeight => 300f;
@@ -125,7 +131,7 @@ namespace Prefabrikator
             while (activePoints.Count > 0 && scatteredPoints.Count < TargetCount)
             {
                 bool sampleFound = false;
-                Vector3[] samplePoints = GenerateSampleSet(initialSample, _scatterRadius, 2f * _scatterRadius);
+                Vector3[] samplePoints = GenerateSampleSet(initialSample, _scatterRadius, 2f * _scatterRadius, GetDimension());
                 foreach (Vector3 sample in samplePoints)
                 {
                     Vector3 testPosition = sample + initialSample;
@@ -134,7 +140,6 @@ namespace Prefabrikator
                     {
                         activePoints.Add(testPosition);
                         scatteredPoints.Add(testPosition);
-                        ValidatePoint(testPosition);
                         sampleFound = true;
                         break;
                     }
@@ -153,15 +158,50 @@ namespace Prefabrikator
 
             return scatteredPoints;
         }
+        
+        protected virtual Vector3? GetRandomPoisson()
+        {
+            if (_createdObjects.Count == 0)
+            {
+                return null;
+            }
 
+            foreach (GameObject activeObject in _createdObjects)
+            {
+                Vector3 initialSample = activeObject.transform.position;
+                Vector3[] samplePoints = GenerateSampleSet(initialSample, _scatterRadius, 2f * _scatterRadius, GetDimension());
+                foreach (Vector3 sample in samplePoints)
+                {
+                    Vector3 testPosition = sample + initialSample;
+                    if (IsValidPoint(_positions, testPosition))
+                    {
+                        return testPosition;
+                    }
+                }
+            }
 
-        protected Vector3[] GenerateSampleSet(Vector3 center, float minRadius, float maxRadius)
+            Debug.LogWarning("Failed to get random Poisson");
+            return null;
+        }
+
+        
+
+        protected Vector3[] GenerateSampleSet(Vector3 center, float minRadius, float maxRadius, Dimension dimension)
         {
             Vector3[] samples = new Vector3[MaxSamples];
             for (int i = 0; i < MaxSamples; ++i)
             {
-                Vector2 random = Random.insideUnitCircle;
-                Vector3 direction = new Vector3(random.x, 0f, random.y);
+                Vector3 direction;
+
+                if (dimension == Dimension.Two)
+                {
+                    Vector2 random = Random.insideUnitCircle;
+                    direction = new Vector3(random.x, 0f, random.y);
+                }
+                else
+                {
+                    direction = Random.insideUnitSphere;
+                }
                 direction *= Random.Range(minRadius, maxRadius);
                 samples[i] = direction;
             }
@@ -172,10 +212,8 @@ namespace Prefabrikator
         protected abstract void Scatter();
         protected abstract void UpdatePositions();
         protected abstract Vector3 GetRandomPointInBounds();
-        protected abstract Vector3? GetRandomPoisson();
         protected abstract bool IsValidPoint(List<Vector3> scatteredPoints, Vector3 testPoint);
         protected abstract Vector3 GetInitialPosition();
-
-        protected virtual void ValidatePoint(Vector3 point) { }
+        protected abstract Dimension GetDimension();
     }
 }

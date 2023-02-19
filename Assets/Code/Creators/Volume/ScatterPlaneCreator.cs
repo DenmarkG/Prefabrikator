@@ -20,20 +20,19 @@ namespace Prefabrikator
         }
 
         public override ShapeType Shape => ShapeType.ScatterPlane;
-        private static readonly Vector3 DefaultSize = new Vector3(10f, 0f, 10f);
 
         private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
 
-        private Shared<Vector3> _size = new Shared<Vector3>(DefaultSize);
+        private Shared<Vector3> _size = new Shared<Vector3>(new Vector3(10f, 0f, 10f));
         private Vector3Property _sizeProperty = null;
 
-        
         //private Vector3Property _initalPositionProperty = null;
         //private Shared<Vector3> _initialPosition = new Shared<Vector3>();
 
         public ScatterPlaneCreator(GameObject target) 
             : base(target)
         {
+            _size.Set(new Vector3(10f, 0f, 10f));
             _center.Set(target.transform.position);
             SetupProperties();
         }
@@ -132,32 +131,6 @@ namespace Prefabrikator
             return GetRandomPoisson() ?? Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
         }
 
-        protected override Vector3? GetRandomPoisson()
-        {
-            Bounds bounds = new Bounds(_center, _size);
-            if (_createdObjects.Count == 0)
-            {
-                return Extensions.GetRandomPointInBounds(bounds);
-            }
-
-            foreach (GameObject activeObject in _createdObjects)
-            {
-                Vector3 initialSample = activeObject.transform.position;
-                Vector3[] samplePoints = GenerateSampleSet(initialSample, _scatterRadius, 2f * _scatterRadius);
-                foreach (Vector3 sample in samplePoints)
-                {
-                    Vector3 testPosition = sample + initialSample;
-                    if (IsValidPoint(_positions, testPosition))
-                    {
-                        return testPosition;
-                    }
-                }
-            }
-
-            Debug.LogWarning("Failed to get random Poisson");
-            return null;
-        }
-
         protected override void PopulateFromExistingData(ArrayState data)
         {
             throw new NotImplementedException();
@@ -167,7 +140,6 @@ namespace Prefabrikator
         {
             Vector3[] previous = _positions.ToArray();
             _positions = ScatterPoisson();
-            ValidateScatter();
 
             void Apply(Vector3[] positions)
             {
@@ -176,18 +148,6 @@ namespace Prefabrikator
             }
             var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
             CommandQueue.Enqueue(valueChanged);
-        }
-
-        private void ValidateScatter()
-        {
-            Bounds testBounds = new Bounds(_center, _size);
-            foreach (Vector3 point in _positions)
-            {
-                if (!testBounds.Contains(point))
-                {
-                    Debug.Log($"Point {point} is invalid");
-                }
-            }
         }
 
         protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
@@ -263,15 +223,6 @@ namespace Prefabrikator
             return true;
         }
 
-        protected override void ValidatePoint(Vector3 point) 
-        {
-            Bounds test = new Bounds(_center, _size);
-            if (!test.Contains(point))
-            {
-                Debug.Log($"Added invalid point {point}");
-            }
-        }
-
         public override ArrayState GetState()
         {
             var stateData = new ScatterPlaneData() 
@@ -318,6 +269,12 @@ namespace Prefabrikator
 
             void OnSizeChanged(Vector3 current, Vector3 previous)
             {
+                if (current.y != 0f)
+                {
+                    current.y = 0f;
+                    _size.Set(current);
+                }
+
                 CommandQueue.Enqueue(new GenericCommand<Vector3>(_size, previous, current));
             }
             _sizeProperty = new Vector3Property("Size", _size, OnSizeChanged);
@@ -328,6 +285,11 @@ namespace Prefabrikator
         protected override Vector3 GetInitialPosition()
         {
             return Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
+        }
+
+        protected override Dimension GetDimension()
+        {
+            return Dimension.Two;
         }
     }
 }
