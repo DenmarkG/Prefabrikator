@@ -24,14 +24,22 @@ namespace Prefabrikator
         private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
 
         private Shared<Vector3> _size = new Shared<Vector3>(new Vector3(10f, 0f, 10f));
-        private Vector3Property _sizeProperty = null;
+        protected Vector3Property _sizeProperty = null;
+        protected virtual Shared<Vector3> DefaultSize => new Shared<Vector3>(new Vector3(10f, 0f, 10f));
 
         public ScatterPlaneCreator(GameObject target) 
             : base(target)
         {
-            _size.Set(new Vector3(10f, 0f, 10f));
+            //_size.Set(new Vector3(10f, 0f, 10f));
+            _size.Set(DefaultSize);
             _center.Set(target.transform.position);
             SetupProperties();
+        }
+
+        protected override void OnSave()
+        {
+            SceneView.duringSceneGui -= OnSceneGUI;
+            SceneView.RepaintAll();
         }
 
         protected override void CreateClone(int index = 0)
@@ -272,11 +280,7 @@ namespace Prefabrikator
 
             void OnSizeChanged(Vector3 current, Vector3 previous)
             {
-                if (current.y != 0f)
-                {
-                    current.y = 0f;
-                    _size.Set(current);
-                }
+                _size.Set(EnforceSizeConstraints(current));
 
                 CommandQueue.Enqueue(new GenericCommand<Vector3>(_size, previous, current));
             }
@@ -293,6 +297,16 @@ namespace Prefabrikator
         protected override Dimension GetDimension()
         {
             return Dimension.Two;
+        }
+
+        protected virtual Vector3 EnforceSizeConstraints(Vector3 newSize)
+        {
+            if (newSize.y != 0f)
+            {
+                newSize.y = 0f;
+            }
+
+            return newSize;
         }
     }
 }
