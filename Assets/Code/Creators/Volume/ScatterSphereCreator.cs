@@ -67,7 +67,7 @@ namespace Prefabrikator
 
         protected override Vector3 GetRandomPointInBounds()
         {
-            return GetRandomPoisson() ?? Extensions.RandomInsideSphere(_radius);
+            return (GetRandomPoisson() ?? Extensions.RandomInsideSphere(_radius)) + _center;
         }
 
         protected override void SetupProperties()
@@ -145,6 +145,36 @@ namespace Prefabrikator
             throw new System.NotImplementedException();
         }
 
+        protected override List<Vector3> ScatterPoisson(Vector3? initialPosition = null)
+        {
+            List<Vector3> scatteredPoints = new();
+
+            // #DG: Make this a user controlled variable
+            while (scatteredPoints.Count < TargetCount)
+            {
+                bool sampleFound = false;
+                Vector3[] samplePoints = GenerateSampleSet(_center, _scatterRadius, 2f * _scatterRadius, GetDimension());
+                foreach (Vector3 sample in samplePoints)
+                {
+                    Vector3 testPosition = sample;
+
+                    if (IsValidPoint(scatteredPoints, testPosition))
+                    {
+                        scatteredPoints.Add(testPosition);
+                        sampleFound = true;
+                        break;
+                    }
+                }
+
+                if (!sampleFound)
+                {
+                    break;
+                }
+            }
+
+            return scatteredPoints;
+        }
+
         protected override bool IsValidPoint(List<Vector3> scatteredPoints, Vector3 testPoint)
         {
             if (scatteredPoints.Count > 0)
@@ -172,7 +202,7 @@ namespace Prefabrikator
                 return false;
             }
 
-            float distance = Vector3.Distance(activePoint, testPoint);
+            float distance = ArcDistance(activePoint, testPoint);
 
             if (distance < _scatterRadius)
             {
@@ -180,6 +210,12 @@ namespace Prefabrikator
             }
 
             return true;
+        }
+
+        private float ArcDistance(Vector3 a, Vector3 b)
+        {
+            float chordLength = Vector3.Distance(a, b);
+            return 2 * (Mathf.Asin(chordLength / 2));
         }
 
         protected override Vector3 GetInitialPosition()
@@ -190,6 +226,18 @@ namespace Prefabrikator
         protected override Dimension GetDimension()
         {
             return Dimension.Three;
+        }
+
+        protected override Vector3[] GenerateSampleSet(Vector3 center, float minRadius, float maxRadius, Dimension dimension)
+        {
+            Vector3[] samples = new Vector3[MaxSamples];
+            for (int i = 0; i < MaxSamples; ++i)
+            {
+                Vector3 direction = Random.insideUnitSphere * _radius;
+                samples[i] = direction;
+            }
+
+            return samples;
         }
     }
 }

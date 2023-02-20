@@ -13,7 +13,7 @@ namespace Prefabrikator
             Three
         }
 
-        private const int MaxSamples = 30;
+        protected const int MaxSamples = 30;
 
         public override float MaxWindowHeight => 300f;
         public override string Name => "Scatter";
@@ -154,15 +154,12 @@ namespace Prefabrikator
             CommandQueue.Enqueue(valueChanged);
         }
 
-        protected List<Vector3> ScatterPoisson(Vector3? initialPosition = null)
+        protected virtual List<Vector3> ScatterPoisson(Vector3? initialPosition = null)
         {
             List<Vector3> scatteredPoints = new();
-
             List<Vector3> activePoints = new(TargetCount);
 
-            // #DG: Make this a user controlled variable
             Vector3 initialSample = initialPosition ?? GetInitialPosition();
-            
 
             activePoints.Add(initialSample);
 
@@ -232,7 +229,7 @@ namespace Prefabrikator
             }
         }
 
-        protected Vector3[] GenerateSampleSet(Vector3 center, float minRadius, float maxRadius, Dimension dimension)
+        protected virtual Vector3[] GenerateSampleSet(Vector3 center, float minRadius, float maxRadius, Dimension dimension)
         {
             Vector3[] samples = new Vector3[MaxSamples];
             for (int i = 0; i < MaxSamples; ++i)

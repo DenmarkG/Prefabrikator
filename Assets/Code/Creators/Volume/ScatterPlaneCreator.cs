@@ -42,23 +42,6 @@ namespace Prefabrikator
             SceneView.RepaintAll();
         }
 
-        protected override void CreateClone(int index = 0)
-        {
-            GameObject proxy = GetProxy();
-
-            if (proxy != null)
-            {
-                Vector3 position = GetRandomPointInBounds();
-
-                GameObject clone = GameObject.Instantiate(_target, position, _target.transform.rotation);
-                clone.SetActive(true);
-                clone.transform.SetParent(proxy.transform);
-
-                _positions.Add(position);
-                _createdObjects.Add(clone);
-            }
-        }
-
         protected override void OnSceneGUI(SceneView view)
         {
             if (_sceneView == null || _sceneView != view)
