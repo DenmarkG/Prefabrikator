@@ -143,6 +143,11 @@ namespace Prefabrikator
             return RNG.insideUnitSphere * Random.Range(0f, maxRadius);
         }
 
+        public static Vector3 RandomOnSphere(float radius)
+        {
+            return RNG.insideUnitSphere.normalized * radius;
+        }
+
         public static Vector3 Clamp(Vector3 vect, Vector3 min, Vector3 max)
         {
             vect.x = Mathf.Clamp(vect.x, min.x, max.x);

@@ -67,7 +67,7 @@ namespace Prefabrikator
 
         protected override Vector3 GetRandomPointInBounds()
         {
-            return (GetRandomPoisson() ?? Extensions.RandomInsideSphere(_radius)) + _center;
+            return (GetRandomPoisson(_center) ?? (Extensions.RandomOnSphere(_radius) + _center));
         }
 
         protected override void SetupProperties()
@@ -233,8 +233,8 @@ namespace Prefabrikator
             Vector3[] samples = new Vector3[MaxSamples];
             for (int i = 0; i < MaxSamples; ++i)
             {
-                Vector3 direction = Random.insideUnitSphere * _radius;
-                samples[i] = direction;
+                Vector3 direction = Random.insideUnitSphere.normalized * _radius;
+                samples[i] = direction + _center;
             }
 
             return samples;

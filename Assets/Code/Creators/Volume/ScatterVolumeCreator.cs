@@ -194,7 +194,7 @@ namespace Prefabrikator
             return scatteredPoints;
         }
         
-        protected Vector3? GetRandomPoisson()
+        protected Vector3? GetRandomPoisson(Vector3? initialSample = null)
         {
             if (_createdObjects.Count == 0)
             {
@@ -203,11 +203,11 @@ namespace Prefabrikator
 
             foreach (GameObject activeObject in _createdObjects)
             {
-                Vector3 initialSample = activeObject.transform.position;
-                Vector3[] samplePoints = GenerateSampleSet(initialSample, _scatterRadius, 2f * _scatterRadius, GetDimension());
+                initialSample ??= activeObject.transform.position;
+                Vector3[] samplePoints = GenerateSampleSet(initialSample.Value, _scatterRadius, 2f * _scatterRadius, GetDimension());
                 foreach (Vector3 sample in samplePoints)
                 {
-                    Vector3 testPosition = sample + initialSample;
+                    Vector3 testPosition = sample + initialSample.Value;
                     if (IsValidPoint(_positions, testPosition))
                     {
                         return testPosition;
