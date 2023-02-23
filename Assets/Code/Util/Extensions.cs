@@ -131,11 +131,21 @@ namespace Prefabrikator
             Vector3 max = bounds.center + bounds.extents;
 
             float x = RNG.Range(min.x, max.x);
-            //float y = RNG.Range(min.y, max.y);
-            float y = 0f;
+            float y = RNG.Range(min.y, max.y);
+            //float y = 0f;
             float z = RNG.Range(min.z, max.z);
 
             return new Vector3(x, y, z);
+        }
+
+        public static Vector3 RandomInsideSphere(float maxRadius)
+        {
+            return RNG.insideUnitSphere * Random.Range(0f, maxRadius);
+        }
+
+        public static Vector3 RandomOnSphere(float radius)
+        {
+            return RNG.insideUnitSphere.normalized * radius;
         }
 
         public static Vector3 Clamp(Vector3 vect, Vector3 min, Vector3 max)

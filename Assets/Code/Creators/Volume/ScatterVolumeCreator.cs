@@ -7,6 +7,14 @@ namespace Prefabrikator
 {
     public abstract class ScatterVolumeCreator : ArrayCreator
     {
+        protected enum Dimension
+        {
+            Two,
+            Three
+        }
+
+        protected const int MaxSamples = 30;
+
         public override float MaxWindowHeight => 300f;
         public override string Name => "Scatter";
 
@@ -20,10 +28,30 @@ namespace Prefabrikator
         protected Shared<Vector3> _center = new Shared<Vector3>();
         protected Vector3Property _centerProperty = null;
 
+        protected Shared<float> _scatterRadius = new Shared<float>(2f);
+        protected FloatProperty _scatterRadiusProperty = null;
+
         public ScatterVolumeCreator(GameObject target)
             : base(target, DefaultCount)
         {
             //
+        }
+        
+        protected override void CreateClone(int index = 0)
+        {
+            GameObject proxy = GetProxy();
+
+            if (proxy != null)
+            {
+                Vector3 position = GetRandomPointInBounds();
+
+                GameObject clone = GameObject.Instantiate(_target, position, _target.transform.rotation);
+                clone.SetActive(true);
+                clone.transform.SetParent(proxy.transform);
+
+                _positions.Add(position);
+                _createdObjects.Add(clone);
+            }
         }
 
         public override sealed void DrawEditor()
@@ -32,6 +60,7 @@ namespace Prefabrikator
             {
                 EditorGUILayout.BeginHorizontal();
                 {
+                    _scatterRadius.Set(_scatterRadiusProperty.Update());
                     GUILayout.Space(Extensions.IndentSize);
                     if (GUILayout.Button("Scatter"))
                     {
@@ -106,8 +135,135 @@ namespace Prefabrikator
             return mods;
         }
 
-        protected abstract void Scatter();
-        protected abstract void UpdatePositions();
+        protected void Scatter()
+        {
+            Vector3[] previous = _positions.ToArray();
+            _positions = ScatterPoisson();
+
+            while (_positions.Count < _createdObjects.Count)
+            {
+                _positions.Add(GetRandomPointInBounds());
+            }
+
+            void Apply(Vector3[] positions)
+            {
+                _positions = new List<Vector3>(positions);
+                ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
+            }
+            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
+            CommandQueue.Enqueue(valueChanged);
+        }
+
+        protected virtual List<Vector3> ScatterPoisson(Vector3? initialPosition = null)
+        {
+            List<Vector3> scatteredPoints = new();
+            List<Vector3> activePoints = new(TargetCount);
+
+            Vector3 initialSample = initialPosition ?? GetInitialPosition();
+
+            activePoints.Add(initialSample);
+
+            while (activePoints.Count > 0 && scatteredPoints.Count < TargetCount)
+            {
+                bool sampleFound = false;
+                Vector3[] samplePoints = GenerateSampleSet(initialSample, _scatterRadius, 2f * _scatterRadius, GetDimension());
+                foreach (Vector3 sample in samplePoints)
+                {
+                    Vector3 testPosition = sample + initialSample;
+
+                    if (IsValidPoint(scatteredPoints, testPosition))
+                    {
+                        activePoints.Add(testPosition);
+                        scatteredPoints.Add(testPosition);
+                        sampleFound = true;
+                        break;
+                    }
+                }
+
+                if (!sampleFound)
+                {
+                    activePoints.Remove(initialSample);
+                }
+
+                if (activePoints.Count > 0)
+                {
+                    initialSample = activePoints[Random.Range(0, activePoints.Count)];
+                }
+            }
+
+            return scatteredPoints;
+        }
+        
+        protected Vector3? GetRandomPoisson(Vector3? initialSample = null)
+        {
+            if (_createdObjects.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (GameObject activeObject in _createdObjects)
+            {
+                initialSample ??= activeObject.transform.position;
+                Vector3[] samplePoints = GenerateSampleSet(initialSample.Value, _scatterRadius, 2f * _scatterRadius, GetDimension());
+                foreach (Vector3 sample in samplePoints)
+                {
+                    Vector3 testPosition = sample + initialSample.Value;
+                    if (IsValidPoint(_positions, testPosition))
+                    {
+                        return testPosition;
+                    }
+                }
+            }
+
+            Debug.LogWarning("Failed to get random Poisson");
+            return null;
+        }
+
+        private void UpdatePositions()
+        {
+            int count = _createdObjects.Count;
+
+            for (int i = 0; i < _createdObjects.Count; ++i)
+            {
+                _createdObjects[i].transform.position = _positions[i];
+            }
+        }
+
+        protected virtual Vector3[] GenerateSampleSet(Vector3 center, float minRadius, float maxRadius, Dimension dimension)
+        {
+            Vector3[] samples = new Vector3[MaxSamples];
+            for (int i = 0; i < MaxSamples; ++i)
+            {
+                Vector3 direction;
+
+                if (dimension == Dimension.Two)
+                {
+                    Vector2 random = Random.insideUnitCircle;
+                    direction = new Vector3(random.x, 0f, random.y);
+                }
+                else
+                {
+                    direction = Random.insideUnitSphere;
+                }
+                direction *= Random.Range(minRadius, maxRadius);
+                samples[i] = direction;
+            }
+
+            return samples;
+        }
+
+        protected virtual void SetupProperties()
+        {
+            void OnScatterRadiusChanged(float current, float previous)
+            {
+                CommandQueue.Enqueue(new GenericCommand<float>(_scatterRadius, previous, current));
+            }
+            _scatterRadiusProperty = new FloatProperty("Scatter Radius", _scatterRadius, OnScatterRadiusChanged);
+        }
+
         protected abstract Vector3 GetRandomPointInBounds();
+        protected abstract bool IsValidPoint(List<Vector3> scatteredPoints, Vector3 testPoint);
+        protected abstract Vector3 GetInitialPosition();
+        protected abstract Dimension GetDimension();
     }
 }
