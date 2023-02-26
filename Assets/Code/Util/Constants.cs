@@ -21,10 +21,10 @@ namespace Prefabrikator
 
     public static class Constants
     {
-        public static GUIContent EditButton => EditorGUIUtility.IconContent("d_Preset.Context");
-        public static GUIContent PlusButton => EditorGUIUtility.IconContent("d_Toolbar Plus");
-        public static GUIContent MinusButton => EditorGUIUtility.IconContent("d_Toolbar Minus");
-        public static GUIContent CheckMark => EditorGUIUtility.IconContent("d_FilterSelectedOnly");
-        public static GUIContent XButton => EditorGUIUtility.IconContent("d_winbtn_win_close");
+        public static GUIContent EditButton => EditorGUIUtility.IconContent("d_Preset.Context", "|Edit");
+        public static GUIContent PlusButton => EditorGUIUtility.IconContent("d_Toolbar Plus", "|Add");
+        public static GUIContent MinusButton => EditorGUIUtility.IconContent("d_Toolbar Minus", "|Remove");
+        public static GUIContent CheckMark => EditorGUIUtility.IconContent("d_FilterSelectedOnly", "|Apply");
+        public static GUIContent XButton => EditorGUIUtility.IconContent("d_winbtn_win_close", "|Cancel");
     }
 }
