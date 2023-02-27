@@ -14,9 +14,10 @@ Automate the process for calling the modifier update and process calls
     - should not need to be called manually by each createor
 
 
-[] Add Tooltips
+[x] Add Tooltips
 [] Add "Drop" for 2d shapes
 [] Update Sphere with size changes
+[] Add randomize button to random modifiers
 
 BUGS:
     [] original object flashes when changing Count -> gonna have to live with this one

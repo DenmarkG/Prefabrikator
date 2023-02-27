@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEditor;
 
 namespace Prefabrikator
@@ -79,9 +80,9 @@ namespace Prefabrikator
         }
     }
 
-    public class LayerProperty : CustomProperty<LayerMask>
+    public class LayerMaskProperty : CustomProperty<LayerMask>
     {
-        public LayerProperty(string label, Shared<LayerMask> startValue, OnValueSetDelegate onValueSet)
+        public LayerMaskProperty(string label, Shared<LayerMask> startValue, OnValueSetDelegate onValueSet)
             : base(label, startValue, onValueSet)
         {
             //
@@ -89,7 +90,24 @@ namespace Prefabrikator
 
         protected override LayerMask ShowPropertyField()
         {
-            return EditorGUILayout.LayerField(Label, WorkingValue);
+            string[] options = BuildLayerList();
+
+            return EditorGUILayout.MaskField(Label, WorkingValue, options);
+        }
+
+        private string[] BuildLayerList()
+        {
+            List<string> names = new List<string>();
+            for (int i = 0; i < 32; ++i)
+            {
+                string name = LayerMask.LayerToName(i);
+                if (!string.IsNullOrEmpty(name))
+                {
+                    names.Add(name);
+                }
+            }
+
+            return names.ToArray();
         }
     }
 
