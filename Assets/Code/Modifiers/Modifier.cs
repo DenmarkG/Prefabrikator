@@ -14,6 +14,7 @@ namespace Prefabrikator
         public static readonly string IncrementalRotation = "Incremental Rotation";
         public static readonly string IncrementalScale = "Incremental Scale";
         public static readonly string PositionNoise = "Position Noise";
+        public static readonly string DropToFloor = "Drop to Floor";
     }
 
     public abstract class Modifier

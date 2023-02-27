@@ -59,15 +59,17 @@ namespace Prefabrikator
             //_window.ShowUtility();
             _window.Show();
 
-
             if (container != null)
             {
                 _window.PopulateFromExistingData(container);
             }
 
             _window._loadedContainer = container;
+        }
 
-            _window._undoStack = new UndoStack();
+        private void Awake()
+        {
+            _undoStack = new UndoStack();
         }
 
         private void SaveAndClose()

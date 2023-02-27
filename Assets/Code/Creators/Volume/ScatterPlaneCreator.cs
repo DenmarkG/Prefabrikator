@@ -262,6 +262,22 @@ namespace Prefabrikator
 
             return newSize;
         }
+
+        protected override string[] GetAllowedModifiers()
+        {
+            string[] mods =
+            {
+                ModifierType.RotationRandom,
+                ModifierType.ScaleRandom,
+                ModifierType.ScaleUniform,
+                ModifierType.RotationRandom,
+                ModifierType.RotationUniform,
+                ModifierType.PositionNoise,
+                ModifierType.DropToFloor,
+            };
+
+            return mods;
+        }
     }
 }
 

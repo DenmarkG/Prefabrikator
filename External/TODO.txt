@@ -14,6 +14,10 @@ Automate the process for calling the modifier update and process calls
     - should not need to be called manually by each createor
 
 
+[] Add Tooltips
+[] Add "Drop" for 2d shapes
+[] Update Sphere with size changes
+
 BUGS:
     [] original object flashes when changing Count -> gonna have to live with this one
     [x] curve does not update new objects correctly when count changes
@@ -22,9 +26,6 @@ BUGS:
         - use nullable fields to only apply what is needed to get from current state to next state
     [-] Remove scaling ability auto-update position from volumes (simpler)
     [] Create warning/log system
-        [] Log message when count for scatter cannot be increased
-            - Abort operation
-            - Exit edit mode (?)
 
 [] Support Undo for Shape Change
 [] Re-add Suppport Editing existing shapes
@@ -44,7 +45,7 @@ BUGS:
 [] Refactor Random Modifiers
 
 [] Convert Min/Max Values to sliders
-[] Reset Button
+[x] Reset Button
 
 [] Add Interactive views to draw shapes in scene view
     [] Box 

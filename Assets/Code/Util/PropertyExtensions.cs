@@ -79,6 +79,20 @@ namespace Prefabrikator
         }
     }
 
+    public class LayerProperty : CustomProperty<LayerMask>
+    {
+        public LayerProperty(string label, Shared<LayerMask> startValue, OnValueSetDelegate onValueSet)
+            : base(label, startValue, onValueSet)
+        {
+            //
+        }
+
+        protected override LayerMask ShowPropertyField()
+        {
+            return EditorGUILayout.LayerField(Label, WorkingValue);
+        }
+    }
+
     //public class BoolProperty : CustomProperty<bool>
     //{
     //    public BoolProperty(string label, Shared<bool> startValue, OnValueSetDelegate onValueSet)

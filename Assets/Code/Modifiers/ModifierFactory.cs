@@ -16,6 +16,7 @@ namespace Prefabrikator
             { ModifierType.IncrementalRotation, (array) => { return new IncrementalRotationModifier(array); } },
             { ModifierType.IncrementalScale, (array) => { return new IncrementalScaleModifier(array); } },
             { ModifierType.PositionNoise, (array) => { return new PositionNoiseModifier(array); } },
+            { ModifierType.DropToFloor, (array) => { return new DropModifier(array); } },
         };
 
         public static Modifier CreateModifier(string modifierName, ArrayCreator array)

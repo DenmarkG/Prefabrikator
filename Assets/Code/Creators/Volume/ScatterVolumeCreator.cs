@@ -215,7 +215,6 @@ namespace Prefabrikator
                 }
             }
 
-            Debug.LogWarning("Failed to get random Poisson");
             return null;
         }
 
