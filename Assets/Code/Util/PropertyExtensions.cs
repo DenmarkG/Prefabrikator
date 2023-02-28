@@ -85,7 +85,7 @@ namespace Prefabrikator
         public LayerMaskProperty(string label, Shared<LayerMask> startValue, OnValueSetDelegate onValueSet)
             : base(label, startValue, onValueSet)
         {
-            //
+            _shouldShowLabel = false;
         }
 
         protected override LayerMask ShowPropertyField()
@@ -111,17 +111,31 @@ namespace Prefabrikator
         }
     }
 
-    //public class BoolProperty : CustomProperty<bool>
-    //{
-    //    public BoolProperty(string label, Shared<bool> startValue, OnValueSetDelegate onValueSet)
-    //        : base(label, startValue, onValueSet)
-    //    {
-    //        //
-    //    }
+    public class BoolProperty : CustomProperty<bool>
+    {
+        public BoolProperty(string label, Shared<bool> startValue, OnValueSetDelegate onValueSet)
+            : base(label, startValue, onValueSet)
+        {
+            _shouldShowLabel = false;
+        }
 
-    //    protected override bool ShowPropertyField()
-    //    {
-    //        return EditorGUILayout.ToggleLeft(Label, WorkingValue);
-    //    }
-    //}
+        protected override bool ShowPropertyField()
+        {
+            return EditorGUILayout.ToggleLeft(Label, WorkingValue);
+        }
+    }
+
+    public class ToggleProperty : CustomProperty<bool>
+    {
+        public ToggleProperty(string label, Shared<bool> startValue, OnValueSetDelegate onValueSet)
+            : base(label, startValue, onValueSet)
+        {
+            _shouldShowLabel = false;
+        }
+
+        protected override bool ShowPropertyField()
+        {
+            return EditorGUILayout.Toggle(Label, WorkingValue);
+        }
+    }
 }
