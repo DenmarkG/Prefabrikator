@@ -136,15 +136,15 @@ namespace Prefabrikator
 
     public class ToggleProperty : CustomProperty<bool>
     {
-        public ToggleProperty(string label, Shared<bool> startValue, OnValueSetDelegate onValueSet)
-            : base(label, startValue, onValueSet)
+        public ToggleProperty(GUIContent content, Shared<bool> startValue, OnValueSetDelegate onValueSet)
+            : base(content, startValue, onValueSet)
         {
             _shouldShowLabel = false;
         }
 
         protected override bool ShowPropertyField()
         {
-            return EditorGUILayout.Toggle(Label, WorkingValue);
+            return EditorGUILayout.Toggle(_guiContent, WorkingValue);
         }
     }
 }

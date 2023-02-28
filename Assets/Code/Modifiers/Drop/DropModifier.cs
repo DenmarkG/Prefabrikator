@@ -188,7 +188,9 @@ namespace Prefabrikator
             {
                 Owner.CommandQueue.Enqueue(new GenericCommand<bool>(_useCollider, previous, current));
             }
-            _colliderProperty = new ToggleProperty("Use Collider for Offset", _useCollider, OnUseColliderChanged);
+
+            const string tooltip = "Set this to TRUE to use the bottom of the collider bounds to detect as the drop point";
+            _colliderProperty = new ToggleProperty(new GUIContent("Use Collider for Offset", tooltip), _useCollider, OnUseColliderChanged);
         }
     }
 }

@@ -34,6 +34,7 @@ namespace Prefabrikator
         private ValidateInputDelegate OnValidate = null;
 
         protected bool _shouldShowLabel = true;
+        protected GUIContent _guiContent = null;
 
         public event System.Action OnEditModeEnter = null;
         public event System.Action OnEditModeExit = null;
@@ -71,6 +72,12 @@ namespace Prefabrikator
         {
             _setValue = startValue;
             Init(label, _setValue, onValueSet, onValidate);
+        }
+
+        public CustomProperty(GUIContent content, Shared<T> startValue, OnValueSetDelegate onValueSet, ValidateInputDelegate onValidate = null)
+            : this(content.text, startValue, onValueSet, onValidate)
+        {
+            _guiContent = content;
         }
 
         private void Init(string label, T startValue, OnValueSetDelegate onValueSet, ValidateInputDelegate onValidate)
