@@ -487,5 +487,26 @@ namespace Prefabrikator
         {
             throw new System.NotImplementedException();
         }
+
+        protected override string[] GetAllowedModifiers()
+        {
+            if (_dimension == Dimension.XYZ)
+            {
+                return base.GetAllowedModifiers();
+            }
+
+            string[] mods =
+            {
+                ModifierType.RotationRandom,
+                ModifierType.ScaleRandom,
+                ModifierType.ScaleUniform,
+                ModifierType.RotationRandom,
+                ModifierType.RotationUniform,
+                ModifierType.PositionNoise,
+                ModifierType.DropToFloor,
+            };
+
+            return mods;
+        }
     }
 }

@@ -57,6 +57,11 @@ namespace Prefabrikator
         {
             _minVector.Set(_minProperty.Update());
             _maxVector.Set(_maxProperty.Update());
+
+            if (GUILayout.Button("Randomize"))
+            {
+                Randomize();
+            }
         }
 
         private void SetupProperties()

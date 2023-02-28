@@ -230,6 +230,7 @@ namespace Prefabrikator
                 ModifierType.RotationRandom,
                 ModifierType.RotationUniform,
                 ModifierType.PositionNoise,
+                ModifierType.DropToFloor,
                 // #DG: add circle specic mods here
                 ModifierType.FollowCurve,
             };
