@@ -26,7 +26,12 @@ namespace Prefabrikator
             ApplyModifier();
         }
 
-        public override sealed void OnRemoved()
+        public sealed override void OnRemoved()
+        {
+            Teardown();
+        }
+
+        public sealed override void Teardown()
         {
             Owner.ApplyToAll(RestoreDefault);
         }

@@ -43,7 +43,7 @@ namespace Prefabrikator
 
         public override void OnRemoved()
         {
-            Owner.ApplyToAll((go) => { go.transform.rotation = Owner.GetDefaultRotation(); });
+            Teardown();
         }
 
         public override void Process(GameObject[] objs)
@@ -158,6 +158,11 @@ namespace Prefabrikator
         public Quaternion GetRotationAtIndex(int index)
         {
             return _rotations[index];
+        }
+
+        public override void Teardown()
+        {
+            Owner.ApplyToAll((go) => { go.transform.rotation = Owner.GetDefaultRotation(); });
         }
     }
 }

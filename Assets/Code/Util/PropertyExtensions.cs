@@ -16,6 +16,15 @@ namespace Prefabrikator
         {
             return EditorGUILayout.Vector3Field(string.Empty, WorkingValue, null);
         }
+
+        public static Vector3Property Create(string label, Shared<Vector3> watchedValue, Queue<ICommand> commandQueue)
+        {
+            void OnValueSet(Vector3 current, Vector3 previous)
+            {
+                commandQueue.Enqueue(new GenericCommand<Vector3>(watchedValue, previous, current));
+            };
+            return new Vector3Property(label, watchedValue, OnValueSet);
+        }
     }
 
     public class QuaternionProperty : CustomProperty<Quaternion>

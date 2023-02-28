@@ -42,5 +42,6 @@ namespace Prefabrikator
         public abstract void Process(GameObject[] objs);
 
         public abstract void OnRemoved();
+        public abstract void Teardown();
     }
 }

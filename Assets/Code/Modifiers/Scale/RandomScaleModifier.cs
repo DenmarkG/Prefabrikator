@@ -66,8 +66,7 @@ namespace Prefabrikator
 
         public override void OnRemoved()
         {
-            Vector3 defaultScale = Owner.GetDefaultScale();
-            Owner.ApplyToAll((go) => { go.transform.localScale = defaultScale; });
+            Teardown();
         }
 
         protected override void OnInspectorUpdate()
@@ -186,6 +185,12 @@ namespace Prefabrikator
                     _scales = temp;
                 }
             }
+        }
+
+        public override void Teardown()
+        {
+            Vector3 defaultScale = Owner.GetDefaultScale();
+            Owner.ApplyToAll((go) => { go.transform.localScale = defaultScale; });
         }
     }
 }

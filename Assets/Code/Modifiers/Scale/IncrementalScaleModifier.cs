@@ -29,6 +29,11 @@ namespace Prefabrikator
 
         public override void OnRemoved()
         {
+            Teardown();
+        }
+
+        public override void Teardown()
+        {
             Vector3 defaultScale = Owner.GetDefaultScale();
             Owner.ApplyToAll((go) => { go.transform.localScale = defaultScale; });
         }

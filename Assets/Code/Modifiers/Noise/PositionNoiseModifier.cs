@@ -36,6 +36,11 @@ namespace Prefabrikator
 
         public override void OnRemoved()
         {
+            Teardown();
+        }
+
+        public override void Teardown()
+        {
             Owner.ApplyToAll((go, index) => { go.transform.position = Owner.GetDefaultPositionAtIndex(index); });
         }
 
@@ -102,6 +107,7 @@ namespace Prefabrikator
             }
         }
 
+        // #DG: fix this
         private void UpdateArray(GameObject[] objs)
         {
             int numObjs = objs.Length;

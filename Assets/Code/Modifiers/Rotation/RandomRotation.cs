@@ -31,6 +31,11 @@ namespace Prefabrikator
 
         public override void OnRemoved()
         {
+            Teardown();
+        }
+
+        public override void Teardown()
+        {
             Quaternion defaultRotation = Owner.GetDefaultRotation();
             Owner.ApplyToAll((go) => { go.transform.rotation = defaultRotation; });
         }

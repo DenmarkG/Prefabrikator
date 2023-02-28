@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 namespace Prefabrikator
 {
@@ -22,22 +23,58 @@ namespace Prefabrikator
         private Shared<float> _verticalOffset = new Shared<float>();
         private FloatProperty _offsetProperty = null;
 
+        protected SceneView _sceneView = null;
+        protected EditMode _editMode = EditMode.None;
+
         public DropModifier(ArrayCreator creator)
             : base(creator)
         {
             SetupProperties();
 
             _positions = new List<Vector3>(Owner.CreatedObjects.Count);
+
+            SceneView.duringSceneGui += OnSceneGUI;
+        }
+
+        public override void Teardown()
+        {
+            Owner.ApplyToAll((go, index) => { go.transform.position = Owner.GetDefaultPositionAtIndex(index); });
+            SceneView.duringSceneGui -= OnSceneGUI;
         }
 
         public override void OnRemoved()
         {
-            Owner.ApplyToAll((go, index) => { go.transform.position = Owner.GetDefaultPositionAtIndex(index); });
+            Teardown();
         }
 
         public override void Process(GameObject[] objs)
         {
-            //
+            if (_positions == null)
+            {
+                _positions = new List<Vector3>(objs.Length);
+            }
+
+            if (_positions.Count < objs.Length)
+            {
+                while (_positions.Count < objs.Length)
+                {
+                    int index = objs.Length - (objs.Length - _positions.Count);
+                    _positions.Add(objs[index].transform.position);
+                }
+            }
+            else if (_positions.Count > objs.Length)
+            {
+                while (_positions.Count > objs.Length)
+                {
+                    _positions.RemoveAt(_positions.Count - 1);
+                }
+            }
+
+            int numObjs = objs.Length;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                objs[i].transform.position = _positions[i];
+            }
         }
 
         protected override void OnInspectorUpdate()
@@ -55,6 +92,11 @@ namespace Prefabrikator
             {
                 Drop();
             }
+
+            if (_sceneView != null)
+            {
+                EditorUtility.SetDirty(_sceneView);
+            }
         }
 
         private void Drop()
@@ -68,7 +110,6 @@ namespace Prefabrikator
             {
                 Vector3 start = Owner.GetDefaultPositionAtIndex(i);
                 current = createdObjs[i];
-                current.transform.position = start;
                 Collider collider = current.GetComponent<Collider>();
 
                 RaycastHit[] hits = Physics.RaycastAll(start, Vector3.down, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore);
@@ -80,10 +121,11 @@ namespace Prefabrikator
                         float offset = _verticalOffset;
                         if (_useCollider && collider != null)
                         {
-                            offset = current.transform.position.y - collider.bounds.min.y;
+                            offset = current.transform.InverseTransformPoint(collider.bounds.min).y;
+                            Debug.Log($"Drop hieght = {offset}. Hit Y = {hit.point.y}");
                         }
 
-                        _positions.Add(hit.point + (Vector3.up * offset));
+                        _positions.Add(hit.point + (Vector3.down * offset));
                         break;
                     }
                 }
@@ -101,6 +143,23 @@ namespace Prefabrikator
             }
             var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
             Owner.CommandQueue.Enqueue(valueChanged);
+        }
+
+        protected void OnSceneGUI(SceneView view)
+        {
+            if (_sceneView == null || _sceneView != view)
+            {
+                _sceneView = view;
+            }
+
+            if (_editMode.HasFlag(EditMode.Center))
+            {
+                Handles.color = Color.cyan;
+                foreach (GameObject obj in Owner.CreatedObjects)
+                {
+                    Handles.DrawLine(obj.transform.position, obj.transform.position + (Vector3.up * _verticalOffset));
+                }
+            }
         }
 
         private void SetupProperties()
@@ -122,6 +181,8 @@ namespace Prefabrikator
                 Owner.CommandQueue.Enqueue(new GenericCommand<float>(_verticalOffset, previous, current));
             }
             _offsetProperty = new FloatProperty("Vertical Offset", _verticalOffset, OnOffsetChanged);
+            _offsetProperty.OnEditModeEnter += () => { _editMode = EditMode.Center; };
+            _offsetProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
 
             void OnUseColliderChanged(bool current, bool previous)
             {

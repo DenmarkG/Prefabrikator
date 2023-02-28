@@ -23,20 +23,18 @@ namespace Prefabrikator
 
         public override float MaxWindowHeight => 300f;
         public override string Name => "Line";
-        private Shared<Vector3> _offset = new Shared<Vector3>(new Vector3(2f, 0f, 0f));
 
+        private Shared<Vector3> _offset = new Shared<Vector3>(new Vector3(2f, 0f, 0f));
         private Vector3Property _offsetProperty = null;
+
+        private Shared<Vector3> _start = new Shared<Vector3>();
+        private Vector3Property _startProperty = null;
 
         public LinearArrayCreator(GameObject target)
             : base(target, DefaultCount)
         {
-            void OnValueSet(Vector3 current, Vector3 previous)
-            {
-                CommandQueue.Enqueue(new GenericCommand<Vector3>(_offset, previous, current));
-            };
-            _offsetProperty = new Vector3Property("Offset", _offset, OnValueSet);
-            _offsetProperty.OnEditModeEnter += () => { _editMode = EditMode.Position; };
-            _offsetProperty.OnEditModeExit += () => { _editMode = EditMode.None; };
+            _start.Set(target.transform.position);
+            SetupProperties();
 
             Refresh();
         }
@@ -47,11 +45,11 @@ namespace Prefabrikator
             {
                 using (new EditorGUI.IndentLevelScope())
                 {
-                    EditorGUILayout.BeginHorizontal();
-                    {
-                        _offset.Set(_offsetProperty.Update());
-                    }
-                    EditorGUILayout.EndHorizontal();
+                    _start.Set(_startProperty.Update());
+                    GameObject proxy = GetProxy();
+                    proxy.transform.position = _start;
+
+                    _offset.Set(_offsetProperty.Update());
                 }
 
                 ShowCountField();
@@ -102,8 +100,6 @@ namespace Prefabrikator
 
             if (_createdObjects.Count > 0 && proxy != null)
             {
-                Undo.RecordObjects(_createdObjects.ToArray(), "Changed offset");
-
                 for (int i = 0; i < _createdObjects.Count; ++i)
                 {
                     _createdObjects[i].transform.position = GetDefaultPositionAtIndex(i);
@@ -118,7 +114,7 @@ namespace Prefabrikator
             if (_createdObjects.Count > 0 && proxy != null)
             {
                 Vector3 offset = (Vector3)_offset * index;
-                return proxy.transform.position + offset;
+                return _start + offset;
             }
 
             Debug.LogError($"Proxy not found for Array Creator. Positions may not appear correctly");
@@ -181,38 +177,51 @@ namespace Prefabrikator
                 _sceneView = view;
             }
 
+            const float handleSize = .75f;
             
+            GameObject proxy = GetProxy();
+            Handles.CapFunction cap = Handles.SphereHandleCap;
+
             if (_editMode.HasFlag(EditMode.Position))
             {
-                GameObject proxy = GetProxy();
                 Handles.color = Color.green;
-                const float offsetHeight = 2f;
-                Vector3 verticalOffset = offsetHeight * Vector3.up;
                 Vector3 start = proxy.transform.position;
                 Vector3 end = start + (_offset.Get() * (_createdObjects.Count - 1));
 
                 Handles.DrawLine(start, end);
-                Handles.DrawLine(start, start + verticalOffset);
-                Handles.DrawLine(end, end + verticalOffset);
 
-                Handles.CapFunction cap = Handles.SphereHandleCap;
-                int startID = GUIUtility.GetControlID(FocusType.Passive);
-                
-                Vector3 startHndPos = start + verticalOffset;
-                const float handleSize = .75f;
-                Vector3 start2 = Handles.FreeMoveHandle(startHndPos, handleSize, Vector3.zero, cap) - verticalOffset;
+                Vector3 endHndPos = end;
+                Vector3 end2 = Handles.PositionHandle(endHndPos, Quaternion.identity);
 
-                Vector3 endHndPos = end + verticalOffset;
-                Vector3 end2 = Handles.FreeMoveHandle(endHndPos, handleSize, Vector3.zero, cap) - verticalOffset;
-
-                if (start2 != start || end2 != end)
+                if (end2 != end)
                 {
-                    proxy.transform.position = start2;
-                    _offset.Set((end2 - start2) / (_createdObjects.Count - 1));
+                    _offset.Set((end2 - start) / (_createdObjects.Count - 1));
+                }
+            }
+            
+            if (_editMode.HasFlag(EditMode.Center))
+            {
+                Handles.color = Color.cyan;
+                Vector3 start = Handles.PositionHandle(proxy.transform.position, Quaternion.identity);
+
+                if (start != _start)
+                {
+                    _start.Set(start);
+                    proxy.transform.position = start;
                 }
             }
         }
 
+        public void SetupProperties()
+        {
+            _startProperty = Vector3Property.Create("Start", _start, CommandQueue);
+            _startProperty.OnEditModeEnter += () => { _editMode = EditMode.Center; };
+            _startProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
+
+            _offsetProperty = Vector3Property.Create("Offset", _offset, CommandQueue);
+            _offsetProperty.OnEditModeEnter += () => { _editMode = EditMode.Position; };
+            _offsetProperty.OnEditModeExit += () => { _editMode = EditMode.None; };
+        }
 
         public override void OnStateSet(ArrayState stateData)
         {
