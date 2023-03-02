@@ -5,6 +5,8 @@ using UnityEditor;
 
 namespace Prefabrikator
 {
+    // Add Physics simulation
+    // https://stackoverflow.com/questions/58452586/how-to-let-gravity-work-in-editor-mode-in-unity3d
     class DropModifier : Modifier
     {
         protected override string DisplayName => ModifierType.DropToFloor;
