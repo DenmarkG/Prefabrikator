@@ -177,8 +177,6 @@ namespace Prefabrikator
                 _sceneView = view;
             }
 
-            const float handleSize = .75f;
-            
             GameObject proxy = GetProxy();
             Handles.CapFunction cap = Handles.SphereHandleCap;
 
