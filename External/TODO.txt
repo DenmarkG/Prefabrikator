@@ -21,6 +21,9 @@ Automate the process for calling the modifier update and process calls
 [] Add callback for when size changes so modifiers can update appropriately 
     [] (investigate the state change again)
 
+[] Random on Surface
+[] Bezier
+
 BUGS:
     [] original object flashes when changing Count -> gonna have to live with this one
     [x] curve does not update new objects correctly when count changes
@@ -60,15 +63,15 @@ BUGS:
     [x] sphere
 
 Shapes to add:
-    [] Scatter Circular
+    [x] Scatter Circular
     [x] Scatter Volume
         [x] Store positions as relative to center
         [x] Recalculate positions while changing box size
     [x] Scatter Spherical
-    [] Circular 
+    [x] Circular 
         [] Rings
         [x] Interactive Layer
-    [] Elipse
+    [x] Elipse
         [] Rings
     [] Painter - paint shapes on a surface
 
@@ -77,7 +80,7 @@ Modifiers to Add:
     [x] Incremental Roatation
     [x] Position Noise
     [] Shape Boolean
-    [] Random Radius (Circle, Sphere, Ellipse)
+    [] Random Radius (Circle, Sphere)
     [] Checkerboard (grid only)
     [] Random Color
     [] Global Rotator
