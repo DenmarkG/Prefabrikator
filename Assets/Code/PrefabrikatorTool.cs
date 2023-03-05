@@ -183,7 +183,7 @@ namespace Prefabrikator
                     {
                         EditorGUILayout.LabelField("Prefab", GUILayout.MaxWidth(100f));
                         GUILayout.FlexibleSpace();
-                        GameObject target = (GameObject)EditorGUILayout.ObjectField(_selectedObject, typeof(GameObject), false);
+                        GameObject target = (GameObject)EditorGUILayout.ObjectField(_selectedObject, typeof(GameObject), true);
                         if (target != null && target != _selectedObject)
                         {
                             _selectedObject = target;
@@ -198,7 +198,7 @@ namespace Prefabrikator
                     }
                     EditorGUILayout.EndHorizontal();
 
-                    if (_selectedObject != null && IsPrefab(_selectedObject))
+                    if (_selectedObject != null && !IsPrefab(_selectedObject))
                     {
                         bool keepOriginal = EditorGUILayout.ToggleLeft("Keep Original", _keepOriginal);
                         if (_keepOriginal != keepOriginal)
@@ -376,7 +376,7 @@ namespace Prefabrikator
 
         private static bool IsPrefab(GameObject obj)
         {
-            return PrefabUtility.GetPrefabInstanceHandle(obj) == null;
+            return string.IsNullOrEmpty(obj.scene.name);
         }
     }
 }
