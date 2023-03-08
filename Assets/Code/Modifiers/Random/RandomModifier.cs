@@ -16,5 +16,7 @@ namespace Prefabrikator
         {
             //
         }
+
+        protected abstract void Randomize(int startingIndex = 0);
     }
 }

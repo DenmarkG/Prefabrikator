@@ -17,6 +17,7 @@ Automate the process for calling the modifier update and process calls
 [x] Add Tooltips
 [x] Add "Drop" for 2d shapes
 [] Update Sphere with size changes
+[] Add follow curve mod to scatter sphere
 [x] Add randomize button to random modifiers
 [] Add callback for when size changes so modifiers can update appropriately 
     [] (investigate the state change again)

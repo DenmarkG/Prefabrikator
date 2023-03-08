@@ -13,7 +13,7 @@ namespace Prefabrikator
             Ellipse,
         }
 
-        protected override string DisplayName => "Follow Curve";
+        protected override string DisplayName => ModifierType.FollowCurve;
         private CurveMode _curveMode = CurveMode.Circle;
 
         private Quaternion[] _rotations = null;

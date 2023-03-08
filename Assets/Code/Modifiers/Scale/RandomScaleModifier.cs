@@ -5,20 +5,14 @@ namespace Prefabrikator
 {
     // #DG: store the scales as normalized vectors that can be visualized as the range changes
     // Also store max and min as two vectors for simplicity
-    public class RandomScaleModifier : Modifier
+    public class RandomScaleModifier : RandomModifier
     {
-        protected override string DisplayName => "Random Scale";
+        protected override string DisplayName => ModifierType.ScaleRandom;
 
         private Vector3[] _scales = null;
 
         private static readonly float DefaultMin = .5f;
         private static readonly float DefaultMax = 3f;
-
-        private Shared<Vector3> _minVector = new Shared<Vector3>(new Vector3(DefaultMin, DefaultMin, DefaultMin));
-        private Shared<Vector3> _maxVector = new Shared<Vector3>(new Vector3(DefaultMax, DefaultMax, DefaultMax));
-
-        private Vector3Property _minVectorProperty = null;
-        private Vector3Property _maxVectorProperty = null;
 
         private Shared<float> _minFloat = new Shared<float>(DefaultMin);
         private Shared<float> _maxFloat = new Shared<float>(DefaultMax);
@@ -31,6 +25,9 @@ namespace Prefabrikator
         public RandomScaleModifier(ArrayCreator owner)
             : base(owner)
         {
+            _min = new Shared<Vector3>(new Vector3(DefaultMin, DefaultMin, DefaultMin));
+            _max = new Shared<Vector3>(new Vector3(DefaultMax, DefaultMax, DefaultMax));
+
             SetupProperties();
 
             int numObjs = Owner.CreatedObjects.Count;
@@ -57,7 +54,7 @@ namespace Prefabrikator
                 }
                 else
                 {
-                    scale = Extensions.BiUnitLerp(_minVector, _maxVector, _scales[i]);
+                    scale = Extensions.BiUnitLerp(_min, _max, _scales[i]);
                 }
                 
                 objs[i].transform.localScale = scale;
@@ -80,15 +77,15 @@ namespace Prefabrikator
             if (_keepAspectRatio)
             {
                 _minFloat.Set(_minFloatProperty.Update());
-                _minVector.Set(new Vector3(_minFloat, _minFloat, _minFloat));
+                _min.Set(new Vector3(_minFloat, _minFloat, _minFloat));
 
                 _maxFloat.Set(_maxFloatProperty.Update());
-                _maxVector.Set(new Vector3(_maxFloat, _maxFloat, _maxFloat));
+                _max.Set(new Vector3(_maxFloat, _maxFloat, _maxFloat));
             }
             else
             {
-                _minVector.Set(_minVectorProperty.Update());
-                _maxVector.Set(_maxVectorProperty.Update());
+                _min.Set(_minProperty.Update());
+                _max.Set(_maxProperty.Update());
             }
 
             if (GUILayout.Button("Randomize"))
@@ -97,7 +94,7 @@ namespace Prefabrikator
             }
         }
 
-        private void Randomize(int startingIndex = 0)
+        protected override void Randomize(int startingIndex = 0)
         {
             int numObjs = _scales.Length;
             Vector3[] previousValues = new Vector3[_scales.Length];
@@ -126,15 +123,15 @@ namespace Prefabrikator
             const string Max = "Max";
             void OnMinVectorChanged(Vector3 current, Vector3 previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_minVector, previous, current));
+                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_min, previous, current));
             }
-            _minVectorProperty = new Vector3Property(Min, _minVector, OnMinVectorChanged);
+            _minProperty = new Vector3Property(Min, _min, OnMinVectorChanged);
 
             void OnMaxVectorChanged(Vector3 current, Vector3 previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_maxVector, previous, current));
+                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_max, previous, current));
             }
-            _maxVectorProperty = new Vector3Property(Max, _maxVector, OnMaxVectorChanged);
+            _maxProperty = new Vector3Property(Max, _max, OnMaxVectorChanged);
 
             void OnMinFloatChanged(float current, float previous)
             {

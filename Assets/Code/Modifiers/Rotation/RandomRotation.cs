@@ -4,21 +4,17 @@ using UnityEngine;
 
 namespace Prefabrikator
 {
-    public class RandomRotation : Modifier
+    public class RandomRotation : RandomModifier
     {
-        protected override string DisplayName => "Random Rotation";
-
-        private Shared<Vector3> _min = new Shared<Vector3>(new Vector3(-179f, -179f, -179f));
-        private Shared<Vector3> _max = new Shared<Vector3>(new Vector3(180f, 180f, 180f));
-
-        private Vector3Property _minProperty = null;
-        private Vector3Property _maxProperty = null;
-
+        protected override string DisplayName => "Random Rotation";        
         private Vector3[] _rotations = null;
 
         public RandomRotation(ArrayCreator owner)
             : base(owner)
         {
+            _min = new Shared<Vector3>(new Vector3(-179f, -179f, -179f));
+            _max = new Shared<Vector3>(new Vector3(180f, 180f, 180f));
+
             int numObjs = Owner.CreatedObjects.Count;
             _rotations = new Vector3[numObjs];
             for (int i = 0; i < numObjs; ++i)
@@ -93,7 +89,7 @@ namespace Prefabrikator
             _maxProperty = new Vector3Property("Max", _max, OnMaxChanged);
         }
 
-        private void Randomize(int startingIndex = 0)
+        protected override void Randomize(int startingIndex = 0)
         {
             int numObjs = _rotations.Length;
             Vector3[] previousValues = new Vector3[_rotations.Length];

@@ -17,7 +17,7 @@ namespace Prefabrikator
     }
 
     // #DG: TODO create object to act as center, 
-    public class CircularArrayCreator : ArrayCreator
+    public class CircularArrayCreator : ArrayCreator, IRadial
     {
         public override ShapeType Shape => ShapeType.Circle;
 
@@ -25,6 +25,8 @@ namespace Prefabrikator
         public override string Name => "Circle";
 
         public static readonly float DefaultRadius = 5f;
+
+        public float Radius => _radius;
         protected Shared<float> _radius = new Shared<float>(DefaultRadius);
         protected FloatProperty _radiusProperty = null;
 
@@ -233,6 +235,7 @@ namespace Prefabrikator
                 ModifierType.DropToFloor,
                 // #DG: add circle specic mods here
                 ModifierType.FollowCurve,
+                ModifierType.RadialNoise,
             };
 
             return mods;
