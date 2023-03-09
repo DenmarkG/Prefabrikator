@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 11bf2f5e093928441b3c5aff0282783e
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: dda12f74ff9116a42b23482252b2c482, type: 3}
+  _instancesCopy:
+  - {fileID: 11400000, guid: 5b3317f633bdce44eba8c30194f450a8, type: 2}
+  _fileAsset: {fileID: 6013892654665635331, guid: 11bf2f5e093928441b3c5aff0282783e, type: 3}
+  _assetPath: Assets/Art/Materials/Substances/stylized_round_stones_in_concrete.sbsar

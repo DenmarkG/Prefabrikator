@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 641870d9424bf2c4c9baf57193e49bff
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: dda12f74ff9116a42b23482252b2c482, type: 3}
+  _instancesCopy:
+  - {fileID: 11400000, guid: bdd0eabe010675e4ca974ca2a3bd80cd, type: 2}
+  _fileAsset: {fileID: 6013892654665635331, guid: 641870d9424bf2c4c9baf57193e49bff, type: 3}
+  _assetPath: Assets/Art/Materials/Substances/stylized_island_cliff.sbsar

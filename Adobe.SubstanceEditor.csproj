@@ -56,36 +56,36 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Project Settings Editor\SubstanceEditorSettingsSO.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\EditorDrawUtilities.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\GUIContent\SubstanceInputGUIContent.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat3.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerInt.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerTexture.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Extensions\PhysicalSizeExtension.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\GUIContent\SubstanceNumericalInputGUIContent.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerInt3.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat4.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerInt2.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Importer\SubstanceImporter.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\TextureUtils.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat2.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\SubstanceEditorEngine.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Package\UnityPackageInfo.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerString.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\NamingExtensions.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawer.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\EditorTools.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Project Settings Editor\SubstanceEditorSettingsProvider.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerInt4.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Project Settings Editor\Extensions.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\SubstanceFileEditor.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\SubstanceBuildUtils.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\SubstanceGraphSOEditor.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerString.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Extensions\PhysicalSizeExtension.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Package\UnityPackageInfo.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Project Settings Editor\SubstanceEditorSettingsSO.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawer.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\GUIContent\SubstanceInputGUIContent.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\GraphInputsGroupingHelper.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Importer\SubstanceImporterEditor.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerInt3.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat2.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Project Settings Editor\Extensions.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\AssetCreationUtils.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\GUIContent\SubstanceNumericalInputGUIContent.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\SubstanceGraphSOEditor.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\EditorDrawUtilities.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\TextureUtils.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat4.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\SubstanceEditorEngine.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Importer\SubstanceImporterEditor.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerTexture.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\EditorTools.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\NamingExtensions.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerInt4.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat3.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerInt2.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Project Settings Editor\SubstanceEditorSettingsProvider.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerInt.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Importer\SubstanceImporter.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\SubstanceFileEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Adobe\Substance3DForUnity\Editor\Adobe.Substance.Editor.asmdef" />
@@ -346,6 +346,15 @@
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.VisualScripting.IonicZip">
+      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
+    </Reference>
+    <Reference Include="log4netPlastic">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Plastic.Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -355,17 +364,8 @@
     <Reference Include="Unity.VisualScripting.YamlDotNet">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.IonicZip">
-      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
-    </Reference>
-    <Reference Include="log4netPlastic">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="unityplastic">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>

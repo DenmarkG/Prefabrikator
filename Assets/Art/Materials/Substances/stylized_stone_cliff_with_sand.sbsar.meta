@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c29d2dc46deb6ea40900a4fe3b12457c
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: dda12f74ff9116a42b23482252b2c482, type: 3}
+  _instancesCopy:
+  - {fileID: 11400000, guid: 3a6f1cf79086fa041803432e5a0891c8, type: 2}
+  _fileAsset: {fileID: 6013892654665635331, guid: c29d2dc46deb6ea40900a4fe3b12457c, type: 3}
+  _assetPath: Assets/Art/Materials/Substances/stylized_stone_cliff_with_sand.sbsar

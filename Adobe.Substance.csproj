@@ -56,70 +56,70 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\SubstanceGraphSO.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Outputs\SubstanceVirtualOutputCreateInfo.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\nativeinputdesc.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\Enums\HVFlip.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\RenderingUtils.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\NativeMethods.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputFloat.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalInt4.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInvalidInput.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\SubstanceNativeGraph.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputInt2.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\PathUtils.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\PlatformUtils.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\ISubstanceInput.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\NativeOutputFormat.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\NativePhysicalSize.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\ISubstanceInputDescNumerical.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalFloat3.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\Enums\nativevaluetype.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\DLLHelper.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Exceptions\SubstanceException.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\TextureExtensions.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputInt.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\Version.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\nativegraph.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\NativeThumbnail.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\DataInternalNumeric.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputFloat2.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputTexture.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\MaterialUtils.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\SubstanceFileRawData.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalFloat4.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Outputs\SubstanceOutputDescription.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\Globals.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Render Pipelines\PluginPipelines.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputInt4.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputFloat4.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\Enums\ImageFormat.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescription.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\NativePreset.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Profile\ProfileUtils.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\SubstanceFileSO.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalFloat.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalInt.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\SubstanceInputFactory.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\nativeNumericInputDesc.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalInt2.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\NativeInputVisibility.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Engine.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\EnumExtensions.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Enums\SubstanceWidgetType.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\NativePreset.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Outputs\SubstanceOutputTexture.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalInt3.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalFloat2.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\Enums\ErrorCode.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\Enums\nativevaluetype.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Outputs\SubstanceVirtualOutputCreateInfo.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputInt2.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Outputs\SubstanceOutputDescription.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\nativeoutputdesc.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Enums\SubstanceValueType.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputFloat3.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalInt4.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\MaterialUtils.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\Globals.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalFloat.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Enums\TextureFlip.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputFloat.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\DataInternalNumeric.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Render Pipelines\PluginPipelines.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescription.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\TextureOutputExtensions.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\ISubstanceInput.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\DLLHelper.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Exceptions\SubstanceException.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\Enums\HVFlip.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\ISubstanceInputDescNumerical.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputInt4.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputFloat4.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalInt2.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalInt.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\NativeDataImage.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\nativeinputdesc.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\Enums\ErrorCode.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\SubstanceGraphSO.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\Version.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\nativeNumericInputDesc.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputFloat2.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalFloat2.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputFont.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Enums\ShuffleIndex.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\SubstanceFileRawData.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\SubstanceFileSO.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\NativeMethods.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\SubstanceInputFactory.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInvalidInput.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalFloat4.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Profile\ProfileUtils.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\EnumExtensions.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputInt.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputTexture.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\PathUtils.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\TextureExtensions.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\Enums\ImageFormat.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\NativeInputVisibility.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputInt3.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\TextureOutputExtensions.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Enums\TextureFlip.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\NativeDataImage.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Enums\SubstanceWidgetType.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputFloat3.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\RenderingUtils.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\SubstanceNativeGraph.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\NativePhysicalSize.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\nativegraph.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Descriptions\SubstanceInputDescNumericalInt3.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Utilities\PlatformUtils.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\MarshalStructs\NativeOutputFormat.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Runtime\Scripts\Unity Objects\Inputs\Values\SubstanceInputString.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -383,6 +383,15 @@
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.VisualScripting.IonicZip">
+      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
+    </Reference>
+    <Reference Include="log4netPlastic">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Plastic.Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -392,17 +401,8 @@
     <Reference Include="Unity.VisualScripting.YamlDotNet">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.IonicZip">
-      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
-    </Reference>
-    <Reference Include="log4netPlastic">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.6\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="unityplastic">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
