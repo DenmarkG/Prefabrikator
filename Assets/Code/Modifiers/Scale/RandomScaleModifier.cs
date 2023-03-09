@@ -5,7 +5,7 @@ namespace Prefabrikator
 {
     // #DG: store the scales as normalized vectors that can be visualized as the range changes
     // Also store max and min as two vectors for simplicity
-    public class RandomScaleModifier : RandomModifier
+    public class RandomScaleModifier : RandomModifier<Vector3>
     {
         protected override string DisplayName => ModifierType.ScaleRandom;
 
@@ -19,6 +19,9 @@ namespace Prefabrikator
 
         private FloatProperty _minFloatProperty = null;
         private FloatProperty _maxFloatProperty = null;
+
+        private Vector3Property _minProperty = null;
+        private Vector3Property _maxProperty = null;
 
         private Shared<bool> _keepAspectRatio = new Shared<bool>(false);
 

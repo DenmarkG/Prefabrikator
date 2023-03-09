@@ -4,12 +4,10 @@ using UnityEngine;
 
 namespace Prefabrikator
 {
-    public abstract class RandomModifier : Modifier
+    public abstract class RandomModifier<T> : Modifier where T : struct
     {
-        protected Shared<Vector3> _min = new Shared<Vector3>();
-        protected Shared<Vector3> _max = new Shared<Vector3>();
-        protected Vector3Property _minProperty = null;
-        protected Vector3Property _maxProperty = null;
+        protected Shared<T> _min = new Shared<T>();
+        protected Shared<T> _max = new Shared<T>();
 
         public RandomModifier(ArrayCreator owner)
             : base(owner)
