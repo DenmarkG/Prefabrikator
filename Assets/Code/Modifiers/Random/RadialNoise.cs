@@ -9,10 +9,10 @@ namespace Prefabrikator
         protected override string DisplayName => ModifierType.RadialNoise;
 
         private IRadial _radialShape = null;
-        private float[] _radii = null;
+        private float[] _radialDelta = null;
 
-        private static readonly float DefaultMin = .5f;
-        private static readonly float DefaultMax = 3f;
+        private static readonly float DefaultMin = -1.5f;
+        private static readonly float DefaultMax = 1.5f;
 
         private FloatProperty _minProperty = null;
         private FloatProperty _maxProperty = null;
@@ -23,11 +23,11 @@ namespace Prefabrikator
             _radialShape = owner as IRadial;
             Debug.Assert(_radialShape != null, "Not a radial Shape. Cannot add radial noise");
 
-            _radii = new float[Owner.CreatedObjects.Count];
+            _radialDelta = new float[Owner.CreatedObjects.Count];
 
             float radius = _radialShape.Radius;
-            _min.Set(radius - DefaultMin);
-            _max.Set(radius + DefaultMax);
+            _min.Set(DefaultMin);
+            _max.Set(DefaultMax);
 
             SetupProperties();
             Randomize();
@@ -41,6 +41,7 @@ namespace Prefabrikator
         public override void Process(GameObject[] objs)
         {
             Vector3 center = _radialShape.Center;
+            float radius = _radialShape.Radius;
 
             GameObject current = null;
             int count = objs.Length;
@@ -49,7 +50,7 @@ namespace Prefabrikator
                 current = objs[i];
                 Vector3 direction = current.transform.position - center;
                 direction.Normalize();
-                direction *= _radii[i];
+                direction *= _radialDelta[i] + radius;
                 current.transform.position = center + direction;
             }
         }
@@ -75,9 +76,9 @@ namespace Prefabrikator
 
         protected override void Randomize(int startingIndex = 0)
         {
-            for (int i = startingIndex; i < _radii.Length; ++i)
+            for (int i = startingIndex; i < _radialDelta.Length; ++i)
             {
-                _radii[i] = RNG.Range(_min, _max);
+                _radialDelta[i] = RNG.Range(_min, _max);
             }
         }
 
