@@ -76,9 +76,23 @@ namespace Prefabrikator
 
         protected override void Randomize(int startingIndex = 0)
         {
-            for (int i = startingIndex; i < _radialDelta.Length; ++i)
+            int numObjs = _radialDelta.Length;
+            float[] previous = new float[numObjs];
+            for (int i = startingIndex; i < numObjs; ++i)
             {
+                previous[i] = _radialDelta[i];
                 _radialDelta[i] = RNG.Range(_min, _max);
+            }
+
+            void ApplyScales(float[] deltas)
+            {
+                _radialDelta = deltas;
+            }
+
+            if (startingIndex == 0)
+            {
+                var valueChanged = new ValueChangedCommand<float[]>(previous, _radialDelta, ApplyScales);
+                Owner.CommandQueue.Enqueue(valueChanged);
             }
         }
 
