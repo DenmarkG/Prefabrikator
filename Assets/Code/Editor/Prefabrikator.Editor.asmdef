@@ -1,0 +1,18 @@
+{
+    "name": "Prefabrikator.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f186df7d0828d89489a5b993c821dc99"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
