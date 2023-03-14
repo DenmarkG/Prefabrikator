@@ -56,7 +56,6 @@ namespace Prefabrikator
                 }
             }
 
-            //_window.ShowUtility();
             _window.Show();
 
             if (container != null)
@@ -223,6 +222,7 @@ namespace Prefabrikator
 
                 EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                 {
+                    _undoStack ??= new UndoStack();
                     EditorGUI.BeginDisabledGroup(_undoStack.UndoOperationsAvailable == 0);
                     {
                         if (GUILayout.Button("Undo"))
