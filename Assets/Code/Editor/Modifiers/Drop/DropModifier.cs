@@ -124,7 +124,6 @@ namespace Prefabrikator
                         if (_useCollider && collider != null)
                         {
                             offset = current.transform.InverseTransformPoint(collider.bounds.min).y;
-                            Debug.Log($"Drop hieght = {offset}. Hit Y = {hit.point.y}");
                         }
 
                         _positions.Add(hit.point + (Vector3.down * offset));
@@ -170,7 +169,7 @@ namespace Prefabrikator
             {
                 Owner.CommandQueue.Enqueue(new GenericCommand<float>(_dropDistance, previous, current));
             }
-            _dropDistanceProperty = new FloatProperty("Drop Distance", _dropDistance, OnDropDistanceChanged);
+            _dropDistanceProperty = new FloatProperty("Max Drop Distance", _dropDistance, OnDropDistanceChanged);
 
             void OnLayerMaskChanged(LayerMask current, LayerMask previous)
             {
