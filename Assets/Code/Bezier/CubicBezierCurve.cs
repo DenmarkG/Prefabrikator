@@ -3,8 +3,8 @@
 [System.Serializable]
 public class CubicBezierCurve
 {
-    public BezierPoint Start = new BezierPoint(new Vector3());
-    public BezierPoint End = new BezierPoint(new Vector3(5, 0));
+    public ControlPoint Start = new ControlPoint();
+    public ControlPoint End = new ControlPoint() { Position = new Vector3(5, 0) };
 
     public Vector3 GetPointOnCurve(float t)
     {

@@ -5,11 +5,12 @@ using RNG = UnityEngine.Random;
 
 namespace Prefabrikator
 {
+    using SharedPoint = Shared<ControlPoint>;
+
     public class BezierArrayCreator : ArrayCreator
     {
         private static readonly int DefaultCount = 3;
         public override int MinCount => DefaultCount;
-        private bool _showControlPoints = false;
 
         public CubicBezierCurve Curve => _curve;
         private CubicBezierCurve _curve = new CubicBezierCurve();
@@ -18,13 +19,20 @@ namespace Prefabrikator
 
         public override string Name => "Path";
 
-        public override ShapeType Shape => throw new System.NotImplementedException();
+        public override ShapeType Shape => ShapeType.Path;
+
+        private List<SharedPoint> _controlPoints = new List<SharedPoint>();
+        private List<BezierProperty> _properties = new List<BezierProperty>();
 
         public BezierArrayCreator(GameObject target)
             : base(target, DefaultCount)
         {
             SceneView.duringSceneGui += OnSceneGUI;
 
+            _controlPoints.Add(new SharedPoint(ControlPoint.Default));
+            _controlPoints.Add(new SharedPoint(new ControlPoint(new Vector3(5f, 0f, 0f))));
+
+            SetupProperties();
             Refresh();
         }
 
@@ -36,43 +44,43 @@ namespace Prefabrikator
 
         public override void DrawEditor()
         {
-            EditorGUILayout.BeginVertical();
+            using (new EditorGUI.IndentLevelScope())
             {
                 ShowCountField();
 
                 EditorGUILayout.BeginVertical(Extensions.BoxedHeaderStyle);
                 {
-                    _showControlPoints = EditorGUILayout.Foldout(_showControlPoints, "Control Points");
-                    if (_showControlPoints)
+                    for (int i = 0; i < _controlPoints.Count; ++i)
                     {
-                        Vector3 p0 = EditorGUILayout.Vector3Field("P0", _curve.Start.Position);
-                        if (p0 != _curve.Start.Position)
-                        {
-                            _curve.Start.Position = p0;
-                        }
-
-                        Vector3 p1 = EditorGUILayout.Vector3Field("P1", _curve.Start.Tangent);
-                        if (p1 != _curve.Start.Tangent)
-                        {
-                            _curve.Start.Tangent = p1;
-                        }
-
-                        Vector3 p2 = EditorGUILayout.Vector3Field("P2", _curve.End.Tangent);
-                        if (p2 != _curve.End.Tangent)
-                        {
-                            _curve.End.Tangent = p2;
-                        }
-
-                        Vector3 p3 = EditorGUILayout.Vector3Field("P3", _curve.End.Position);
-                        if (p3 != _curve.End.Position)
-                        {
-                            _curve.End.Position = p3;
-                        }
+                        _controlPoints[i].Set(_properties[i].Update());
                     }
+
+                    //Vector3 p0 = EditorGUILayout.Vector3Field("P0", _curve.Start.Position);
+                    //if (p0 != _curve.Start.Position)
+                    //{
+                    //    _curve.Start.Position = p0;
+                    //}
+
+                    //Vector3 p1 = EditorGUILayout.Vector3Field("P1", _curve.Start.Tangent);
+                    //if (p1 != _curve.Start.Tangent)
+                    //{
+                    //    _curve.Start.Tangent = p1;
+                    //}
+
+                    //Vector3 p2 = EditorGUILayout.Vector3Field("P2", _curve.End.Tangent);
+                    //if (p2 != _curve.End.Tangent)
+                    //{
+                    //    _curve.End.Tangent = p2;
+                    //}
+
+                    //Vector3 p3 = EditorGUILayout.Vector3Field("P3", _curve.End.Position);
+                    //if (p3 != _curve.End.Position)
+                    //{
+                    //    _curve.End.Position = p3;
+                    //}
                 }
                 EditorGUILayout.EndHorizontal();
             }
-            EditorGUILayout.EndVertical();
         }
 
         protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
@@ -139,51 +147,48 @@ namespace Prefabrikator
 
         protected override void OnSceneGUI(SceneView view)
         {
-            if (_showControlPoints)
+            bool needsRefresh = false;
+            ControlPoint start = _curve.Start;
+            Vector3 p0 = Handles.PositionHandle(start.Position, Quaternion.identity);
+            if (p0 != start.Position)
             {
-                bool needsRefresh = false;
-                BezierPoint start = _curve.Start;
-                Vector3 p0 = Handles.PositionHandle(start.Position, Quaternion.identity);
-                if (p0 != start.Position)
-                {
-                    start.Position = p0;
-                    needsRefresh = true;
-                }
+                start.Position = p0;
+                needsRefresh = true;
+            }
 
-                Vector3 p1 = Handles.PositionHandle(start.Tangent, Quaternion.identity);
-                if (p1 != start.Tangent)
-                {
-                    start.Tangent = p1;
-                    needsRefresh = true;
-                }
+            Vector3 p1 = Handles.PositionHandle(start.Tangent, Quaternion.identity);
+            if (p1 != start.Tangent)
+            {
+                start.Tangent = p1;
+                needsRefresh = true;
+            }
 
-                Handles.color = Color.cyan;
-                Handles.DrawLine(start.Position, start.Tangent);
-                Handles.SphereHandleCap(0, start.Tangent, Quaternion.identity, .25f, EventType.Repaint);
+            Handles.color = Color.cyan;
+            Handles.DrawLine(start.Position, start.Tangent);
+            Handles.SphereHandleCap(0, start.Tangent, Quaternion.identity, .25f, EventType.Repaint);
 
-                BezierPoint end = _curve.End;
-                Vector3 p2 = Handles.PositionHandle(end.Tangent, Quaternion.identity);
-                if (p2 != end.Tangent)
-                {
-                    end.Tangent = p2;
-                    needsRefresh = true;
-                }
+            ControlPoint end = _curve.End;
+            Vector3 p2 = Handles.PositionHandle(end.Tangent, Quaternion.identity);
+            if (p2 != end.Tangent)
+            {
+                end.Tangent = p2;
+                needsRefresh = true;
+            }
 
-                Vector3 p3 = Handles.PositionHandle(end.Position, Quaternion.identity);
-                if (p3 != end.Position)
-                {
-                    end.Position = p3;
-                    needsRefresh = true;
-                }
+            Vector3 p3 = Handles.PositionHandle(end.Position, Quaternion.identity);
+            if (p3 != end.Position)
+            {
+                end.Position = p3;
+                needsRefresh = true;
+            }
 
-                Handles.DrawLine(end.Position, end.Tangent);
-                Handles.SphereHandleCap(0, end.Tangent, Quaternion.identity, .25f, EventType.Repaint);
-                Handles.DrawBezier(start.Position, end.Position, start.Tangent, end.Tangent, Color.cyan, null, 3f);
+            Handles.DrawLine(end.Position, end.Tangent);
+            Handles.SphereHandleCap(0, end.Tangent, Quaternion.identity, .25f, EventType.Repaint);
+            Handles.DrawBezier(start.Position, end.Position, start.Tangent, end.Tangent, Color.cyan, null, 3f);
 
-                if (needsRefresh)
-                {
-                    Refresh();
-                }
+            if (needsRefresh)
+            {
+                Refresh();
             }
         }
 
@@ -220,6 +225,16 @@ namespace Prefabrikator
         public override void OnStateSet(ArrayState stateData)
         {
             //
+        }
+
+        public void SetupProperties()
+        {
+            int i = 0;
+            foreach (SharedPoint point in _controlPoints)
+            {
+                _properties.Add(BezierProperty.Create($"P{i}", point, CommandQueue));
+                ++i;
+            }
         }
     }
 }

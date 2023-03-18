@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{99740196-EDD2-16E9-9C24-7BE20EC36D31}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -68,7 +69,7 @@
     <Compile Include="Assets\Code\Util\Extensions.cs" />
     <Compile Include="Assets\Code\Bezier\CubicBezierCurve.cs" />
     <Compile Include="Assets\Code\Util\ArrayHelper.cs" />
-    <Compile Include="Assets\Code\Bezier\BezierPoint.cs" />
+    <Compile Include="Assets\Code\Bezier\ControlPoint.cs" />
     <Compile Include="Assets\Code\Util\Constants.cs" />
     <Compile Include="Assets\Code\Util\MathUtils.cs" />
   </ItemGroup>

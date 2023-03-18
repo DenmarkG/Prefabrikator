@@ -14,5 +14,6 @@ namespace Prefabrikator
         ScatterPlane,
         Ellipse,
         // polygon
+        // Helix
     }
 }
