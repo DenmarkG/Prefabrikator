@@ -3,22 +3,8 @@ using UnityEngine;
 using UnityEditor;
 using RNG = UnityEngine.Random;
 
-#if PATH
 namespace Prefabrikator
 {
-    [System.Serializable]
-    public class BezierArrayData : ArrayData
-    {
-        public CubicBezierCurve Curve = new CubicBezierCurve();
-        public Vector3 EndRotation = new Vector3(0f, 90f, 0f);
-
-        public BezierArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ShapeType.Path, prefab, targetRotation)
-        {
-            //
-        }
-    }
-
     public class BezierArrayCreator : ArrayCreator
     {
         private static readonly int DefaultCount = 3;
@@ -31,6 +17,8 @@ namespace Prefabrikator
         public override float MaxWindowHeight => 300f;
 
         public override string Name => "Path";
+
+        public override ShapeType Shape => throw new System.NotImplementedException();
 
         public BezierArrayCreator(GameObject target)
             : base(target, DefaultCount)
@@ -149,53 +137,6 @@ namespace Prefabrikator
             }
         }
 
-        protected override ArrayData GetContainerData()
-        {
-            BezierArrayData data = new BezierArrayData(_target, _targetRotation);
-            data.Count = TargetCount;
-            data.Curve = _curve;
-
-            return data;
-        }
-
-        protected override void PopulateFromExistingData(ArrayData data)
-        {
-            if (data is BezierArrayData curveData)
-            {
-                SetTargetCount(curveData.Count);
-                _targetRotation = curveData.TargetRotation;
-                _curve = curveData.Curve;
-            }
-        }
-
-        protected override void OnTargetCountChanged()
-        {
-            if (TargetCount < _createdObjects.Count)
-            {
-                while (_createdObjects.Count > TargetCount)
-                {
-                    int index = _createdObjects.Count - 1;
-                    if (index >= 0)
-                    {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                while (TargetCount > _createdObjects.Count)
-                {
-                    CreateClone();
-                }
-            }
-
-            Refresh();
-        }
-
         protected override void OnSceneGUI(SceneView view)
         {
             if (_showControlPoints)
@@ -265,6 +206,20 @@ namespace Prefabrikator
 
             return mods;
         }
+
+        protected override ArrayState GetContainerData()
+        {
+            return null;
+        }
+
+        protected override void PopulateFromExistingData(ArrayState data)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void OnStateSet(ArrayState stateData)
+        {
+            //
+        }
     }
 }
-#endif // PATH

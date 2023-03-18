@@ -14,6 +14,7 @@ namespace Prefabrikator
         }
 
         protected const int MaxSamples = 30;
+        protected const int MaxShapes = 150;
 
         public override float MaxWindowHeight => 300f;
         public override string Name => "Scatter";

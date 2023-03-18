@@ -317,11 +317,9 @@ namespace Prefabrikator
                 case ShapeType.Grid:
                     creator = new GridArrayCreator(target);
                     break;
-#if PATH
                 case ShapeType.Path:
                     creator = new BezierArrayCreator(target);
                     break;
-#endif // PATH
                 case ShapeType.ScatterBox:
                     creator = new ScatterBoxCreator(target);
                     break;
