@@ -131,11 +131,10 @@ namespace Prefabrikator
         {
             if (_controlPoints.Count > 0)
             {
-                Handles.color = Color.cyan;
-
                 bool needsRefresh = false;
                 for (int i = 0; i < _controlPoints.Count; ++i)
                 {
+                    Handles.color = Color.cyan;
                     ref ControlPoint point = ref _controlPoints[i].GetRef();
                     Vector3 position = Handles.PositionHandle(point.Position, Quaternion.identity);
                     Vector3 tangent = Handles.PositionHandle(point.Tangent, Quaternion.identity);
@@ -146,7 +145,12 @@ namespace Prefabrikator
                         needsRefresh = needsRefresh || true;
                     }
 
+                    Handles.color = Color.white;
                     Handles.DrawLine(position, tangent);
+                    if (i > 0)
+                    {
+                        Handles.DrawLine(tangent, _controlPoints[i - 1].Get().Tangent);
+                    }
                 }
 
                 ref ControlPoint start = ref _controlPoints[0].GetRef();
