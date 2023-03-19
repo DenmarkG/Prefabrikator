@@ -132,7 +132,6 @@ namespace Prefabrikator
 
         private void SetRotationFromPath(GameObject[] objs)
         {
-#if PATH
             BezierArrayCreator path = Owner as BezierArrayCreator;
 
             if (path != null)
@@ -143,14 +142,13 @@ namespace Prefabrikator
                 for (int i = 0; i < numObjs; ++i)
                 {
                     float t = (float)i / n;
-                    Vector3 tangent = path.Curve.GetTangentToCurve(t);
+                    Vector3 tangent = path.GetTangentToCurve(t);
                     Quaternion rotation = Quaternion.LookRotation(tangent);
                     objs[i].transform.localRotation = rotation;
 
                     _rotations[i] = rotation;
                 }
             }
-#endif // PATH
         }
 
         public Quaternion GetRotationAtIndex(int index)

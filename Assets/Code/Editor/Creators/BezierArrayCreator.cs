@@ -203,5 +203,10 @@ namespace Prefabrikator
             //    ++i;
             //}
         }
+
+        public Vector3 GetTangentToCurve(float t)
+        {
+            return CubicBezierCurve.GetTangentToCurve(_controlPoints[0], _controlPoints[1], t);
+        }
     }
 }
