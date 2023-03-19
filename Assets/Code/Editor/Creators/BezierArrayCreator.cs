@@ -29,6 +29,8 @@ namespace Prefabrikator
         public BezierArrayCreator(GameObject target)
             : base(target, DefaultCount)
         {
+            _refreshOnCountChange = true;
+            
             SetupProperties();
             Refresh();
         }
@@ -196,12 +198,7 @@ namespace Prefabrikator
 
         public void SetupProperties()
         {
-            //int i = 0;
-            //foreach (SharedPoint point in _controlPoints)
-            //{
-            //    _properties.Add(Vector3Property.Create($"P{i}", , CommandQueue));
-            //    ++i;
-            //}
+            //
         }
 
         public Vector3 GetTangentToCurve(float t)

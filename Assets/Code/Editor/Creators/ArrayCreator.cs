@@ -45,6 +45,8 @@ namespace Prefabrikator
         protected EditMode _editMode = EditMode.None;
         protected SceneView _sceneView = null;
 
+        protected bool _refreshOnCountChange = false;
+
         public abstract ShapeType Shape { get; }
 
         public ArrayState State { get; private set; }
@@ -302,6 +304,11 @@ namespace Prefabrikator
             if (shouldTriggerCallback)
             {
                 OnTargetCountChanged();
+
+                if (_refreshOnCountChange)
+                {
+                    Refresh();
+                }
             }
         }
 
