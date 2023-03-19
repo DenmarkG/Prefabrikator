@@ -29,12 +29,10 @@ namespace Prefabrikator
             {
                 _curveMode = CurveMode.Circle;
             }
-#if PATH
             else if (owner is BezierArrayCreator)
             {
                 _curveMode = CurveMode.Path;
             }
-#endif // PATH
             else
             {
                 Debug.LogError("Attempting to an invalid curve modifier");

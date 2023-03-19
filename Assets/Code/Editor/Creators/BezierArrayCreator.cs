@@ -29,15 +29,12 @@ namespace Prefabrikator
         public BezierArrayCreator(GameObject target)
             : base(target, DefaultCount)
         {
-            SceneView.duringSceneGui += OnSceneGUI;
-
             SetupProperties();
             Refresh();
         }
 
         protected override void OnSave()
         {
-            SceneView.duringSceneGui -= OnSceneGUI;
             SceneView.RepaintAll();
         }
 
