@@ -18,7 +18,7 @@ public struct ControlPoint : IEquatable<ControlPoint>
     public ControlPoint(Vector3 position)
     {
         Position = position;
-        Tangent = Vector3.up;
+        Tangent = position + Vector3.up;
     }
 
     public ControlPoint(Vector3 position, Vector3 tangent)
@@ -30,13 +30,5 @@ public struct ControlPoint : IEquatable<ControlPoint>
     public bool Equals(ControlPoint other)
     {
         return (Position == other.Position) && (Tangent == other.Tangent);
-    }
-
-    public override int GetHashCode()
-    {
-        int hashCode = -881549476;
-        hashCode = hashCode * -1521134295 + Position.GetHashCode();
-        hashCode = hashCode * -1521134295 + Tangent.GetHashCode();
-        return hashCode;
     }
 }

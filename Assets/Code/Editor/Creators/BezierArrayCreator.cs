@@ -12,25 +12,24 @@ namespace Prefabrikator
         private static readonly int DefaultCount = 3;
         public override int MinCount => DefaultCount;
 
-        public CubicBezierCurve Curve => _curve;
-        private CubicBezierCurve _curve = new CubicBezierCurve();
-
         public override float MaxWindowHeight => 300f;
 
         public override string Name => "Path";
 
         public override ShapeType Shape => ShapeType.Path;
 
-        private List<SharedPoint> _controlPoints = new List<SharedPoint>();
-        private List<BezierProperty> _properties = new List<BezierProperty>();
+        private List<SharedPoint> _controlPoints = new List<SharedPoint>(2)
+        {
+            new SharedPoint(ControlPoint.Default),
+            new SharedPoint(new ControlPoint(new Vector3(5f, 0f, 0f)))
+        };
+        private List<Vector3Property> _properties = new List<Vector3Property>();
+
 
         public BezierArrayCreator(GameObject target)
             : base(target, DefaultCount)
         {
             SceneView.duringSceneGui += OnSceneGUI;
-
-            _controlPoints.Add(new SharedPoint(ControlPoint.Default));
-            _controlPoints.Add(new SharedPoint(new ControlPoint(new Vector3(5f, 0f, 0f))));
 
             SetupProperties();
             Refresh();
@@ -47,39 +46,23 @@ namespace Prefabrikator
             using (new EditorGUI.IndentLevelScope())
             {
                 ShowCountField();
-
-                EditorGUILayout.BeginVertical(Extensions.BoxedHeaderStyle);
+                for (int i = 0; i < _controlPoints.Count; ++i)
                 {
-                    for (int i = 0; i < _controlPoints.Count; ++i)
+                    ref ControlPoint point = ref _controlPoints[i].GetRef();
+                    EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
                     {
-                        _controlPoints[i].Set(_properties[i].Update());
+                        EditorGUILayout.LabelField("Position", GUILayout.MaxWidth(Extensions.LabelWidth + Extensions.IndentSize));
+                        point.Position = EditorGUILayout.Vector3Field(GUIContent.none, point.Position);
                     }
+                    EditorGUILayout.EndHorizontal();
 
-                    //Vector3 p0 = EditorGUILayout.Vector3Field("P0", _curve.Start.Position);
-                    //if (p0 != _curve.Start.Position)
-                    //{
-                    //    _curve.Start.Position = p0;
-                    //}
-
-                    //Vector3 p1 = EditorGUILayout.Vector3Field("P1", _curve.Start.Tangent);
-                    //if (p1 != _curve.Start.Tangent)
-                    //{
-                    //    _curve.Start.Tangent = p1;
-                    //}
-
-                    //Vector3 p2 = EditorGUILayout.Vector3Field("P2", _curve.End.Tangent);
-                    //if (p2 != _curve.End.Tangent)
-                    //{
-                    //    _curve.End.Tangent = p2;
-                    //}
-
-                    //Vector3 p3 = EditorGUILayout.Vector3Field("P3", _curve.End.Position);
-                    //if (p3 != _curve.End.Position)
-                    //{
-                    //    _curve.End.Position = p3;
-                    //}
+                    EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+                    {
+                        EditorGUILayout.LabelField("Tangent", GUILayout.MaxWidth(Extensions.LabelWidth + Extensions.IndentSize));
+                        point.Tangent = EditorGUILayout.Vector3Field(GUIContent.none, point.Tangent);
+                    }
+                    EditorGUILayout.EndHorizontal();
                 }
-                EditorGUILayout.EndHorizontal();
             }
         }
 
@@ -126,7 +109,7 @@ namespace Prefabrikator
         {
             float n = _createdObjects.Count - 1;
             float t = (float)index / n;
-            return _curve.GetPointOnCurve(t);
+            return CubicBezierCurve.GetPointOnCurve(_controlPoints[0], _controlPoints[1], t);
 
         }
 
@@ -147,48 +130,35 @@ namespace Prefabrikator
 
         protected override void OnSceneGUI(SceneView view)
         {
-            bool needsRefresh = false;
-            ControlPoint start = _curve.Start;
-            Vector3 p0 = Handles.PositionHandle(start.Position, Quaternion.identity);
-            if (p0 != start.Position)
+            if (_controlPoints.Count > 0)
             {
-                start.Position = p0;
-                needsRefresh = true;
-            }
+                Handles.color = Color.cyan;
 
-            Vector3 p1 = Handles.PositionHandle(start.Tangent, Quaternion.identity);
-            if (p1 != start.Tangent)
-            {
-                start.Tangent = p1;
-                needsRefresh = true;
-            }
+                bool needsRefresh = false;
+                for (int i = 0; i < _controlPoints.Count; ++i)
+                {
+                    ref ControlPoint point = ref _controlPoints[i].GetRef();
+                    Vector3 position = Handles.PositionHandle(point.Position, Quaternion.identity);
+                    Vector3 tangent = Handles.PositionHandle(point.Tangent, Quaternion.identity);
+                    if (position != point.Position || tangent != point.Tangent)
+                    {
+                        point.Position = position;
+                        point.Tangent = tangent;
+                        needsRefresh = needsRefresh || true;
+                    }
 
-            Handles.color = Color.cyan;
-            Handles.DrawLine(start.Position, start.Tangent);
-            Handles.SphereHandleCap(0, start.Tangent, Quaternion.identity, .25f, EventType.Repaint);
+                    Handles.DrawLine(position, tangent);
+                }
 
-            ControlPoint end = _curve.End;
-            Vector3 p2 = Handles.PositionHandle(end.Tangent, Quaternion.identity);
-            if (p2 != end.Tangent)
-            {
-                end.Tangent = p2;
-                needsRefresh = true;
-            }
+                ref ControlPoint start = ref _controlPoints[0].GetRef();
+                ref ControlPoint end = ref _controlPoints[1].GetRef();
 
-            Vector3 p3 = Handles.PositionHandle(end.Position, Quaternion.identity);
-            if (p3 != end.Position)
-            {
-                end.Position = p3;
-                needsRefresh = true;
-            }
+                Handles.DrawBezier(start.Position, end.Position, start.Tangent, end.Tangent, Color.cyan, null, 3f);
 
-            Handles.DrawLine(end.Position, end.Tangent);
-            Handles.SphereHandleCap(0, end.Tangent, Quaternion.identity, .25f, EventType.Repaint);
-            Handles.DrawBezier(start.Position, end.Position, start.Tangent, end.Tangent, Color.cyan, null, 3f);
-
-            if (needsRefresh)
-            {
-                Refresh();
+                if (needsRefresh)
+                {
+                    Refresh();
+                }
             }
         }
 
@@ -229,12 +199,12 @@ namespace Prefabrikator
 
         public void SetupProperties()
         {
-            int i = 0;
-            foreach (SharedPoint point in _controlPoints)
-            {
-                _properties.Add(BezierProperty.Create($"P{i}", point, CommandQueue));
-                ++i;
-            }
+            //int i = 0;
+            //foreach (SharedPoint point in _controlPoints)
+            //{
+            //    _properties.Add(Vector3Property.Create($"P{i}", , CommandQueue));
+            //    ++i;
+            //}
         }
     }
 }

@@ -1,21 +1,18 @@
 ﻿using UnityEngine;
 
 [System.Serializable]
-public class CubicBezierCurve
+public static class CubicBezierCurve // #DG: Rename this
 {
-    public ControlPoint Start = new ControlPoint();
-    public ControlPoint End = new ControlPoint() { Position = new Vector3(5, 0) };
-
-    public Vector3 GetPointOnCurve(float t)
+    public static Vector3 GetPointOnCurve(ControlPoint start, ControlPoint end, float t)
     {
         t = Mathf.Clamp01(t);
 
         // B(t) = ((1 - t)^3 * P0) + (3(1 - t)^2 * tP1) + (3(1-t)^2 * P2) + (t^3 * P3)
         float oneMinusT = (1 - t);
-        Vector3 P0 = Start.Position;
-        Vector3 P1 = Start.Tangent;
-        Vector3 P2 = End.Tangent;
-        Vector3 P3 = End.Position;
+        Vector3 P0 = start.Position;
+        Vector3 P1 = start.Tangent;
+        Vector3 P2 = end.Tangent;
+        Vector3 P3 = end.Position;
 
         Vector3 firstTerm = (oneMinusT * oneMinusT * oneMinusT) * P0;
         Vector3 secondTerm = 3 * t * (oneMinusT * oneMinusT) * P1;
@@ -27,15 +24,15 @@ public class CubicBezierCurve
         return point;
     }
 
-    public Vector3 GetTangentToCurve(float t)
+    public static Vector3 GetTangentToCurve(ControlPoint start, ControlPoint end, float t)
     {
         // The tangent to the curve is the derivative of the curve at t:
         // B'(t) = 3(1 - t)^2(P1 - P0) + 6(1 - t)t(P2 - P1) + 3t^2(P3 - P2)
 
-        Vector3 P0 = Start.Position;
-        Vector3 P1 = Start.Tangent;
-        Vector3 P2 = End.Tangent;
-        Vector3 P3 = End.Position;
+        Vector3 P0 = start.Position;
+        Vector3 P1 = start.Tangent;
+        Vector3 P2 = end.Tangent;
+        Vector3 P3 = end.Position;
 
         float oneMinusT = (1 - t);
         Vector3 firstTerm = 3 * (oneMinusT * oneMinusT) * (P1 - P0);
