@@ -14,17 +14,21 @@ namespace Prefabrikator
 
         public override float MaxWindowHeight => 300f;
 
-        public override string Name => "Path";
+        public override string Name => "Spline";
 
-        public override ShapeType Shape => ShapeType.Path;
+        public override ShapeType Shape => ShapeType.Spline;
 
-        private List<SharedPoint> _controlPoints = new List<SharedPoint>(2)
-        {
-            new SharedPoint(ControlPoint.Default),
-            new SharedPoint(new ControlPoint(new Vector3(5f, 0f, 0f)))
-        };
         private List<Vector3Property> _properties = new List<Vector3Property>();
 
+        private List<Vector3> _points = new List<Vector3>()
+        {
+            new Vector3(),
+            Vector3.up * 5,
+            (Vector3.up * 5) + (Vector3.right * 5),
+            Vector3.right * 5
+        };
+
+        private int _numSegments = 1;
 
         public BezierArrayCreator(GameObject target)
             : base(target, DefaultCount)
@@ -42,28 +46,59 @@ namespace Prefabrikator
 
         public override void DrawEditor()
         {
+            ShowCountField();
             using (new EditorGUI.IndentLevelScope())
             {
-                ShowCountField();
-                for (int i = 0; i < _controlPoints.Count; ++i)
+                for (int i = 0; i < _points.Count; ++i)
                 {
-                    ref ControlPoint point = ref _controlPoints[i].GetRef();
+                    Vector3 point = _points[i];
                     EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
                     {
-                        EditorGUILayout.LabelField("Position", GUILayout.MaxWidth(Extensions.LabelWidth + Extensions.IndentSize));
-                        point.Position = EditorGUILayout.Vector3Field(GUIContent.none, point.Position);
-                    }
-                    EditorGUILayout.EndHorizontal();
+                        EditorGUI.BeginChangeCheck();
+                        {
+                            EditorGUILayout.LabelField($"P{i}", GUILayout.MaxWidth(Extensions.LabelWidth + Extensions.IndentSize));
+                            point = EditorGUILayout.Vector3Field(GUIContent.none, point);
+                        }
 
-                    EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                    {
-                        EditorGUILayout.LabelField("Tangent", GUILayout.MaxWidth(Extensions.LabelWidth + Extensions.IndentSize));
-                        point.Tangent = EditorGUILayout.Vector3Field(GUIContent.none, point.Tangent);
+                        if (EditorGUI.EndChangeCheck())
+                        {
+                            _points[i] = point;
+                        }
                     }
                     EditorGUILayout.EndHorizontal();
                 }
             }
+
+            EditorGUILayout.BeginHorizontal();
+            {
+                GUILayout.Space(Extensions.IndentSize);
+                if (GUILayout.Button("Add Point"))
+                {
+                    AddSegment();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
         }
+
+        private void AddSegment()
+        {
+            // #DG: add to command queue
+            int numPoints = _points.Count;
+            Vector3 lastPoint = _points[numPoints - 1];
+
+            Vector3 direction = lastPoint - _points[numPoints - 2];
+            Vector3 p1 = direction + lastPoint;
+            _points.Add(p1);
+
+            Vector3 p2 = direction + p1;
+            _points.Add(p2);
+
+            Vector3 p3 = direction + p2;
+            _points.Add(p3);
+
+            ++_numSegments;
+        }
+
 
         protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
         {
@@ -108,7 +143,26 @@ namespace Prefabrikator
         {
             float n = _createdObjects.Count - 1;
             float t = (float)index / n;
-            return CubicBezierCurve.GetPointOnCurve(_controlPoints[0], _controlPoints[1], t);
+            //return CubicBezierCurve.GetPointOnCurve(_controlPoints[0], _controlPoints[1], t);
+
+            ControlPoint start = new ControlPoint(_points[0], _points[1]);
+            ControlPoint end = new ControlPoint(_points[3], _points[2]);
+
+            t = Mathf.Clamp01(t);
+            if (t == 1f)
+            {
+                t = 1f;
+                n = _points.Count - 4;
+            }
+            else
+            {
+                t = t * _numSegments;
+                n = (int)t;
+                t -= n;
+                n *= 3;
+            }
+
+            return CubicBezierCurve.GetPointOnCurve(start, end, t);
 
         }
 
@@ -129,34 +183,43 @@ namespace Prefabrikator
 
         protected override void OnSceneGUI(SceneView view)
         {
-            if (_controlPoints.Count > 0)
+            if (_points.Count > 0)
             {
                 bool needsRefresh = false;
-                for (int i = 0; i < _controlPoints.Count; ++i)
+                for (int i = 0; i < _points.Count; ++i)
                 {
                     Handles.color = Color.cyan;
-                    ref ControlPoint point = ref _controlPoints[i].GetRef();
-                    Vector3 position = Handles.PositionHandle(point.Position, Quaternion.identity);
-                    Vector3 tangent = Handles.PositionHandle(point.Tangent, Quaternion.identity);
-                    if (position != point.Position || tangent != point.Tangent)
+                    Vector3 point = _points[i];
+                    Vector3 position = Handles.PositionHandle(point, Quaternion.identity);
+                    if (position != point)
                     {
-                        point.Position = position;
-                        point.Tangent = tangent;
+                        _points[i] = position;
                         needsRefresh = needsRefresh || true;
+                        Debug.Log("needs refesh");
                     }
 
-                    Handles.color = Color.white;
-                    Handles.DrawLine(position, tangent);
+                    // #DG: fix this. currently it doesn't link the right points
+                    //Handles.color = Color.white;
+                    //if (i % 2 != 0)
+                    //{
+                    //    if (i > 0)
+                    //    {
+                    //        Handles.DrawLine(_points[i - 1], _points[i]);
+                    //    }
+                    //}
+                    
                     if (i > 0)
                     {
-                        Handles.DrawLine(tangent, _controlPoints[i - 1].Get().Tangent);
+                        if (i % 3 == 0)
+                        {
+                            Vector3 p0 = _points[i - 3];
+                            Vector3 p1 = _points[i - 2];
+                            Vector3 p2 = _points[i - 1];
+                            Vector3 p3 = _points[i];
+                            Handles.DrawBezier(p0, p3, p1, p2, Color.cyan, null, 3f);
+                        }
                     }
                 }
-
-                ref ControlPoint start = ref _controlPoints[0].GetRef();
-                ref ControlPoint end = ref _controlPoints[1].GetRef();
-
-                Handles.DrawBezier(start.Position, end.Position, start.Tangent, end.Tangent, Color.cyan, null, 3f);
 
                 if (needsRefresh)
                 {
@@ -207,7 +270,8 @@ namespace Prefabrikator
 
         public Vector3 GetTangentToCurve(float t)
         {
-            return CubicBezierCurve.GetTangentToCurve(_controlPoints[0], _controlPoints[1], t);
+            return default;
+            //return CubicBezierCurve.GetTangentToCurve(_controlPoints[0], _controlPoints[1], t);
         }
     }
 }

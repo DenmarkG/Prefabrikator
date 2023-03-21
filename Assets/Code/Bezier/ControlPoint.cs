@@ -8,23 +8,23 @@ public struct ControlPoint : IEquatable<ControlPoint>
 {
     public static readonly ControlPoint Default = new ControlPoint()
     {
-        Position = new Vector3(),
-        Tangent = Vector3.up
+        Position = new Shared<Vector3>(new Vector3()),
+        Tangent = new Shared<Vector3>(Vector3.up)
     };
 
-    public Vector3 Position;
-    public Vector3 Tangent;
+    public Shared<Vector3> Position;
+    public Shared<Vector3> Tangent;
 
     public ControlPoint(Vector3 position)
     {
-        Position = position;
-        Tangent = position + Vector3.up;
+        Position = new Shared<Vector3>(position);
+        Tangent = new Shared<Vector3>(Position + Vector3.up);
     }
 
     public ControlPoint(Vector3 position, Vector3 tangent)
     {
-        Position = position;
-        Tangent = position + tangent;
+        Position = new Shared<Vector3>(position);
+        Tangent = new Shared<Vector3>(tangent);
     }
 
     public bool Equals(ControlPoint other)

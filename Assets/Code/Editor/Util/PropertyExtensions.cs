@@ -167,8 +167,8 @@ namespace Prefabrikator
             {
                 EditorGUILayout.BeginVertical();
                 {
-                    point.Position = EditorGUILayout.Vector3Field("Position", point.Position, null);
-                    point.Tangent = EditorGUILayout.Vector3Field("Tangent", point.Tangent, null);
+                    point.Position.Set(EditorGUILayout.Vector3Field("Position", point.Position, null));
+                    point.Tangent.Set(EditorGUILayout.Vector3Field("Tangent", point.Tangent, null));
                 }
                 EditorGUILayout.EndVertical();
             }

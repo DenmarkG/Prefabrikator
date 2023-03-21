@@ -8,7 +8,7 @@ namespace Prefabrikator
         Circle,
         Arc,
         Sphere,
-        Path,
+        Spline,
         ScatterSphere,
         ScatterBox,
         ScatterPlane,
