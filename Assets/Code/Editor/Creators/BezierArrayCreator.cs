@@ -148,21 +148,26 @@ namespace Prefabrikator
             ControlPoint start = new ControlPoint(_points[0], _points[1]);
             ControlPoint end = new ControlPoint(_points[3], _points[2]);
 
-            t = Mathf.Clamp01(t);
-            if (t == 1f)
+            Vector3 p0, p1, p2, p3;
+            int startIndex = 0;
+
+            if (t >= 1f)
             {
                 t = 1f;
-                n = _points.Count - 4;
+                startIndex = _points.Count - 4;
             }
-            else
+            else 
             {
-                t = t * _numSegments;
-                n = (int)t;
-                t -= n;
-                n *= 3;
+                int segment = (int)(t * _numSegments);
+                startIndex = (segment * 3);
             }
 
-            return CubicBezierCurve.GetPointOnCurve(start, end, t);
+            p0 = _points[startIndex];
+            p1 = _points[startIndex + 1];
+            p2 = _points[startIndex + 2];
+            p3 = _points[startIndex + 3];
+
+            return CubicBezierCurve.GetPointOnCurve(p0, p1, p2, p3, t);
 
         }
 
