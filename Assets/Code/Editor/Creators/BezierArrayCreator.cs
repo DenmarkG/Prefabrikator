@@ -23,9 +23,9 @@ namespace Prefabrikator
         private List<Vector3> _points = new List<Vector3>()
         {
             new Vector3(),
-            Vector3.up * 5,
-            (Vector3.up * 5) + (Vector3.right * 5),
-            Vector3.right * 5
+            Vector3.up * 4,
+            (Vector3.up * 6) + (Vector3.right * 2),
+            (Vector3.up * 6) + (Vector3.right * 6),
         };
 
         private int _numSegments = 1;
@@ -143,24 +143,21 @@ namespace Prefabrikator
         {
             float n = _createdObjects.Count - 1;
             float t = (float)index / n;
-            //return CubicBezierCurve.GetPointOnCurve(_controlPoints[0], _controlPoints[1], t);
-
-            ControlPoint start = new ControlPoint(_points[0], _points[1]);
-            ControlPoint end = new ControlPoint(_points[3], _points[2]);
-
-            Vector3 p0, p1, p2, p3;
             int startIndex = 0;
-
             if (t >= 1f)
             {
                 t = 1f;
                 startIndex = _points.Count - 4;
             }
-            else 
+            else
             {
-                int segment = (int)(t * _numSegments);
-                startIndex = (segment * 3);
+                int segment = Mathf.FloorToInt(t * _numSegments);
+                float tSubS = t * _numSegments;
+                float tSubN = tSubS - segment;
+                t = tSubN;
+                startIndex = segment * 3;
             }
+            Vector3 p0, p1, p2, p3;
 
             p0 = _points[startIndex];
             p1 = _points[startIndex + 1];

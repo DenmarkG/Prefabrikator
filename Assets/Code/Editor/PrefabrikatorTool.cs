@@ -109,7 +109,7 @@ namespace Prefabrikator
             }
 
             // #DG: ensure this works each close
-            if (IsPrefab(_selectedObject) == false)
+            if (_selectedObject != null && IsPrefab(_selectedObject) == false)
             {
                 if (_isSaving)
                 {
