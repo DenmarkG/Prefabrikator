@@ -197,19 +197,23 @@ namespace Prefabrikator
                     {
                         _points[i] = position;
                         needsRefresh = needsRefresh || true;
-                        Debug.Log("needs refesh");
                     }
 
                     // #DG: fix this. currently it doesn't link the right points
-                    //Handles.color = Color.white;
-                    //if (i % 2 != 0)
-                    //{
-                    //    if (i > 0)
-                    //    {
-                    //        Handles.DrawLine(_points[i - 1], _points[i]);
-                    //    }
-                    //}
-                    
+                    Handles.color = Color.white;
+                    if ((i == 0) || (i % 3 == 0))
+                    {
+                        if (i - 1 > 0)
+                        {
+                            Handles.DrawLine(_points[i - 1], _points[i]);
+                        }
+                        
+                        if ((i + 1) < _points.Count)
+                        {
+                            Handles.DrawLine(_points[i + 1], _points[i]);
+                        }
+                    }
+
                     if (i > 0)
                     {
                         if (i % 3 == 0)
