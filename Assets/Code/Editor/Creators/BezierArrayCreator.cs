@@ -20,6 +20,8 @@ namespace Prefabrikator
 
         private List<Vector3Property> _properties = new List<Vector3Property>();
 
+        private int _selectedPoint = -1;
+
         private List<Vector3> _points = new List<Vector3>()
         {
             new Vector3(),
@@ -192,11 +194,25 @@ namespace Prefabrikator
                 {
                     Handles.color = Color.cyan;
                     Vector3 point = _points[i];
-                    Vector3 position = Handles.PositionHandle(point, Quaternion.identity);
-                    if (position != point)
+
+                    if (i == _selectedPoint)
                     {
-                        _points[i] = position;
-                        needsRefresh = needsRefresh || true;
+                        Vector3 position = Handles.PositionHandle(point, Quaternion.identity);
+                        if (position != point)
+                        {
+                            _points[i] = position;
+                            needsRefresh = needsRefresh || true;
+                        }
+                    }
+                    else
+                    {
+                        const float size = .2f;
+                        bool isControlPoint = (i == 0) || (i % 3 == 0);
+
+                        if (Handles.Button(point, Quaternion.identity, size, size, isControlPoint ? Handles.CubeHandleCap : Handles.SphereHandleCap))
+                        {
+                            _selectedPoint = i;
+                        }
                     }
 
                     // #DG: fix this. currently it doesn't link the right points
@@ -222,7 +238,7 @@ namespace Prefabrikator
                             Vector3 p1 = _points[i - 2];
                             Vector3 p2 = _points[i - 1];
                             Vector3 p3 = _points[i];
-                            Handles.DrawBezier(p0, p3, p1, p2, Color.cyan, null, 3f);
+                            Handles.DrawBezier(p0, p3, p1, p2, Color.black, null, 3f);
                         }
                     }
                 }
