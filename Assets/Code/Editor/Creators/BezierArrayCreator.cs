@@ -9,6 +9,12 @@ namespace Prefabrikator
 
     public class BezierArrayCreator : ArrayCreator
     {
+        public enum BezierTangenet
+        {
+            Broken,
+            Smooth
+        }
+
         private static readonly int DefaultCount = 3;
         public override int MinCount => DefaultCount;
 
@@ -58,7 +64,8 @@ namespace Prefabrikator
                     {
                         EditorGUI.BeginChangeCheck();
                         {
-                            EditorGUILayout.LabelField($"P{i}", GUILayout.MaxWidth(Extensions.LabelWidth + Extensions.IndentSize));
+                            string label = (i == _selectedPoint) ? $">>> P{i}" : $"P{i}";
+                            EditorGUILayout.LabelField(label, GUILayout.MaxWidth(Extensions.LabelWidth + Extensions.IndentSize));
                             point = EditorGUILayout.Vector3Field(GUIContent.none, point);
                         }
 
