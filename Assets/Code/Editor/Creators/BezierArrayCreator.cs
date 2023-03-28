@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEditor;
 using RNG = UnityEngine.Random;
@@ -11,8 +12,23 @@ namespace Prefabrikator
     {
         public enum BezierTangenet
         {
+            None,
+            Smooth,
             Broken,
-            Smooth
+        }
+
+        private struct Point
+        {
+            public static readonly Point Default = new Point()
+            {
+                Tangent = BezierTangenet.None
+            };
+
+            public Vector3 Position;
+            public BezierTangenet Tangent;
+
+            public static implicit operator Vector3(Point p) => p.Position;
+            public static explicit operator Point(Vector3 other) => new Point() { Position = other };
         }
 
         private static readonly int DefaultCount = 3;
@@ -28,12 +44,12 @@ namespace Prefabrikator
 
         private int _selectedPoint = -1;
 
-        private List<Vector3> _points = new List<Vector3>()
+        private List<Point> _points = new List<Point>()
         {
-            new Vector3(),
-            Vector3.up * 4,
-            (Vector3.up * 6) + (Vector3.right * 2),
-            (Vector3.up * 6) + (Vector3.right * 6),
+            new Point() { Position = new Vector3(), Tangent = BezierTangenet.Smooth },
+            new Point() { Position = (Vector3.up * 4) },
+            new Point() { Position = ((Vector3.up * 6) + (Vector3.right * 2)) },
+            new Point() { Position = ((Vector3.up * 6) + (Vector3.right * 6)), Tangent = BezierTangenet.Smooth }
         };
 
         private int _numSegments = 1;
@@ -59,19 +75,93 @@ namespace Prefabrikator
             {
                 for (int i = 0; i < _points.Count; ++i)
                 {
-                    Vector3 point = _points[i];
+                    Point point = _points[i];
+                    Point? prevPoint = null;
+                    Point? nextPoint = null;
+
                     EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
                     {
                         EditorGUI.BeginChangeCheck();
                         {
                             string label = (i == _selectedPoint) ? $">>> P{i}" : $"P{i}";
                             EditorGUILayout.LabelField(label, GUILayout.MaxWidth(Extensions.LabelWidth + Extensions.IndentSize));
-                            point = EditorGUILayout.Vector3Field(GUIContent.none, point);
+
+                            if (i == 0)
+                            {
+                                // #DG: special case #1
+                                nextPoint = _points[i + 1];
+                            }
+                            else if (i == _points.Count - 1)
+                            {
+                                // #DG: special case #2
+                                prevPoint = _points[i - 1];
+                            }
+                            else
+                            {
+                                prevPoint = _points[i - 1];
+                                nextPoint = _points[i + 1];
+                            }
+
+
+                            if (i % 3 == 0)
+                            {
+                                Vector3 posBefore = point.Position;
+                                point.Position = EditorGUILayout.Vector3Field(GUIContent.none, point);
+
+                                if (point.Tangent == BezierTangenet.Smooth)
+                                {
+                                    Vector3 delta = posBefore - point.Position;
+                                    if (prevPoint != null)
+                                    {
+                                        prevPoint = (Point)(prevPoint.Value.Position + (point.Position - delta));
+                                    }
+
+                                    if (nextPoint != null)
+                                    {
+                                        nextPoint = (Point)(nextPoint.Value.Position + (point.Position + delta));
+                                    }
+                                }
+
+                                string tangent = point.Tangent.ToString();
+                                if (GUILayout.Button(tangent, GUILayout.Width(Extensions.LabelWidth)))
+                                {
+                                    point.Tangent = (point.Tangent == BezierTangenet.Broken) ? BezierTangenet.Smooth : BezierTangenet.Broken;
+                                }
+                            }
+                            else
+                            {
+                                point.Position = EditorGUILayout.Vector3Field(GUIContent.none, point);
+                                GUILayout.Space(Extensions.LabelWidth + 3); // #DG: buttons have a hidden width
+                            }
                         }
 
                         if (EditorGUI.EndChangeCheck())
                         {
                             _points[i] = point;
+
+                            if (i % 3 == 0)
+                            {
+                                if (prevPoint != null)
+                                {
+                                    _points[i - 1] = prevPoint.Value;
+                                }
+                                if (nextPoint != null)
+                                {
+                                    try
+                                    {
+                                        _points[i + 1] = nextPoint.Value;
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Debug.Log("Here");
+                                    }
+                                }
+                            }
+
+                            if (_sceneView != null)
+                            {
+                                EditorUtility.SetDirty(_sceneView);
+                            }
                         }
                     }
                     EditorGUILayout.EndHorizontal();
@@ -97,13 +187,13 @@ namespace Prefabrikator
 
             Vector3 direction = lastPoint - _points[numPoints - 2];
             Vector3 p1 = direction + lastPoint;
-            _points.Add(p1);
+            _points.Add((Point)p1);
 
             Vector3 p2 = direction + p1;
-            _points.Add(p2);
+            _points.Add((Point)p2);
 
             Vector3 p3 = direction + p2;
-            _points.Add(p3);
+            _points.Add(new Point() { Position = p3, Tangent = BezierTangenet.Smooth });
 
             ++_numSegments;
         }
@@ -207,7 +297,7 @@ namespace Prefabrikator
                         Vector3 position = Handles.PositionHandle(point, Quaternion.identity);
                         if (position != point)
                         {
-                            _points[i] = position;
+                            _points[i] = (Point)position;
                             needsRefresh = needsRefresh || true;
                         }
                     }
