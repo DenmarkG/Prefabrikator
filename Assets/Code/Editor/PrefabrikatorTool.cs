@@ -113,7 +113,10 @@ namespace Prefabrikator
             {
                 if (_isSaving)
                 {
-                    GameObject.Destroy(_selectedObject);
+                    if (IsPrefab(_selectedObject) == false)
+                    {
+                        GameObject.DestroyImmediate(_selectedObject);
+                    }
                     _selectedObject = null;
                 }
                 else
@@ -249,14 +252,15 @@ namespace Prefabrikator
                     {
                         Cancel();
                     }
-                    else if (GUILayout.Button("Close"))
+                    else if (GUILayout.Button("Save and Close"))
                     {
                         SaveAndClose();
                     }
-                    else if (GUILayout.Button("Continue"))
-                    {
-                        SaveAndContinue();
-                    }
+                    // #DG: this is broken with prefabs
+                    //else if (GUILayout.Button("Save"))
+                    //{
+                    //    SaveAndContinue();
+                    //}
                 }
                 EditorGUILayout.EndHorizontal();
             }
