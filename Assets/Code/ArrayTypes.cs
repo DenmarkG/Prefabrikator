@@ -8,18 +8,14 @@ namespace Prefabrikator
         Circle,
         Arc,
         Sphere,
-
-#if PATH
-        Path,
+#if SPLINE_CREATOR
+        Spline,
 #endif
         ScatterSphere,
         ScatterBox,
         ScatterPlane,
         Ellipse,
-        // Box
         // polygon
-        // bricklay
-        // random inside polygon
-        // random inside circle
+        // Helix
     }
 }

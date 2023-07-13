@@ -43,7 +43,7 @@ BUGS:
         [] use to allow runtime editing
         [] Performance pass
 [x] Change "DisplayCountField" functions to use int property instead of buttons
-[] Add validation for changes to shared fields
+[x] Add validation for changes to shared fields
 [] Add info logging to bottom part of tool
 [] Add Global/Local option for rotations
 

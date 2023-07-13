@@ -147,4 +147,42 @@ namespace Prefabrikator
             return EditorGUILayout.Toggle(_guiContent, WorkingValue);
         }
     }
+
+    public class BezierProperty : CustomProperty<ControlPoint>
+    {
+        private bool _unfold = false;
+
+        public BezierProperty(string label, Shared<ControlPoint> startValue, OnValueSetDelegate onValueSet)
+            : base(label, startValue, onValueSet)
+        {
+            //
+        }
+
+        // #DG: need to rethink this to work as collection
+        protected override ControlPoint ShowPropertyField()
+        {
+            _unfold = EditorGUILayout.Foldout(_unfold, GUIContent.none);
+            ControlPoint point = WorkingValue;
+            if (_unfold)
+            {
+                EditorGUILayout.BeginVertical();
+                {
+                    point.Position.Set(EditorGUILayout.Vector3Field("Position", point.Position, null));
+                    point.Tangent.Set(EditorGUILayout.Vector3Field("Tangent", point.Tangent, null));
+                }
+                EditorGUILayout.EndVertical();
+            }
+
+            return point;
+        }
+
+        public static BezierProperty Create(string label, Shared<ControlPoint> watchedValue, Queue<ICommand> commandQueue)
+        {
+            void OnValueSet(ControlPoint current, ControlPoint previous)
+            {
+                commandQueue.Enqueue(new GenericCommand<ControlPoint>(watchedValue, previous, current));
+            };
+            return new BezierProperty(label, watchedValue, OnValueSet);
+        }
+    }
 }

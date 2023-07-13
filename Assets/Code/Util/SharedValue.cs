@@ -29,4 +29,9 @@ public class Shared<T> where T : struct
     {
         return _value;
     }
+
+    public ref T GetRef()
+    {
+        return ref _value;
+    }
 }

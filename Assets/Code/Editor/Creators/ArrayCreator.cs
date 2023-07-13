@@ -45,6 +45,8 @@ namespace Prefabrikator
         protected EditMode _editMode = EditMode.None;
         protected SceneView _sceneView = null;
 
+        protected bool _refreshOnCountChange = false;
+
         public abstract ShapeType Shape { get; }
 
         public ArrayState State { get; private set; }
@@ -137,6 +139,7 @@ namespace Prefabrikator
 
         public void OnCloseWindow(bool shouldSaveObjects = true)
         {
+
             if (!shouldSaveObjects)
             {
                 Teardown();
@@ -145,6 +148,12 @@ namespace Prefabrikator
             {
                 OnSave();
             }
+        }
+
+        public void ClearSceneGUI()
+        {
+            SceneView.duringSceneGui -= OnSceneGUI;
+            SceneView.RepaintAll();
         }
 
         protected virtual void OnSave() { }
@@ -302,6 +311,11 @@ namespace Prefabrikator
             if (shouldTriggerCallback)
             {
                 OnTargetCountChanged();
+
+                if (_refreshOnCountChange)
+                {
+                    Refresh();
+                }
             }
         }
 

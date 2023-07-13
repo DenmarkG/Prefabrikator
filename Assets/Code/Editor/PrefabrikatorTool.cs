@@ -105,15 +105,26 @@ namespace Prefabrikator
         {
             if (_creator != null)
             {
+                _creator.ClearSceneGUI();
                 _creator.OnCloseWindow(_isSaving);
             }
 
             // #DG: ensure this works each close
-            if (IsPrefab(_selectedObject) == false)
+            if (_selectedObject != null)
             {
                 if (_isSaving)
                 {
-                    GameObject.Destroy(_selectedObject);
+                    if (_keepOriginal)
+                    {
+                        _selectedObject.SetActive(true);
+                    }
+                    else
+                    {
+                        if (IsPrefab(_selectedObject) == false)
+                        {
+                            GameObject.DestroyImmediate(_selectedObject);
+                        }
+                    }
                     _selectedObject = null;
                 }
                 else
@@ -121,13 +132,10 @@ namespace Prefabrikator
                     _selectedObject.SetActive(true);
                 }
             }
-            else
-            {
-                if (_selectedObject != null)
-                {
-                    _selectedObject.SetActive(true);
-                }
-            }
+
+            _creator = null;
+            _selectedObject = null;
+            _window = null;
         }
 
         private void OnGUI()
@@ -240,20 +248,17 @@ namespace Prefabrikator
                         }
                     }
                     EditorGUI.EndDisabledGroup();
-                }
-                EditorGUILayout.EndHorizontal();
-
-                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
-                {
+                    
                     if (GUILayout.Button("Cancel"))
                     {
                         Cancel();
                     }
-                    else if (GUILayout.Button("Close"))
+                    else if (GUILayout.Button("Save and Close"))
                     {
                         SaveAndClose();
                     }
-                    else if (GUILayout.Button("Continue"))
+                    //# DG: this is broken with prefabs
+                    else if (GUILayout.Button("Save"))
                     {
                         SaveAndContinue();
                     }
@@ -317,11 +322,11 @@ namespace Prefabrikator
                 case ShapeType.Grid:
                     creator = new GridArrayCreator(target);
                     break;
-#if PATH
-                case ShapeType.Path:
+#if SPLINE_CREATOR
+                case ShapeType.Spline:
                     creator = new BezierArrayCreator(target);
                     break;
-#endif // PATH
+#endif
                 case ShapeType.ScatterBox:
                     creator = new ScatterBoxCreator(target);
                     break;

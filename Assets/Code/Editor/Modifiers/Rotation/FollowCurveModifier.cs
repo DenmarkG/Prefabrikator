@@ -29,12 +29,12 @@ namespace Prefabrikator
             {
                 _curveMode = CurveMode.Circle;
             }
-#if PATH
+#if SPLINE_CREATOR
             else if (owner is BezierArrayCreator)
             {
                 _curveMode = CurveMode.Path;
             }
-#endif // PATH
+#endif
             else
             {
                 Debug.LogError("Attempting to an invalid curve modifier");
@@ -55,9 +55,11 @@ namespace Prefabrikator
 
             switch (_curveMode)
             {
+#if SPLINE_CREATOR
                 case CurveMode.Path:
                     SetRotationFromPath(objs);
                     break;
+#endif
                 case CurveMode.Ellipse:
                     SetRotationFromEllipse(objs);
                     break;
@@ -132,9 +134,9 @@ namespace Prefabrikator
             }
         }
 
+#if SPLINE_CREATOR
         private void SetRotationFromPath(GameObject[] objs)
         {
-#if PATH
             BezierArrayCreator path = Owner as BezierArrayCreator;
 
             if (path != null)
@@ -145,15 +147,15 @@ namespace Prefabrikator
                 for (int i = 0; i < numObjs; ++i)
                 {
                     float t = (float)i / n;
-                    Vector3 tangent = path.Curve.GetTangentToCurve(t);
+                    Vector3 tangent = path.GetTangentToCurve(t);
                     Quaternion rotation = Quaternion.LookRotation(tangent);
                     objs[i].transform.localRotation = rotation;
 
                     _rotations[i] = rotation;
                 }
             }
-#endif // PATH
         }
+#endif // SPLINE_CREATOR
 
         public Quaternion GetRotationAtIndex(int index)
         {

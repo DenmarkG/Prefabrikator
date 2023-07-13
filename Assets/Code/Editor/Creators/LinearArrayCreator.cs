@@ -178,34 +178,36 @@ namespace Prefabrikator
             }
 
             GameObject proxy = GetProxy();
-            Handles.CapFunction cap = Handles.SphereHandleCap;
 
-            if (_editMode.HasFlag(EditMode.Position))
+            if (IsEditMode)
             {
-                Handles.color = Color.green;
-                Vector3 start = proxy.transform.position;
-                Vector3 end = start + (_offset.Get() * (_createdObjects.Count - 1));
-
-                Handles.DrawLine(start, end);
-
-                Vector3 endHndPos = end;
-                Vector3 end2 = Handles.PositionHandle(endHndPos, Quaternion.identity);
-
-                if (end2 != end)
+                if (_editMode.HasFlag(EditMode.Position))
                 {
-                    _offset.Set((end2 - start) / (_createdObjects.Count - 1));
+                    Handles.color = Color.green;
+                    Vector3 start = proxy.transform.position;
+                    Vector3 end = start + (_offset.Get() * (_createdObjects.Count - 1));
+
+                    Handles.DrawLine(start, end);
+
+                    Vector3 endHndPos = end;
+                    Vector3 end2 = Handles.PositionHandle(endHndPos, Quaternion.identity);
+
+                    if (end2 != end)
+                    {
+                        _offset.Set((end2 - start) / (_createdObjects.Count - 1));
+                    }
                 }
-            }
-            
-            if (_editMode.HasFlag(EditMode.Center))
-            {
-                Handles.color = Color.cyan;
-                Vector3 start = Handles.PositionHandle(proxy.transform.position, Quaternion.identity);
 
-                if (start != _start)
+                if (_editMode.HasFlag(EditMode.Center))
                 {
-                    _start.Set(start);
-                    proxy.transform.position = start;
+                    Handles.color = Color.cyan;
+                    Vector3 start = Handles.PositionHandle(proxy.transform.position, Quaternion.identity);
+
+                    if (start != _start)
+                    {
+                        _start.Set(start);
+                        proxy.transform.position = start;
+                    }
                 }
             }
         }
@@ -213,12 +215,12 @@ namespace Prefabrikator
         public void SetupProperties()
         {
             _startProperty = Vector3Property.Create("Start", _start, CommandQueue);
-            _startProperty.OnEditModeEnter += () => { _editMode = EditMode.Center; };
+            _startProperty.OnEditModeEnter += () => { _editMode |= EditMode.Center; };
             _startProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
 
             _offsetProperty = Vector3Property.Create("Offset", _offset, CommandQueue);
-            _offsetProperty.OnEditModeEnter += () => { _editMode = EditMode.Position; };
-            _offsetProperty.OnEditModeExit += () => { _editMode = EditMode.None; };
+            _offsetProperty.OnEditModeEnter += () => { _editMode |= EditMode.Position; };
+            _offsetProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Position; };
         }
 
         public override void OnStateSet(ArrayState stateData)

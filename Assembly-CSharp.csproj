@@ -56,22 +56,7 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Code\ArrayTypes.cs" />
-    <Compile Include="Assets\Code\Util\SharedValue.cs" />
-    <Compile Include="Assets\Code\Util\Properties\MinMaxProperty.cs" />
-    <Compile Include="Assets\Code\Util\MinMax.cs" />
-    <Compile Include="Assets\Code\Util\GlobalEnums.cs" />
-    <Compile Include="Assets\Code\Runtime\ArrayState.cs" />
     <Compile Include="Assets\Art\Models\Rocks and Boulders 2\Shaders\RotateGameObject.cs" />
-    <Compile Include="Assets\Code\Runtime\ArrayContainer.cs" />
-    <Compile Include="Assets\Code\PoissonTest.cs" />
-    <Compile Include="Assets\Code\Util\Properties\CustomProperty.cs" />
-    <Compile Include="Assets\Code\Util\Extensions.cs" />
-    <Compile Include="Assets\Code\Bezier\CubicBezierCurve.cs" />
-    <Compile Include="Assets\Code\Util\ArrayHelper.cs" />
-    <Compile Include="Assets\Code\Bezier\BezierPoint.cs" />
-    <Compile Include="Assets\Code\Util\Constants.cs" />
-    <Compile Include="Assets\Code\Util\MathUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Art\Models\Rocks and Boulders 2\Shaders\Blend SM2.shader" />
@@ -738,11 +723,11 @@
     <Reference Include="UnityEditor.UI">
       <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.PlasticSCM.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.PlasticSCM.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
@@ -770,9 +755,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Prefabrikator.Editor.csproj">
+      <Project>{A25F25B1-E255-BA66-F12F-19332EEEAD52}</Project>
+      <Name>Prefabrikator.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Adobe.Substance.Runtime.csproj">
       <Project>{066AAA10-E334-5459-8420-2BD498D3E0FC}</Project>
       <Name>Adobe.Substance.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="Prefabrikator.csproj">
+      <Project>{99740196-EDD2-16E9-9C24-7BE20EC36D31}</Project>
+      <Name>Prefabrikator</Name>
     </ProjectReference>
     <ProjectReference Include="Adobe.SubstanceEditor.csproj">
       <Project>{A7ED9298-7610-411B-7FD7-BEB9072DFF4E}</Project>
