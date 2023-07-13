@@ -261,6 +261,11 @@ namespace Prefabrikator
             _scatterRadiusProperty = new FloatProperty("Scatter Radius", _scatterRadius, OnScatterRadiusChanged);
         }
 
+        protected override int EnforceValidCount(int count)
+        {
+            return Mathf.Clamp(count, MinCount, MaxShapes);
+        }
+
         protected abstract Vector3 GetRandomPointInBounds();
         protected abstract bool IsValidPoint(List<Vector3> scatteredPoints, Vector3 testPoint);
         protected abstract Vector3 GetInitialPosition();

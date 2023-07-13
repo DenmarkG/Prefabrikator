@@ -299,7 +299,7 @@ namespace Prefabrikator
             }
         }
 
-        protected int EnforceValidCount(int count)
+        protected virtual int EnforceValidCount(int count)
         {
             return Mathf.Max(count, MinCount);
         }
