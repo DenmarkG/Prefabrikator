@@ -322,9 +322,11 @@ namespace Prefabrikator
                 case ShapeType.Grid:
                     creator = new GridArrayCreator(target);
                     break;
+#if SPLINE_CREATOR
                 case ShapeType.Spline:
                     creator = new BezierArrayCreator(target);
                     break;
+#endif
                 case ShapeType.ScatterBox:
                     creator = new ScatterBoxCreator(target);
                     break;

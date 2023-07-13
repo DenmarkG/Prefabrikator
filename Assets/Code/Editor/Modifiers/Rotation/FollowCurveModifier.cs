@@ -29,10 +29,12 @@ namespace Prefabrikator
             {
                 _curveMode = CurveMode.Circle;
             }
+#if SPLINE_CREATOR
             else if (owner is BezierArrayCreator)
             {
                 _curveMode = CurveMode.Path;
             }
+#endif
             else
             {
                 Debug.LogError("Attempting to an invalid curve modifier");
@@ -53,9 +55,11 @@ namespace Prefabrikator
 
             switch (_curveMode)
             {
+#if SPLINE_CREATOR
                 case CurveMode.Path:
                     SetRotationFromPath(objs);
                     break;
+#endif
                 case CurveMode.Ellipse:
                     SetRotationFromEllipse(objs);
                     break;
@@ -130,6 +134,7 @@ namespace Prefabrikator
             }
         }
 
+#if SPLINE_CREATOR
         private void SetRotationFromPath(GameObject[] objs)
         {
             BezierArrayCreator path = Owner as BezierArrayCreator;
@@ -150,6 +155,7 @@ namespace Prefabrikator
                 }
             }
         }
+#endif // SPLINE_CREATOR
 
         public Quaternion GetRotationAtIndex(int index)
         {

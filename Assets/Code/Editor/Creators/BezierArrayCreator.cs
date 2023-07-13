@@ -6,6 +6,7 @@ using RNG = UnityEngine.Random;
 
 namespace Prefabrikator
 {
+#if SPLINE_CREATOR
     using SharedPoint = Shared<ControlPoint>;
 
     public class BezierArrayCreator : ArrayCreator
@@ -153,7 +154,7 @@ namespace Prefabrikator
                                     }
                                     catch (Exception e)
                                     {
-                                        Debug.Log("Here");
+                                        Debug.LogException(e);
                                     }
                                 }
                             }
@@ -393,4 +394,5 @@ namespace Prefabrikator
             //return CubicBezierCurve.GetTangentToCurve(_controlPoints[0], _controlPoints[1], t);
         }
     }
+#endif // SPLINE_CREATOR
 }

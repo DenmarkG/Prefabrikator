@@ -8,7 +8,9 @@ namespace Prefabrikator
         Circle,
         Arc,
         Sphere,
+#if SPLINE_CREATOR
         Spline,
+#endif
         ScatterSphere,
         ScatterBox,
         ScatterPlane,
