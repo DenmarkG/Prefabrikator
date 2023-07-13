@@ -105,17 +105,25 @@ namespace Prefabrikator
         {
             if (_creator != null)
             {
+                _creator.ClearSceneGUI();
                 _creator.OnCloseWindow(_isSaving);
             }
 
             // #DG: ensure this works each close
-            if (_selectedObject != null && IsPrefab(_selectedObject) == false)
+            if (_selectedObject != null)
             {
                 if (_isSaving)
                 {
-                    if (IsPrefab(_selectedObject) == false)
+                    if (_keepOriginal)
                     {
-                        GameObject.DestroyImmediate(_selectedObject);
+                        _selectedObject.SetActive(true);
+                    }
+                    else
+                    {
+                        if (IsPrefab(_selectedObject) == false)
+                        {
+                            GameObject.DestroyImmediate(_selectedObject);
+                        }
                     }
                     _selectedObject = null;
                 }
@@ -124,13 +132,10 @@ namespace Prefabrikator
                     _selectedObject.SetActive(true);
                 }
             }
-            else
-            {
-                if (_selectedObject != null)
-                {
-                    _selectedObject.SetActive(true);
-                }
-            }
+
+            _creator = null;
+            _selectedObject = null;
+            _window = null;
         }
 
         private void OnGUI()
@@ -243,11 +248,7 @@ namespace Prefabrikator
                         }
                     }
                     EditorGUI.EndDisabledGroup();
-                }
-                EditorGUILayout.EndHorizontal();
-
-                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
-                {
+                    
                     if (GUILayout.Button("Cancel"))
                     {
                         Cancel();
@@ -256,11 +257,11 @@ namespace Prefabrikator
                     {
                         SaveAndClose();
                     }
-                    // #DG: this is broken with prefabs
-                    //else if (GUILayout.Button("Save"))
-                    //{
-                    //    SaveAndContinue();
-                    //}
+                    //# DG: this is broken with prefabs
+                    else if (GUILayout.Button("Save"))
+                    {
+                        SaveAndContinue();
+                    }
                 }
                 EditorGUILayout.EndHorizontal();
             }

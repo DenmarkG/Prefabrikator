@@ -139,6 +139,7 @@ namespace Prefabrikator
 
         public void OnCloseWindow(bool shouldSaveObjects = true)
         {
+
             if (!shouldSaveObjects)
             {
                 Teardown();
@@ -147,6 +148,12 @@ namespace Prefabrikator
             {
                 OnSave();
             }
+        }
+
+        public void ClearSceneGUI()
+        {
+            SceneView.duringSceneGui -= OnSceneGUI;
+            SceneView.RepaintAll();
         }
 
         protected virtual void OnSave() { }
