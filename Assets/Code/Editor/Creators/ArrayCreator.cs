@@ -51,6 +51,8 @@ namespace Prefabrikator
 
         public ArrayState State { get; private set; }
 
+        public Vector3 Position => _targetProxy?.transform.position ?? Vector3.zero;
+
         public ArrayCreator(GameObject target, int defaultCount)
         {
             _target = target;
@@ -97,6 +99,8 @@ namespace Prefabrikator
         public abstract void DrawEditor();
         public abstract void UpdateEditor();
         protected abstract void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false);
+        //public abstract Bounds CalculateBounds();
+        public virtual Bounds CalculateBounds() { return new Bounds();  }
 
         public void Refresh(bool hardRefresh = false, bool useDefaultData = false)
         {

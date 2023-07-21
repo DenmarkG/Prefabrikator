@@ -51,7 +51,7 @@ namespace Prefabrikator
             }
             _radiusProperty = new FloatProperty("Radius", _radius, OnRadiusSet);
             _radiusProperty.OnEditModeEnter += () => { _editMode |= EditMode.Size; };
-            _radiusProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Size; };
+            _radiusProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Size; };
 
             void OnCenterChanged(Vector3 current, Vector3 previous)
             {
@@ -59,7 +59,7 @@ namespace Prefabrikator
             }
             _centerProperty = new Vector3Property("Center", _center, OnCenterChanged);
             _centerProperty.OnEditModeEnter += () => { _editMode |= EditMode.Center; };
-            _centerProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
+            _centerProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Center; };
         }
 
         protected override void OnSave()

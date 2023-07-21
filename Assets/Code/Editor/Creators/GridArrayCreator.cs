@@ -329,7 +329,7 @@ namespace Prefabrikator
             }
             _centerProperty = new Vector3Property("Center", _center, OnCenterChanged);
             _centerProperty.OnEditModeEnter += () => { _editMode |= EditMode.Center; };
-            _centerProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
+            _centerProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Center; };
 
             void OnXChanged(float current, float previous)
             {
@@ -337,7 +337,7 @@ namespace Prefabrikator
             }
             _xOffsetProperty = new FloatProperty("X", _offsetX, OnXChanged);
             _xOffsetProperty.OnEditModeEnter += () => { _editMode |= EditMode.OffsetX; };
-            _xOffsetProperty.OnEditModeExit += () => { _editMode &= ~EditMode.OffsetX; };
+            _xOffsetProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.OffsetX; };
 
             void OnXCountChange(int current, int previous)
             {
@@ -354,7 +354,7 @@ namespace Prefabrikator
             }
             _yOffsetProperty = new FloatProperty("Y", _offsetY, OnYChanged);
             _yOffsetProperty.OnEditModeEnter += () => { _editMode |= EditMode.OffsetY; };
-            _yOffsetProperty.OnEditModeExit += () => { _editMode &= ~EditMode.OffsetY; };
+            _yOffsetProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.OffsetY; };
 
             void OnYCountChange(int current, int previous)
             {
@@ -371,7 +371,7 @@ namespace Prefabrikator
             }
             _zOffsetProperty = new FloatProperty("Z", _offsetZ, OnZChanged);
             _zOffsetProperty.OnEditModeEnter += () => { _editMode |= EditMode.OffsetZ; };
-            _zOffsetProperty.OnEditModeExit += () => { _editMode &= ~EditMode.OffsetZ; };
+            _zOffsetProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.OffsetZ; };
 
             void OnZCountChange(int current, int previous)
             {

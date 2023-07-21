@@ -9,9 +9,19 @@ namespace Prefabrikator
     // https://stackoverflow.com/questions/58452586/how-to-let-gravity-work-in-editor-mode-in-unity3d
     class DropModifier : Modifier
     {
-        protected override string DisplayName => ModifierType.DropToFloor;
+        private enum CollisionType
+        {
+            VisibleGeometry,
+            CollisionGeometry
+        }
 
-        private List<Vector3> _positions = null;
+        //[Serializable]
+        //private class MeshWrapper
+        //{
+        //    public MeshFilter[] Meshes;
+        //}
+
+        protected override string DisplayName => ModifierType.DropToFloor;
 
         private Shared<LayerMask> _layer = new Shared<LayerMask>(LayerMask.NameToLayer("Default"));
         private LayerMaskProperty _layerProperty = null;
@@ -28,12 +38,18 @@ namespace Prefabrikator
         protected SceneView _sceneView = null;
         protected EditMode _editMode = EditMode.None;
 
+        private CollisionType _collisionType = CollisionType.CollisionGeometry;
+        private MeshFilter _targetMesh = null;
+
+        // Generated Collision
+        private GameObject _dropTarget = null;
+
+        private bool _dropped = false;
+
         public DropModifier(ArrayCreator creator)
             : base(creator)
         {
             SetupProperties();
-
-            _positions = new List<Vector3>(Owner.CreatedObjects.Count);
 
             SceneView.duringSceneGui += OnSceneGUI;
         }
@@ -51,31 +67,47 @@ namespace Prefabrikator
 
         public override void Process(GameObject[] objs)
         {
-            if (_positions == null)
+            if (_dropped == true)
             {
-                _positions = new List<Vector3>(objs.Length);
-            }
-
-            if (_positions.Count < objs.Length)
-            {
-                while (_positions.Count < objs.Length)
+                Vector3[] positions = new Vector3[objs.Length];
+                foreach (GameObject go in objs)
                 {
-                    int index = objs.Length - (objs.Length - _positions.Count);
-                    _positions.Add(objs[index].transform.position);
-                }
-            }
-            else if (_positions.Count > objs.Length)
-            {
-                while (_positions.Count > objs.Length)
-                {
-                    _positions.RemoveAt(_positions.Count - 1);
-                }
-            }
+                    if (_collisionType == CollisionType.VisibleGeometry)
+                    {
+                        GenerateCollision();
+                    }
 
-            int numObjs = objs.Length;
-            for (int i = 0; i < numObjs; ++i)
-            {
-                objs[i].transform.position = _positions[i];
+                    GameObject current = null;
+                    for (int i = 0; i < objs.Length; ++i)
+                    {
+                        Vector3 start = Owner.GetDefaultPositionAtIndex(i);
+                        current = objs[i];
+                        Collider collider = current.GetComponent<Collider>();
+
+                        RaycastHit[] hits = Physics.RaycastAll(start, Vector3.down, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore);
+
+                        foreach (RaycastHit hit in hits)
+                        {
+                            if (hit.collider != collider)
+                            {
+                                float offset = _verticalOffset;
+                                if (_useCollider && collider != null)
+                                {
+                                    offset = current.transform.InverseTransformPoint(collider.bounds.min).y;
+                                }
+
+                                positions[i] = hit.point + (Vector3.down * offset);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                int numObjs = objs.Length;
+                for (int i = 0; i < numObjs; ++i)
+                {
+                    objs[i].transform.position = positions[i];
+                }
             }
         }
 
@@ -89,11 +121,35 @@ namespace Prefabrikator
                 _verticalOffset.Set(_offsetProperty.Update());
             }
 
-            _layer.Set(_layerProperty.Update());
-            if (GUILayout.Button("Drop"))
+            CollisionType collisionType = (CollisionType)EditorGUILayout.EnumPopup("Detection Type", _collisionType);
+            if (collisionType != _collisionType)
             {
-                Drop();
+                Owner.CommandQueue.Enqueue(new ValueChangedCommand<CollisionType>(_collisionType, collisionType, x => { _collisionType = x; }));
             }
+
+            if (_collisionType == CollisionType.VisibleGeometry)
+            {
+                MeshFilter targetMesh = EditorGUILayout.ObjectField("Mesh", _targetMesh, typeof(MeshFilter), true) as MeshFilter;
+                if (targetMesh != _targetMesh)
+                {
+                    Owner.CommandQueue.Enqueue(new ValueChangedCommand<MeshFilter>(_targetMesh, targetMesh, x => { _targetMesh = x; }));
+                }
+            }
+
+            _layer.Set(_layerProperty.Update());
+
+            EditorGUILayout.BeginHorizontal();
+            {
+                if (GUILayout.Button("Drop"))
+                {
+                    Drop();
+                }
+                else if (GUILayout.Button("Reset"))
+                {
+                    Reset();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
 
             if (_sceneView != null)
             {
@@ -103,47 +159,54 @@ namespace Prefabrikator
 
         private void Drop()
         {
-            Vector3[] previous = _positions.ToArray();
-            List<GameObject> createdObjs = Owner.CreatedObjects;
-            _positions = new List<Vector3>();
+            _dropped = true;
+        }
 
-            GameObject current = null;
-            for (int i = 0; i < createdObjs.Count; ++i)
+        private void Reset()
+        {
+            _dropped = false;
+            //Vector3[] previous = _positions.ToArray();
+
+            //int numObjects = Owner.CreatedObjects.Count;
+            //for (int i = 0; i < numObjects; ++i)
+            //{
+            //    _positions[i] = Owner.GetDefaultPositionAtIndex(i);
+            //}
+            
+            //void Apply(Vector3[] positions)
+            //{
+            //    Owner.ApplyToAll((go, index) => { go.transform.position = positions[index]; });
+            //}
+            //var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
+            //Owner.CommandQueue.Enqueue(valueChanged);
+        }
+
+        private void GenerateCollision()
+        {
+            if (_dropTarget == null)
             {
-                Vector3 start = Owner.GetDefaultPositionAtIndex(i);
-                current = createdObjs[i];
-                Collider collider = current.GetComponent<Collider>();
+                _dropTarget = new GameObject("Drop Target");
+                _dropTarget.transform.SetPositionAndRotation(_targetMesh.transform.position, _targetMesh.transform.rotation);
+                _dropTarget.transform.localScale = _targetMesh.transform.localScale;
 
-                RaycastHit[] hits = Physics.RaycastAll(start, Vector3.down, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore);
-
-                foreach (RaycastHit hit in hits)
+                // #DG: clear the drop target when the mesh target changes in the inspector
+                if (_targetMesh != null)
                 {
-                    if (hit.collider != collider)
-                    {
-                        float offset = _verticalOffset;
-                        if (_useCollider && collider != null)
-                        {
-                            offset = current.transform.InverseTransformPoint(collider.bounds.min).y;
-                        }
+                    MeshCollider collider = _dropTarget.AddComponent<MeshCollider>();
 
-                        _positions.Add(hit.point + (Vector3.down * offset));
-                        break;
-                    }
+                    //Mesh mesh = new()
+                    //{
+                    //    vertices = _targetMesh.sharedMesh.vertices,
+                    //    triangles = _targetMesh.sharedMesh.triangles,
+                    //    normals = _targetMesh.sharedMesh.normals,
+                    //    tangents = _targetMesh.sharedMesh.tangents
+                    //};
+
+                    Physics.BakeMesh(_targetMesh.sharedMesh.GetInstanceID(), false);
+                    collider.sharedMesh = _targetMesh.sharedMesh;
+                    //collider.convex = true;
                 }
             }
-
-            while (_positions.Count < Owner.CreatedObjects.Count)
-            {
-                int index = Owner.CreatedObjects.Count - (Owner.CreatedObjects.Count - _positions.Count);
-                _positions.Add(Owner.CreatedObjects[index].transform.position);
-            }
-
-            void Apply(Vector3[] positions)
-            {
-                Owner.ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
-            }
-            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
-            Owner.CommandQueue.Enqueue(valueChanged);
         }
 
         protected void OnSceneGUI(SceneView view)
@@ -183,7 +246,7 @@ namespace Prefabrikator
             }
             _offsetProperty = new FloatProperty("Vertical Offset", _verticalOffset, OnOffsetChanged);
             _offsetProperty.OnEditModeEnter += () => { _editMode = EditMode.Center; };
-            _offsetProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
+            _offsetProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Center; };
 
             void OnUseColliderChanged(bool current, bool previous)
             {

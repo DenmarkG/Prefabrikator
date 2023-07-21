@@ -26,7 +26,7 @@ namespace Prefabrikator
             _zRadiusProperty = new FloatProperty("Z Radius", _zRadius, OnZRadiusSet);
 
             _zRadiusProperty.OnEditModeEnter += () => { _editMode |= EditMode.RadiusII; };
-            _zRadiusProperty.OnEditModeExit += () => { _editMode &= ~EditMode.RadiusII; };
+            _zRadiusProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.RadiusII; };
             _xRadiusHandle.axes = PrimitiveBoundsHandle.Axes.X | PrimitiveBoundsHandle.Axes.Z;
             _zRadiusHandle.axes = PrimitiveBoundsHandle.Axes.X | PrimitiveBoundsHandle.Axes.Z;
         }

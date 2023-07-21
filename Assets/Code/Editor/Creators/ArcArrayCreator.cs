@@ -38,7 +38,7 @@ namespace Prefabrikator
 
             _fillProperty = new FloatSlider("Fill", _fillPercent, OnSliderChange);
             _fillProperty.OnEditModeEnter += () => { _editMode |= EditMode.Angle; };
-            _fillProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Angle; };
+            _fillProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Angle; };
         }
 
         public override void DrawEditor()

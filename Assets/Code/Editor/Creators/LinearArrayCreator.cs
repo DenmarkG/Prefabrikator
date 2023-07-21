@@ -216,11 +216,11 @@ namespace Prefabrikator
         {
             _startProperty = Vector3Property.Create("Start", _start, CommandQueue);
             _startProperty.OnEditModeEnter += () => { _editMode |= EditMode.Center; };
-            _startProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
+            _startProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Center; };
 
             _offsetProperty = Vector3Property.Create("Offset", _offset, CommandQueue);
             _offsetProperty.OnEditModeEnter += () => { _editMode |= EditMode.Position; };
-            _offsetProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Position; };
+            _offsetProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Position; };
         }
 
         public override void OnStateSet(ArrayState stateData)

@@ -53,41 +53,41 @@
     <UnityVersion>2022.1.0f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterVolumeCreator.cs" />
+    <Compile Include="Assets\Code\Editor\Modifiers\Rotation\IncrementalRotationModifier.cs" />
+    <Compile Include="Assets\Code\Editor\UndoRedo\Commands\StateChangeCommand.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Rotation\IRotator.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Scale\RandomScaleModifier.cs" />
+    <Compile Include="Assets\Code\Editor\Creators\ArcArrayCreator.cs" />
+    <Compile Include="Assets\Code\Editor\Modifiers\ModifierFactory.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\IncrementalModifier.cs" />
+    <Compile Include="Assets\Code\Editor\Modifiers\Noise\PositionNoiseModifier.cs" />
+    <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterBoxCreator.cs" />
+    <Compile Include="Assets\Code\Editor\PrefabrikatorTool.cs" />
+    <Compile Include="Assets\Code\Editor\Modifiers\Rotation\UniformRotation.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Scale\UniformScaleModifier.cs" />
+    <Compile Include="Assets\Code\Editor\Creators\GridArrayCreator.cs" />
+    <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterSphereCreator.cs" />
+    <Compile Include="Assets\Code\Editor\Modifiers\Random\RandomModifier.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Rotation\FollowCurveModifier.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Rotation\RandomRotation.cs" />
     <Compile Include="Assets\Code\Editor\Creators\LinearArrayCreator.cs" />
+    <Compile Include="Assets\Code\Editor\Modifiers\Drop\DropModifier.cs" />
     <Compile Include="Assets\Code\Editor\UndoRedo\Command.cs" />
     <Compile Include="Assets\Code\Editor\UndoRedo\UndoStack.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Modifier.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Uniform\UniformModifier.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Position\CheckerBoardModifier.cs" />
     <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterPlaneCreator.cs" />
-    <Compile Include="Assets\Code\Editor\Creators\Interfaces\IRadial.cs" />
-    <Compile Include="Assets\Code\Editor\UndoRedo\Commands.cs" />
-    <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterVolumeCreator.cs" />
-    <Compile Include="Assets\Code\Editor\Modifiers\Rotation\IncrementalRotationModifier.cs" />
-    <Compile Include="Assets\Code\Editor\UndoRedo\Commands\StateChangeCommand.cs" />
-    <Compile Include="Assets\Code\Editor\Creators\ArcArrayCreator.cs" />
-    <Compile Include="Assets\Code\Editor\Modifiers\ModifierFactory.cs" />
-    <Compile Include="Assets\Code\Editor\Modifiers\Noise\PositionNoiseModifier.cs" />
-    <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterBoxCreator.cs" />
-    <Compile Include="Assets\Code\Editor\PrefabrikatorTool.cs" />
-    <Compile Include="Assets\Code\Editor\Modifiers\Rotation\UniformRotation.cs" />
-    <Compile Include="Assets\Code\Editor\Creators\GridArrayCreator.cs" />
-    <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterSphereCreator.cs" />
-    <Compile Include="Assets\Code\Editor\Modifiers\Random\RandomModifier.cs" />
-    <Compile Include="Assets\Code\Editor\Modifiers\Drop\DropModifier.cs" />
     <Compile Include="Assets\Code\Editor\Creators\CircularArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Util\PropertyExtensions.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Random\RadialNoise.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Scale\IncrementalScaleModifier.cs" />
+    <Compile Include="Assets\Code\Editor\Creators\Interfaces\IRadial.cs" />
+    <Compile Include="Assets\Code\Editor\UndoRedo\Commands.cs" />
     <Compile Include="Assets\Code\Editor\Creators\ArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Creators\EllipseArrayCreator.cs" />
@@ -349,26 +349,8 @@
     <Reference Include="UnityEditor.Graphs">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\Managed\UnityEditor.Graphs.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.WebGL.Extensions">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\WebGLSupport\UnityEditor.WebGL.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.Android.Extensions">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\AndroidPlayer\UnityEditor.Android.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.UWP.Extensions">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\MetroSupport\UnityEditor.UWP.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.IonicZip">
-      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.5\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
-    </Reference>
-    <Reference Include="log4netPlastic">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Plastic.Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
@@ -376,23 +358,17 @@
     <Reference Include="Unity.Plastic.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.YamlDotNet">
-      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.5\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
+    <Reference Include="log4netPlastic">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.5\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="unityplastic">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>Library\PackageCache\com.unity.ext.nunit@1.0.6\net35\unity-custom\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Android.Types">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Android.Gradle">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\mscorlib.dll</HintPath>
@@ -994,23 +970,27 @@
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\Facades\netstandard.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.TestRunner">
-      <HintPath>Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.TestRunner">
-      <HintPath>Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Prefabrikator.csproj">
       <Project>{99740196-EDD2-16E9-9C24-7BE20EC36D31}</Project>
       <Name>Prefabrikator</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEditor.UI.csproj">
+      <Project>{537B70B2-D491-7CA5-CBE2-7019F4DB8A50}</Project>
+      <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.csproj">
+      <Project>{B7AB3349-0C75-33E4-CF66-9B020A854B37}</Project>
+      <Name>UnityEngine.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.TestRunner.csproj">
+      <Project>{0A76026B-B101-7153-B354-9CE9D7A7239C}</Project>
+      <Name>UnityEngine.TestRunner</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEditor.TestRunner.csproj">
+      <Project>{48B04FDE-6C3F-644E-3AF1-DEE01FF94128}</Project>
+      <Name>UnityEditor.TestRunner</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

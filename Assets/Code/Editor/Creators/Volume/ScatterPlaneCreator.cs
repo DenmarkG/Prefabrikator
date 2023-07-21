@@ -26,6 +26,7 @@ namespace Prefabrikator
         private Shared<Vector3> _size = new Shared<Vector3>(new Vector3(10f, 0f, 10f));
         protected Vector3Property _sizeProperty = null;
         protected virtual Shared<Vector3> DefaultSize => new Shared<Vector3>(new Vector3(10f, 0f, 10f));
+        private Vector3 _centerDefault = Vector3.zero;
 
         public ScatterPlaneCreator(GameObject target) 
             : base(target)
@@ -34,6 +35,11 @@ namespace Prefabrikator
             _size.Set(DefaultSize);
             _center.Set(target.transform.position);
             SetupProperties();
+        }
+
+        public override Bounds CalculateBounds()
+        {
+            return new Bounds(_center, _size);
         }
 
         protected override void OnSave()
@@ -67,7 +73,6 @@ namespace Prefabrikator
                     {
                         center = Handles.PositionHandle(center, Quaternion.identity);
                     }
-
                 }
                 if (EditorGUI.EndChangeCheck())
                 {
@@ -79,6 +84,13 @@ namespace Prefabrikator
 
                     if (center != _center)
                     {
+                        for (int i = 0; i < _positions.Count; ++i)
+                        {
+                            _positions[i] += center - _center;
+                        }
+
+                        ApplyToAll((obj, index) => obj.transform.position = _positions[index]);
+
                         _center.Set(center);
                     }
                 }
@@ -229,8 +241,8 @@ namespace Prefabrikator
                 CommandQueue.Enqueue(new GenericCommand<Vector3>(_center, previous, current));
             }
             _centerProperty = new Vector3Property("Center", _center, OnCenterChanged);
-            _centerProperty.OnEditModeEnter += () => { _editMode |= EditMode.Center; };
-            _centerProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Center; };
+            _centerProperty.OnEditModeEnter += OnEnterCenterEdit;
+            _centerProperty.OnEditModeExit += OnExitCenterEdit;
 
             void OnSizeChanged(Vector3 current, Vector3 previous)
             {
@@ -240,7 +252,34 @@ namespace Prefabrikator
             }
             _sizeProperty = new Vector3Property("Size", _size, OnSizeChanged);
             _sizeProperty.OnEditModeEnter += () => { _editMode |= EditMode.Size; };
-            _sizeProperty.OnEditModeExit += () => { _editMode &= ~EditMode.Size; };
+            _sizeProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Size; };
+        }
+
+        private void OnEnterCenterEdit()
+        {
+            _editMode |= EditMode.Center;
+            _centerDefault = _center;
+        }
+
+        private void OnExitCenterEdit(ExitMode exitMode)
+        {
+            _editMode &= ~EditMode.Center;
+
+            if (exitMode == ExitMode.Cancel)
+            {
+                Vector3 moveDelta = _center - _centerDefault;
+                OnPositionsChanged(moveDelta);
+            }
+        }
+
+        private void OnPositionsChanged(Vector3 moveDelta)
+        {
+            for (int i = 0; i < _positions.Count; ++i)
+            {
+                _positions[i] -= moveDelta;
+            }
+
+            ApplyToAll((obj, index) => obj.transform.position = _positions[index]);
         }
 
         protected override Vector3 GetInitialPosition()

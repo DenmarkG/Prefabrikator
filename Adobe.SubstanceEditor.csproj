@@ -53,33 +53,33 @@
     <UnityVersion>2022.1.0f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\SubstanceBuildUtils.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\GUIContent\SubstanceNumericalInputGUIContent.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\SubstanceGraphSOEditor.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\EditorDrawUtilities.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\TextureUtils.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerString.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Extensions\PhysicalSizeExtension.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Package\UnityPackageInfo.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Project Settings Editor\SubstanceEditorSettingsSO.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat4.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawer.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\SubstanceEditorEngine.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Importer\SubstanceImporterEditor.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\GUIContent\SubstanceInputGUIContent.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerTexture.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\GraphInputsGroupingHelper.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerInt3.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat2.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Project Settings Editor\Extensions.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\AssetCreationUtils.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\GUIContent\SubstanceNumericalInputGUIContent.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\SubstanceGraphSOEditor.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\EditorDrawUtilities.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\TextureUtils.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat4.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\SubstanceEditorEngine.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Importer\SubstanceImporterEditor.cs" />
-    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerTexture.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\EditorTools.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Project Settings Editor\Extensions.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\NamingExtensions.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerInt4.cs" />
+    <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Utilities\AssetCreationUtils.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerFloat3.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\PropertyDrawers\SubstanceInputDrawerInt2.cs" />
     <Compile Include="Assets\Adobe\Substance3DForUnity\Editor\Scripts\Project Settings Editor\SubstanceEditorSettingsProvider.cs" />
@@ -343,26 +343,8 @@
     <Reference Include="UnityEditor.Graphs">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\Managed\UnityEditor.Graphs.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.WebGL.Extensions">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\WebGLSupport\UnityEditor.WebGL.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.Android.Extensions">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\AndroidPlayer\UnityEditor.Android.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.UWP.Extensions">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\MetroSupport\UnityEditor.UWP.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.IonicZip">
-      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.5\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
-    </Reference>
-    <Reference Include="log4netPlastic">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Plastic.Newtonsoft.Json">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
@@ -370,23 +352,17 @@
     <Reference Include="Unity.Plastic.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.YamlDotNet">
-      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.5\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
+    <Reference Include="log4netPlastic">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-      <HintPath>Library\PackageCache\com.unity.visualscripting@1.7.5\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@3.0.2\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="unityplastic">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@1.15.16\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>Library\PackageCache\com.unity.ext.nunit@1.0.6\net35\unity-custom\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Android.Types">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Android.Gradle">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\mscorlib.dll</HintPath>
@@ -988,18 +964,6 @@
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.1.0f1\Editor\Data\UnityReferenceAssemblies\unity-4.8-api\Facades\netstandard.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.TestRunner">
-      <HintPath>Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.TestRunner">
-      <HintPath>Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Adobe.Substance.csproj">
@@ -1009,6 +973,22 @@
     <ProjectReference Include="Adobe.Substance.Runtime.csproj">
       <Project>{066AAA10-E334-5459-8420-2BD498D3E0FC}</Project>
       <Name>Adobe.Substance.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEditor.UI.csproj">
+      <Project>{537B70B2-D491-7CA5-CBE2-7019F4DB8A50}</Project>
+      <Name>UnityEditor.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.UI.csproj">
+      <Project>{B7AB3349-0C75-33E4-CF66-9B020A854B37}</Project>
+      <Name>UnityEngine.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEngine.TestRunner.csproj">
+      <Project>{0A76026B-B101-7153-B354-9CE9D7A7239C}</Project>
+      <Name>UnityEngine.TestRunner</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityEditor.TestRunner.csproj">
+      <Project>{48B04FDE-6C3F-644E-3AF1-DEE01FF94128}</Project>
+      <Name>UnityEditor.TestRunner</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

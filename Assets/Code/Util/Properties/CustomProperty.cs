@@ -4,6 +4,12 @@ using System.Collections.Generic;
 
 namespace Prefabrikator
 {
+    public enum ExitMode
+    {
+        Confirm,
+        Cancel
+    }
+
     public abstract class CustomProperty<T> where T : struct
     {
         protected enum EditMode
@@ -37,7 +43,7 @@ namespace Prefabrikator
         protected GUIContent _guiContent = null;
 
         public event System.Action OnEditModeEnter = null;
-        public event System.Action OnEditModeExit = null;
+        public event System.Action<ExitMode> OnEditModeExit = null;
 
         private class CustomButton
         {
@@ -109,7 +115,7 @@ namespace Prefabrikator
                     {
                         _workingValue = _setValueCopy;
                         _editMode = EditMode.Disabled;
-                        OnEditModeExit?.Invoke();
+                        OnEditModeExit?.Invoke(ExitMode.Cancel);
                     }
 
                     if (GUILayout.Button(Constants.CheckMark))
@@ -122,7 +128,7 @@ namespace Prefabrikator
                         OnValueSet(_workingValue, _setValueCopy);
                         _setValue.Set(_workingValue);
                         _editMode = EditMode.Disabled;
-                        OnEditModeExit?.Invoke();
+                        OnEditModeExit?.Invoke(ExitMode.Confirm);
                     }
                 }
                 else
