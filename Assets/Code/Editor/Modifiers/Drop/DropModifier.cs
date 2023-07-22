@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
 using UnityEditor;
 
 namespace Prefabrikator
@@ -14,6 +16,8 @@ namespace Prefabrikator
             VisibleGeometry,
             CollisionGeometry
         }
+
+        private static readonly int MaxBufferSize = 32;
 
         //[Serializable]
         //private class MeshWrapper
@@ -58,6 +62,13 @@ namespace Prefabrikator
         {
             Owner.ApplyToAll((go, index) => { go.transform.position = Owner.GetDefaultPositionAtIndex(index); });
             SceneView.duringSceneGui -= OnSceneGUI;
+
+            if (_dropTarget != null)
+            {
+                GameObject.DestroyImmediate(_dropTarget);
+                _dropTarget = null;
+                EditorSceneManager.UnloadSceneAsync(_scene);
+            }
         }
 
         public override void OnRemoved()
@@ -74,17 +85,29 @@ namespace Prefabrikator
                 {
                     if (_collisionType == CollisionType.VisibleGeometry)
                     {
-                        GenerateCollision();
+                        if (_targetMesh != null)
+                        {
+                            GenerateCollision();
+                        }
                     }
 
                     GameObject current = null;
                     for (int i = 0; i < objs.Length; ++i)
                     {
-                        Vector3 start = Owner.GetDefaultPositionAtIndex(i);
                         current = objs[i];
+                        Vector3 start = current.transform.position;
                         Collider collider = current.GetComponent<Collider>();
 
-                        RaycastHit[] hits = Physics.RaycastAll(start, Vector3.down, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore);
+                        RaycastHit[] hits;
+                        if (_targetMesh != null)
+                        {
+                            hits = new RaycastHit[MaxBufferSize];
+                            _physicsScene.Raycast(start, Vector3.down, hits, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore);
+                        }
+                        else
+                        {
+                            hits = Physics.RaycastAll(start, Vector3.down, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore);
+                        }
 
                         foreach (RaycastHit hit in hits)
                         {
@@ -107,6 +130,14 @@ namespace Prefabrikator
                 for (int i = 0; i < numObjs; ++i)
                 {
                     objs[i].transform.position = positions[i];
+                }
+            }
+            else
+            {
+                int numObjs = objs.Length;
+                for (int i = 0; i < numObjs; ++i)
+                {
+                    objs[i].transform.position = Owner.GetDefaultPositionAtIndex(i);
                 }
             }
         }
@@ -165,21 +196,10 @@ namespace Prefabrikator
         private void Reset()
         {
             _dropped = false;
-            //Vector3[] previous = _positions.ToArray();
-
-            //int numObjects = Owner.CreatedObjects.Count;
-            //for (int i = 0; i < numObjects; ++i)
-            //{
-            //    _positions[i] = Owner.GetDefaultPositionAtIndex(i);
-            //}
-            
-            //void Apply(Vector3[] positions)
-            //{
-            //    Owner.ApplyToAll((go, index) => { go.transform.position = positions[index]; });
-            //}
-            //var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
-            //Owner.CommandQueue.Enqueue(valueChanged);
         }
+
+        private Scene _scene;
+        private PhysicsScene _physicsScene;
 
         private void GenerateCollision()
         {
@@ -192,19 +212,37 @@ namespace Prefabrikator
                 // #DG: clear the drop target when the mesh target changes in the inspector
                 if (_targetMesh != null)
                 {
+
+                    CreateSceneParameters parameters = new CreateSceneParameters(LocalPhysicsMode.Physics3D);
+
+                    _scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+                    _scene.name = "Prefabrikator";
+                    SceneManager.MoveGameObjectToScene(_dropTarget, _scene);
+
+                    _physicsScene = _scene.GetPhysicsScene();
+                    Physics.autoSimulation = false;
+
+
                     MeshCollider collider = _dropTarget.AddComponent<MeshCollider>();
 
-                    //Mesh mesh = new()
-                    //{
-                    //    vertices = _targetMesh.sharedMesh.vertices,
-                    //    triangles = _targetMesh.sharedMesh.triangles,
-                    //    normals = _targetMesh.sharedMesh.normals,
-                    //    tangents = _targetMesh.sharedMesh.tangents
-                    //};
+                    Mesh mesh = new()
+                    {
+                        vertices = _targetMesh.sharedMesh.vertices,
+                        triangles = _targetMesh.sharedMesh.triangles,
+                        normals = _targetMesh.sharedMesh.normals,
+                        tangents = _targetMesh.sharedMesh.tangents
+                    };
 
-                    Physics.BakeMesh(_targetMesh.sharedMesh.GetInstanceID(), false);
-                    collider.sharedMesh = _targetMesh.sharedMesh;
-                    //collider.convex = true;
+                    Debug.Log($"mesh is readable = {mesh.isReadable}");
+                    Physics.BakeMesh(mesh.GetInstanceID(), true);
+
+                    //collider.sharedMesh = _targetMesh.sharedMesh;
+                    collider.sharedMesh = mesh;
+                    collider.convex = true;
+
+                    _physicsScene.Simulate(Time.fixedDeltaTime * 10);
+                    //Physics.Simulate(Time.fixedDeltaTime);
+                    Physics.autoSimulation = true;
                 }
             }
         }

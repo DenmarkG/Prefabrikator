@@ -91,6 +91,16 @@ namespace Prefabrikator
             SceneView.RepaintAll();
 
             OnCommandExecuted = null;
+
+            int numMods = _modifierStack.Count;
+            for (int i = 0; i < numMods; ++i)
+            {
+                var mod = _modifierStack[i];
+                mod.Teardown();
+            }
+
+            _modifierStack.Clear();
+
             DestroyAll();
         }
 
