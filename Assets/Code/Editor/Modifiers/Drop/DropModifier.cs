@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEditor.SceneManagement;
 using UnityEditor;
 
 namespace Prefabrikator
@@ -16,8 +14,6 @@ namespace Prefabrikator
             VisibleGeometry,
             CollisionGeometry
         }
-
-        private static readonly int MaxBufferSize = 32;
 
         //[Serializable]
         //private class MeshWrapper
@@ -67,7 +63,6 @@ namespace Prefabrikator
             {
                 GameObject.DestroyImmediate(_dropTarget);
                 _dropTarget = null;
-                EditorSceneManager.UnloadSceneAsync(_scene);
             }
         }
 
@@ -80,65 +75,11 @@ namespace Prefabrikator
         {
             if (_dropped == true)
             {
-                Vector3[] positions = new Vector3[objs.Length];
-                foreach (GameObject go in objs)
-                {
-                    if (_collisionType == CollisionType.VisibleGeometry)
-                    {
-                        if (_targetMesh != null)
-                        {
-                            GenerateCollision();
-                        }
-                    }
-
-                    GameObject current = null;
-                    for (int i = 0; i < objs.Length; ++i)
-                    {
-                        current = objs[i];
-                        Vector3 start = current.transform.position;
-                        Collider collider = current.GetComponent<Collider>();
-
-                        RaycastHit[] hits;
-                        if (_targetMesh != null)
-                        {
-                            hits = new RaycastHit[MaxBufferSize];
-                            _physicsScene.Raycast(start, Vector3.down, hits, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore);
-                        }
-                        else
-                        {
-                            hits = Physics.RaycastAll(start, Vector3.down, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore);
-                        }
-
-                        foreach (RaycastHit hit in hits)
-                        {
-                            if (hit.collider != collider)
-                            {
-                                float offset = _verticalOffset;
-                                if (_useCollider && collider != null)
-                                {
-                                    offset = current.transform.InverseTransformPoint(collider.bounds.min).y;
-                                }
-
-                                positions[i] = hit.point + (Vector3.down * offset);
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                int numObjs = objs.Length;
-                for (int i = 0; i < numObjs; ++i)
-                {
-                    objs[i].transform.position = positions[i];
-                }
+                
             }
             else
             {
-                int numObjs = objs.Length;
-                for (int i = 0; i < numObjs; ++i)
-                {
-                    objs[i].transform.position = Owner.GetDefaultPositionAtIndex(i);
-                }
+                
             }
         }
 
@@ -191,15 +132,67 @@ namespace Prefabrikator
         private void Drop()
         {
             _dropped = true;
+            List<GameObject> objs = Owner.CreatedObjects;
+            Vector3[] positions = new Vector3[objs.Count];
+            foreach (GameObject go in objs)
+            {
+                if (_collisionType == CollisionType.VisibleGeometry)
+                {
+                    if (_targetMesh != null)
+                    {
+                        GenerateCollision();
+                    }
+                }
+
+                GameObject current = null;
+                for (int i = 0; i < objs.Count; ++i)
+                {
+                    current = objs[i];
+                    Vector3 start = current.transform.position;
+                    Collider collider = current.GetComponent<Collider>();
+                    float offset = _verticalOffset;
+                    if (collider != null)
+                    {
+                        if (_useCollider)
+                        {
+                            offset = current.transform.InverseTransformPoint(collider.bounds.min).y;
+                            start -= Vector3.down * offset;
+                        }
+
+                        collider.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+                    }
+
+                    if (Physics.Raycast(start, Vector3.down, out RaycastHit hit, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore))
+                    {
+                        Debug.DrawLine(start, hit.point, Color.red);
+                        positions[i] = hit.point; // + (Vector3.down * offset);
+                    }
+                    else
+                    {
+                        Debug.DrawLine(start, hit.point, Color.white);
+                    }
+                }
+            }
+
+            int numObjs = objs.Count;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                objs[i].transform.position = positions[i];
+            }
         }
 
         private void Reset()
         {
             _dropped = false;
-        }
 
-        private Scene _scene;
-        private PhysicsScene _physicsScene;
+            List<GameObject> objs = Owner.CreatedObjects;
+            int numObjs = objs.Count;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                objs[i].transform.position = Owner.GetDefaultPositionAtIndex(i);
+            }
+
+        }
 
         private void GenerateCollision()
         {
@@ -212,17 +205,7 @@ namespace Prefabrikator
                 // #DG: clear the drop target when the mesh target changes in the inspector
                 if (_targetMesh != null)
                 {
-
-                    CreateSceneParameters parameters = new CreateSceneParameters(LocalPhysicsMode.Physics3D);
-
-                    _scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
-                    _scene.name = "Prefabrikator";
-                    SceneManager.MoveGameObjectToScene(_dropTarget, _scene);
-
-                    _physicsScene = _scene.GetPhysicsScene();
-                    Physics.autoSimulation = false;
-
-
+                    // #DG: Unity bug won't allow this to work in editor. Bring back when fixed
                     MeshCollider collider = _dropTarget.AddComponent<MeshCollider>();
 
                     Mesh mesh = new()
@@ -233,16 +216,12 @@ namespace Prefabrikator
                         tangents = _targetMesh.sharedMesh.tangents
                     };
 
-                    Debug.Log($"mesh is readable = {mesh.isReadable}");
                     Physics.BakeMesh(mesh.GetInstanceID(), true);
+                    Physics.SyncTransforms();
 
                     //collider.sharedMesh = _targetMesh.sharedMesh;
                     collider.sharedMesh = mesh;
-                    collider.convex = true;
-
-                    _physicsScene.Simulate(Time.fixedDeltaTime * 10);
-                    //Physics.Simulate(Time.fixedDeltaTime);
-                    Physics.autoSimulation = true;
+                    //collider.convex = true;
                 }
             }
         }
@@ -260,6 +239,37 @@ namespace Prefabrikator
                 foreach (GameObject obj in Owner.CreatedObjects)
                 {
                     Handles.DrawLine(obj.transform.position, obj.transform.position + (Vector3.up * _verticalOffset));
+                }
+            }
+
+            if (_dropped)
+            {
+                int numObjs = Owner.CreatedObjects.Count;
+                for (int i = 0; i < numObjs; ++i)
+                {
+                    GameObject current = Owner.CreatedObjects[i];
+                    Vector3 start = current.transform.position;
+                    Collider collider = current.GetComponent<Collider>();
+                    float offset = _verticalOffset;
+                    if (_useCollider && collider != null)
+                    {
+                        offset = current.transform.InverseTransformPoint(collider.bounds.min).y;
+                        start -= Vector3.down * offset;
+                    }
+
+                    Color defaultColor = Handles.color;
+                    if (Physics.Raycast(start, Vector3.down, out RaycastHit hit, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore))
+                    {
+                        Handles.color = Color.red;
+                        Handles.DrawLine(start, hit.point);
+                    }
+                    else
+                    {
+                        Handles.color = Color.white;
+                        Debug.DrawLine(start, start + (Vector3.down * _dropDistance), Color.white);
+                    }
+
+                    Handles.color = defaultColor;
                 }
             }
         }
