@@ -62,12 +62,6 @@ namespace Prefabrikator
             _centerProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Center; };
         }
 
-        protected override void OnSave()
-        {
-            SceneView.duringSceneGui -= OnSceneGUI;
-            SceneView.RepaintAll();
-        }
-
         public override void DrawEditor()
         {
             using (new EditorGUI.IndentLevelScope())

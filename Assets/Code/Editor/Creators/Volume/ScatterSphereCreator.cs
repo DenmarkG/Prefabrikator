@@ -26,12 +26,6 @@ namespace Prefabrikator
             SetupProperties();
         }
 
-        protected override void OnSave()
-        {
-            SceneView.duringSceneGui -= OnSceneGUI;
-            SceneView.RepaintAll();
-        }
-
         protected override void DrawVolumeEditor()
         {
             Vector3 center = _centerProperty.Update();

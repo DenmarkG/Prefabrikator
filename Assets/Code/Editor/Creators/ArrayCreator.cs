@@ -151,33 +151,47 @@ namespace Prefabrikator
             _createdObjects.Clear();
         }
 
-        public void OnCloseWindow(bool shouldSaveObjects = true)
+        public void OnCloseWindow(ToolCloseMode closeMode)
         {
+            switch (closeMode)
+            {
+                case ToolCloseMode.SaveAndClose:
+                    SaveAndClose();
+                    break;
+                case ToolCloseMode.SaveAndContinue:
+                    SaveAndContinue();
+                    break;
+                case ToolCloseMode.CancelAndClose:
+                    CancelAndClose();
+                    break;
+                default:
+                    break;
+            }
+        }
 
-            if (!shouldSaveObjects)
-            {
-                Teardown();
-            }
-            else
-            {
-                OnSave();
-            }
+        private void SaveAndClose()
+        {
+            _targetProxy = null;
+            _createdObjects.Clear();
+            Teardown();
+        }
+
+        private void SaveAndContinue()
+        {
+            _targetProxy = null;
+            _createdObjects.Clear();
+            Refresh(true);
+        }
+
+        private void CancelAndClose()
+        {
+            Teardown();
         }
 
         public void ClearSceneGUI()
         {
             SceneView.duringSceneGui -= OnSceneGUI;
             SceneView.RepaintAll();
-        }
-
-        protected virtual void OnSave() { }
-
-        public void SaveAndContinue()
-        {
-            OnSave();
-            _targetProxy = null;
-            _createdObjects.Clear();
-            Refresh(true);
         }
 
         public void CancelPendingEdits()

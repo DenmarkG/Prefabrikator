@@ -42,12 +42,6 @@ namespace Prefabrikator
             return new Bounds(_center, _size);
         }
 
-        protected override void OnSave()
-        {
-            SceneView.duringSceneGui -= OnSceneGUI;
-            SceneView.RepaintAll();
-        }
-
         protected override void OnSceneGUI(SceneView view)
         {
             if (_sceneView == null || _sceneView != view)

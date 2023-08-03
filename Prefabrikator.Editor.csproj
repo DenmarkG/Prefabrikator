@@ -92,6 +92,7 @@
     <Compile Include="Assets\Code\Editor\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Creators\EllipseArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Creators\SphereArrayCreator.cs" />
+    <Compile Include="Assets\Code\Editor\Util\ToolCloseMode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Code\Editor\Prefabrikator.Editor.asmdef" />

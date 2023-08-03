@@ -73,14 +73,7 @@ namespace Prefabrikator
 
         public override void Process(GameObject[] objs)
         {
-            if (_dropped == true)
-            {
-                
-            }
-            else
-            {
-                
-            }
+            //
         }
 
         protected override void OnInspectorUpdate()

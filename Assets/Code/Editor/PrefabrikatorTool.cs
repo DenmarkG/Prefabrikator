@@ -79,7 +79,7 @@ namespace Prefabrikator
 
         private void SaveAndContinue()
         {
-            _creator.SaveAndContinue();
+            _creator.OnCloseWindow(ToolCloseMode.SaveAndContinue);
         }
 
         private void Cancel()
@@ -90,11 +90,11 @@ namespace Prefabrikator
                 {
                     _isSaving = true;
                     _creator.CancelPendingEdits();
-                    _creator.OnCloseWindow(true);
+                    _isSaving = true;
                 }
                 else
                 {
-                    _creator.OnCloseWindow();
+                    _isSaving = false;
                 }
             }
 
@@ -106,7 +106,7 @@ namespace Prefabrikator
             if (_creator != null)
             {
                 _creator.ClearSceneGUI();
-                _creator.OnCloseWindow(_isSaving);
+                _creator.OnCloseWindow(_isSaving ? ToolCloseMode.SaveAndClose : ToolCloseMode.CancelAndClose);
             }
 
             // #DG: ensure this works each close
