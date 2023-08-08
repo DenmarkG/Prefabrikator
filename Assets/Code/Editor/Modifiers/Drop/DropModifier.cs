@@ -109,10 +109,6 @@ namespace Prefabrikator
                 {
                     Drop();
                 }
-                else if (GUILayout.Button("Reset"))
-                {
-                    Reset();
-                }
             }
             EditorGUILayout.EndHorizontal();
 
@@ -127,6 +123,7 @@ namespace Prefabrikator
             _dropped = true;
             List<GameObject> objs = Owner.CreatedObjects;
             Vector3[] positions = new Vector3[objs.Count];
+            
             foreach (GameObject go in objs)
             {
                 if (_collisionType == CollisionType.VisibleGeometry)
@@ -167,24 +164,20 @@ namespace Prefabrikator
                 }
             }
 
-            int numObjs = objs.Count;
-            for (int i = 0; i < numObjs; ++i)
+            Vector3[] previous = new Vector3[objs.Count];
+            for (int i = 0; i < objs.Count; ++i)
             {
-                objs[i].transform.position = positions[i];
+                previous[i] = Owner.GetDefaultPositionAtIndex(i);
             }
+
+            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, positions, Apply);
+            Owner.CommandQueue.Enqueue(valueChanged);
         }
 
-        private void Reset()
+        private void Apply(Vector3[] positions)
         {
-            _dropped = false;
-
-            List<GameObject> objs = Owner.CreatedObjects;
-            int numObjs = objs.Count;
-            for (int i = 0; i < numObjs; ++i)
-            {
-                objs[i].transform.position = Owner.GetDefaultPositionAtIndex(i);
-            }
-
+            _dropped = !_dropped;
+            Owner.ApplyToAll((go, index) => { go.transform.position = positions[index]; });
         }
 
         private void GenerateCollision()
