@@ -4,18 +4,6 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
-    public class ArcArrayData : ArrayState
-    {
-        public float FillPercent = ArcArrayCreator.DefaultFillPercent;
-        public bool CapEnd = false;
-        public float Radius = CircularArrayCreator.DefaultRadius;
-
-        public ArcArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ShapeType.Arc)
-        {
-            //Count = CircularArrayCreator.MinCount;
-        }
-    }
 
     public class ArcArrayCreator : CircularArrayCreator
     {
@@ -76,26 +64,6 @@ namespace Prefabrikator
             float z = Mathf.Sin(t) * _radius;
 
             return new Vector3(x, _target.transform.position.y, z);
-        }
-
-        protected override ArrayState GetContainerData()
-        {
-            ArcArrayData data = new ArcArrayData(_target, Quaternion.identity);
-            data.Count = TargetCount;
-            data.Radius = _radius;
-            data.FillPercent = _fillPercent;
-
-            return data;
-        }
-
-        protected override void PopulateFromExistingData(ArrayState data)
-        {
-            if (data is ArcArrayData arcData)
-            {
-                SetTargetCount(arcData.Count);
-                _radius.Set(arcData.Radius);
-                _fillPercent.Set(arcData.FillPercent);
-            }
         }
 
         private void OnSliderChange(float current, float previous)

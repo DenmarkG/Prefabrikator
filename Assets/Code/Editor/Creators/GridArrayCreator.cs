@@ -5,18 +5,6 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
-    public class GridArrayData : ArrayState
-    {
-        public GridArrayCreator.Dimension Dimension = GridArrayCreator.Dimension.XY;
-        //public Vector3 OffsetVector = GridArrayCreator.DefaultOffset;
-
-        public GridArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ShapeType.Grid)
-        {
-            //
-        }
-    }
-
     public class GridArrayCreator : ArrayCreator
     {
         public override ShapeType Shape => ShapeType.Grid;
@@ -394,29 +382,7 @@ namespace Prefabrikator
                 clone.transform.SetParent(proxy.transform);
                 _createdObjects.Add(clone);
             }
-        }
-
-        protected override ArrayState GetContainerData()
-        {
-            GridArrayData data = new GridArrayData(_target, _targetRotation);
-            data.Count = GetCount();
-            //data.CountVector = _countVector;
-            data.Dimension = _dimension;
-            //data.OffsetVector = _offsetVector;
-
-            return data;
-        }
-
-        protected override void PopulateFromExistingData(ArrayState data)
-        {
-            if (data is GridArrayData gridData)
-            {
-                //_countVector = gridData.CountVector;
-                //_dimension = gridData.Dimension;
-                //_offsetVector.Set(gridData.OffsetVector);
-                SetTargetCount(gridData.Count);
-            }
-        }
+        }   
 
         public override Vector3 GetDefaultPositionAtIndex(int index)
         {
@@ -481,11 +447,6 @@ namespace Prefabrikator
                     }
                 }
             }
-        }
-
-        public override void OnStateSet(ArrayState stateData)
-        {
-            throw new System.NotImplementedException();
         }
 
         protected override string[] GetAllowedModifiers()

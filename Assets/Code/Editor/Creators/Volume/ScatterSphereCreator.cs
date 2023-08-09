@@ -48,17 +48,6 @@ namespace Prefabrikator
             }
         }
 
-        protected override ArrayState GetContainerData()
-        {
-            // #DG: TODO
-            return null;
-        }
-
-        protected override void PopulateFromExistingData(ArrayState data)
-        {
-            // #DG: TODO
-        }
-
         protected override Vector3 GetRandomPointInBounds()
         {
             return (GetRandomPoisson(_center) ?? (Extensions.RandomOnSphere(_radius) + _center));
@@ -132,11 +121,6 @@ namespace Prefabrikator
                 //Handles.DrawWireDisc(_center, Vector3.right, _radius);
                 Handles.DrawWireDisc(_center, Vector3.forward, _radius);
             }
-        }
-
-        public override void OnStateSet(ArrayState stateData)
-        {
-            throw new System.NotImplementedException();
         }
 
         protected override List<Vector3> ScatterPoisson(Vector3? initialPosition = null)

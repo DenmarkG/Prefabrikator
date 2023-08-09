@@ -10,15 +10,6 @@ namespace Prefabrikator
 {
     public class ScatterPlaneCreator : ScatterVolumeCreator
     {
-        public class ScatterPlaneData : ArrayState
-        {
-            public ScatterPlaneData()
-                : base(ShapeType.ScatterPlane)
-            {
-                //
-            }
-        }
-
         public override ShapeType Shape => ShapeType.ScatterPlane;
 
         private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
@@ -114,20 +105,10 @@ namespace Prefabrikator
             SetSceneViewDirty();
         }
 
-        protected override ArrayState GetContainerData()
-        {
-            return default;
-        }
-
 
         protected override Vector3 GetRandomPointInBounds()
         {
             return GetRandomPoisson() ?? Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
-        }
-
-        protected override void PopulateFromExistingData(ArrayState data)
-        {
-            throw new NotImplementedException();
         }
 
         protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
@@ -191,40 +172,6 @@ namespace Prefabrikator
             }
 
             return true;
-        }
-
-        public override ArrayState GetState()
-        {
-            var stateData = new ScatterPlaneData() 
-            { 
-                Count = TargetCount,
-            };
-
-            stateData.Positions = new Vector3[stateData.Count];
-            for (int i = 0; i < stateData.Count; ++i)
-            {
-                stateData.Positions[i] = _createdObjects[i].transform.position;
-            }
-
-
-            return stateData;
-        }
-
-        public override void OnStateSet(ArrayState stateData)
-        {
-            if (stateData is ScatterPlaneData data)
-            {
-                SetTargetCount(data.Count, shouldTriggerCallback: false);
-
-                Debug.Assert(data.Count == _createdObjects.Count, "Counts are not equal, cannot apply state change");
-
-                _positions = new List<Vector3>(data.Count);
-                for (int i = 0; i < data.Count; ++i)
-                {
-                    _positions.Add(data.Positions[i]);
-                    _createdObjects[i].transform.position = data.Positions[i];
-                }
-            }
         }
 
         protected override void SetupProperties()

@@ -4,17 +4,6 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
-    public class LinearArrayData : ArrayState
-    {
-        public Vector3 Offset;
-
-        public LinearArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ShapeType.Line)
-        {
-            //
-        }
-    }
-
     public class LinearArrayCreator : ArrayCreator
     {
         public override ShapeType Shape => ShapeType.Line;
@@ -153,23 +142,6 @@ namespace Prefabrikator
             }
         }
 
-        protected override ArrayState GetContainerData()
-        {
-            LinearArrayData data = new LinearArrayData(_target, _targetRotation);
-            data.Count = TargetCount;
-            data.Offset = _offset;
-            return data;
-        }
-
-        protected override void PopulateFromExistingData(ArrayState data)
-        {
-            if (data is LinearArrayData lineData)
-            {
-                SetTargetCount(lineData.Count);
-                _offset.Set(lineData.Offset);
-            }
-        }
-
         protected override void OnSceneGUI(SceneView view)
         {
             if (_sceneView == null || _sceneView != view)
@@ -221,14 +193,6 @@ namespace Prefabrikator
             _offsetProperty = Vector3Property.Create("Offset", _offset, CommandQueue);
             _offsetProperty.OnEditModeEnter += () => { _editMode |= EditMode.Position; };
             _offsetProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Position; };
-        }
-
-        public override void OnStateSet(ArrayState stateData)
-        {
-            if (stateData is LinearArrayData data)
-            {
-                _offset.Set(data.Offset);
-            }
         }
 
         protected override string[] GetAllowedModifiers()

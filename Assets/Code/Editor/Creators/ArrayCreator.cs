@@ -49,8 +49,6 @@ namespace Prefabrikator
 
         public abstract ShapeType Shape { get; }
 
-        public ArrayState State { get; private set; }
-
         public Vector3 Position => _targetProxy?.transform.position ?? Vector3.zero;
 
         public ArrayCreator(GameObject target, int defaultCount)
@@ -196,7 +194,6 @@ namespace Prefabrikator
 
         public void CancelPendingEdits()
         {
-            PopulateFromExistingData(State);
             Refresh();
         }
 
@@ -260,9 +257,6 @@ namespace Prefabrikator
             {
                 _targetProxy = new GameObject($"{_target.name} {Name}");
             }
-
-            ArrayContainer container = GetOrAddContainer(_targetProxy);
-            container.SetData((useDefaultData && State != null) ? State : GetContainerData());
         }
 
         protected virtual void UpdateLocalRotations()
@@ -272,37 +266,6 @@ namespace Prefabrikator
                 _createdObjects[i].transform.localRotation = _targetRotation;
             }
         }
-        private ArrayContainer GetOrAddContainer(GameObject target)
-        {
-            ArrayContainer container = target.GetComponent<ArrayContainer>();
-            if (container == null)
-            {
-                container = target.AddComponent<ArrayContainer>();
-            }
-
-            return container;
-        }
-
-        protected abstract ArrayState GetContainerData();
-        protected abstract void PopulateFromExistingData(ArrayState data);
-        
-        public void PopulateFromExistingContainer(ArrayContainer container)
-        {
-            SetState(container.Data);
-            PopulateFromExistingData(container.Data);
-            PopulateFromExistingClones(container.gameObject);
-            Refresh();
-        }
-
-        public abstract void OnStateSet(ArrayState stateData);
-        public void SetState(ArrayState stateData)
-        {
-            State = stateData;
-            OnStateSet(stateData);
-            Refresh();
-        }
-
-        public virtual ArrayState GetState() => null;
 
         protected void PopulateFromExistingClones(GameObject targetProxy)
         {

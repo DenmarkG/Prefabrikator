@@ -4,19 +4,6 @@ using System.Collections.Generic;
 
 namespace Prefabrikator
 {
-    public class SphereArrayData : ArrayState
-    {
-        public float Radius = CircularArrayCreator.DefaultRadius;
-        public int SectorCount = SphereArrayCreator.DefaultSectorCount;
-        public int StackCount = SphereArrayCreator.DefaultStackCount;
-
-        public SphereArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ShapeType.Sphere)
-        {
-            //
-        }
-    }
-
     public class SphereArrayCreator : CircularArrayCreator
     {
         public override ShapeType Shape => ShapeType.Sphere;
@@ -165,30 +152,6 @@ namespace Prefabrikator
         private int GetTargetCount()
         {
             return ((_stackCount * _sectorCount) - _sectorCount) + 2; // #DG: +2 for end caps
-        }
-
-        protected override ArrayState GetContainerData()
-        {
-            SphereArrayData data = new SphereArrayData(_target, Quaternion.identity);
-            data.Count = TargetCount;
-            data.Radius = _radius;
-
-            data.StackCount = _stackCount;
-            data.SectorCount = _sectorCount;
-
-            return data;
-        }
-
-        protected override void PopulateFromExistingData(ArrayState data)
-        {
-            if (data is SphereArrayData sphereData)
-            {
-                SetTargetCount(sphereData.Count);
-                _radius.Set(sphereData.Radius);
-
-                _stackCount.Set(sphereData.StackCount);
-                _sectorCount.Set(sphereData.SectorCount);
-            }
         }
 
         public bool DisplayCountField(ref int targetCount, string label = null)

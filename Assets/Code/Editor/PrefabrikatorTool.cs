@@ -10,6 +10,12 @@ namespace Prefabrikator
 {
     public class PrefabrikatorTool : EditorWindow
     {
+        public enum OpenMode
+        {
+            Create,
+            Edit,
+        }
+
         private static readonly string WindowName = "Prefabrikator";
         private ArrayCreator _creator = null;
         private ShapeType _shapeType = ShapeType.Line;
@@ -20,8 +26,8 @@ namespace Prefabrikator
         private static PrefabrikatorTool _window = null;
 
         private GameObject _selectedObject = null;
-        private ArrayContainer _loadedContainer = null;
-        private bool IsInEditMode => _loadedContainer != null;
+        private bool IsInEditMode => _openMode == OpenMode.Edit;
+        private OpenMode _openMode;
 
         private Vector2 _scrollPosition = new Vector2();
 
@@ -37,12 +43,13 @@ namespace Prefabrikator
             Open();
         }
 
-        public static void Open(ArrayContainer container = null)
+        public static void Open(OpenMode mode = OpenMode.Create)
         {
             _window = ScriptableObject.CreateInstance<PrefabrikatorTool>();
             _window.maxSize = new Vector2(MaxWidth, MaxHeght);
             _window.minSize = _window.maxSize;
             _window.titleContent = new GUIContent(WindowName);
+            _window._openMode = mode;
 
             if (Selection.activeObject is GameObject targetObj)
             {
@@ -57,13 +64,6 @@ namespace Prefabrikator
             }
 
             _window.Show();
-
-            if (container != null)
-            {
-                _window.PopulateFromExistingData(container);
-            }
-
-            _window._loadedContainer = container;
         }
 
         private void Awake()
@@ -345,16 +345,6 @@ namespace Prefabrikator
             ResizeWindow(creator);
             creator.OnCommandExecuted += OnCommandExecuted;
             return creator;
-        }
-
-        private void PopulateFromExistingData(ArrayContainer container)
-        {
-            if (container.Data != null)
-            {
-                _shapeType = container.Data.Type;
-                //_creator = GetCreator(_shapeType, container.Data.Prefab);
-                _creator.PopulateFromExistingContainer(container);
-            }
         }
 
         private void OnCommandExecuted(ICommand command)

@@ -4,18 +4,6 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
-    // #DG: Refactor this to extract common data for derived classes
-    public class CircleArrayData : ArrayState
-    {
-        public float Radius = CircularArrayCreator.DefaultRadius;
-
-        public CircleArrayData(GameObject prefab, Quaternion targetRotation)
-            : base(ShapeType.Circle)
-        {
-            //Count = CircularArrayCreator.MinCount;
-        }
-    }
-
     // #DG: TODO create object to act as center, 
     public class CircularArrayCreator : ArrayCreator, IRadial
     {
@@ -147,24 +135,6 @@ namespace Prefabrikator
             _createdObjects.Add(clone);
         }
 
-        protected override ArrayState GetContainerData()
-        {
-            CircleArrayData data = new CircleArrayData(_target, Quaternion.identity);
-            data.Count = TargetCount;
-            data.Radius = _radius;
-
-            return data;
-        }
-
-        protected override void PopulateFromExistingData(ArrayState data)
-        {
-            if (data is CircleArrayData circleData)
-            {
-                SetTargetCount(circleData.Count);
-                _radius.Set(circleData.Radius);
-            }
-        }
-
         protected virtual void VerifyTargetCount()
         {
             if (TargetCount != _createdObjects.Count)
@@ -233,11 +203,6 @@ namespace Prefabrikator
             };
 
             return mods;
-        }
-
-        public override void OnStateSet(ArrayState stateData)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }
