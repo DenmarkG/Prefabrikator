@@ -17,11 +17,13 @@ namespace Prefabrikator
         }
 
         private static readonly string WindowName = "Prefabrikator";
+
         private ArrayCreator _creator = null;
         private ShapeType _shapeType = ShapeType.Line;
 
         public const float MaxWidth = 500;
         public const float MaxHeght = 750;
+        private const int ToolbarButtonWidth = 75;
 
         private static PrefabrikatorTool _window = null;
 
@@ -144,6 +146,8 @@ namespace Prefabrikator
             {
                 if (!IsInEditMode)
                 {
+                    ShowToolBar();
+
                     EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                     {
                         ShapeType type = (ShapeType)EditorGUILayout.EnumPopup("Shape", _shapeType);
@@ -227,43 +231,6 @@ namespace Prefabrikator
                 }
 
                 GUILayout.FlexibleSpace();
-
-                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
-                {
-                    _undoStack ??= new UndoStack();
-                    EditorGUI.BeginDisabledGroup(_undoStack.UndoOperationsAvailable == 0);
-                    {
-                        if (GUILayout.Button("Undo"))
-                        {
-                            Undo();
-                        }
-                    }
-                    EditorGUI.EndDisabledGroup();
-
-                    EditorGUI.BeginDisabledGroup(_undoStack.RedoOperationsAvailable == 0);
-                    {
-                        if (GUILayout.Button("Redo"))
-                        {
-                            Redo();
-                        }
-                    }
-                    EditorGUI.EndDisabledGroup();
-                    
-                    if (GUILayout.Button("Cancel"))
-                    {
-                        Cancel();
-                    }
-                    else if (GUILayout.Button("Save and Close"))
-                    {
-                        SaveAndClose();
-                    }
-                    //# DG: this is broken with prefabs
-                    else if (GUILayout.Button("Save"))
-                    {
-                        SaveAndContinue();
-                    }
-                }
-                EditorGUILayout.EndHorizontal();
             }
             EditorGUILayout.EndScrollView();
         }
@@ -351,7 +318,7 @@ namespace Prefabrikator
         {
             _undoStack.OnCommandExecuted(command);
         }
-        
+
         private void Undo()
         {
             _undoStack.Undo();
@@ -372,6 +339,58 @@ namespace Prefabrikator
         private static bool IsPrefab(GameObject obj)
         {
             return string.IsNullOrEmpty(obj.scene.name);
+        }
+
+        private void ShowToolBar()
+        {
+            EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
+            {
+                if (ToolbarButton("File"))
+                {
+                    ShowFileMenu();
+                }
+                if (ToolbarButton("Edit"))
+                {
+                    ShowEditMenu();
+                }
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private bool ToolbarButton(string buttonName)
+        {
+            return GUILayout.Button(buttonName, EditorStyles.toolbarButton, GUILayout.Width(ToolbarButtonWidth));
+        }
+
+        private void ShowFileMenu()
+        {
+            GenericMenu fileMenu = new GenericMenu();
+            fileMenu.Add("Save", SaveAndContinue);
+            fileMenu.Add("Save and Close", SaveAndContinue);
+            fileMenu.AddSeparator("");
+            fileMenu.Add("Cancel", Cancel);
+
+            Rect pos = new Rect();
+            pos.y = EditorStyles.toolbar.fixedHeight;
+
+            fileMenu.DropDown(pos);
+        }
+
+        private void ShowEditMenu()
+        {
+            _undoStack ??= new UndoStack();
+
+            GenericMenu editMenu = new GenericMenu();
+
+            editMenu.Add("Undo", SaveAndContinue, _undoStack.UndoOperationsAvailable == 0);
+            editMenu.Add("Redo", SaveAndContinue, _undoStack.RedoOperationsAvailable == 0);
+
+            //editMenu.ShowAsContext();
+            Rect pos = new Rect();
+            pos.x = ToolbarButtonWidth;
+            pos.y = EditorStyles.toolbar.fixedHeight;
+
+            editMenu.DropDown(pos);
         }
     }
 }

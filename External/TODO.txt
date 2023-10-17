@@ -1,5 +1,7 @@
 Submit by March 6, 2023
 
+https://forum.unity.com/threads/optional-package-dependencis.719321/
+
 [x] replace existing transform fields with mods that can be added/removed
 [x] allow Undo/Redo of Add/Remove modifiers
 
