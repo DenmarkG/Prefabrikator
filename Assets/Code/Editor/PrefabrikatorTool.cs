@@ -240,7 +240,8 @@ namespace Prefabrikator
             if (_creator != null)
             {
                 _creator.UpdateEditor();
-                _creator.ProcessModifiers();
+                TransformProxy[] proxies = _creator.ProcessModifiers();
+                _creator.ApplyTransforms(proxies);
             }
 
             Repaint();

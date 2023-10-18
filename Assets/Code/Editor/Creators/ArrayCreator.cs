@@ -380,6 +380,18 @@ namespace Prefabrikator
             }
         }
 
+        public void ApplyTransforms(TransformProxy[] proxies)
+        {
+            int numObjs = _createdObjects.Count;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                TransformProxy proxy = proxies[i];
+                _createdObjects[i].transform.position = proxy.Position;
+                _createdObjects[i].transform.rotation = proxy.Rotation;
+                _createdObjects[i].transform.localScale = proxy.Scale;
+            }
+        }
+
         protected void SetSceneViewDirty()
         {
             if (_sceneView != null)
@@ -477,13 +489,16 @@ namespace Prefabrikator
             _activeModifierSelection = null;
         }
 
-        public void ProcessModifiers()
+        public TransformProxy[] ProcessModifiers()
         {
+            TransformProxy[] proxies = new TransformProxy[_createdObjects.Count];
             int numMods = _modifierStack.Count;
             for (int i = 0; i < numMods; ++i)
             {
-                _modifierStack[i].Process(_createdObjects.ToArray());
+                proxies = _modifierStack[i].Process(_createdObjects.ToArray(), proxies);
             }
+
+            return proxies;
         }
 
         private void AddModifier(string modifierName)
