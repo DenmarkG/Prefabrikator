@@ -492,10 +492,15 @@ namespace Prefabrikator
         public TransformProxy[] ProcessModifiers()
         {
             TransformProxy[] proxies = new TransformProxy[_createdObjects.Count];
+            for (int i = 0; i < _createdObjects.Count; ++i)
+            {
+                proxies[i] = _createdObjects[i].transform;
+            }
+
             int numMods = _modifierStack.Count;
             for (int i = 0; i < numMods; ++i)
             {
-                proxies = _modifierStack[i].Process(_createdObjects.ToArray(), proxies);
+                proxies = _modifierStack[i].Process(proxies);
             }
 
             return proxies;

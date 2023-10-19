@@ -38,21 +38,23 @@ namespace Prefabrikator
             Teardown();
         }
 
-        public override void Process(GameObject[] objs)
+        public override TransformProxy[] Process(TransformProxy[] proxies)
         {
             Vector3 center = _radialShape.Center;
             float radius = _radialShape.Radius;
 
-            GameObject current = null;
-            int count = objs.Length;
+            TransformProxy current;
+            int count = proxies.Length;
             for (int i = 0; i < count; ++i)
             {
-                current = objs[i];
-                Vector3 direction = current.transform.position - center;
+                current = proxies[i];
+                Vector3 direction = current.Position - center;
                 direction.Normalize();
                 direction *= _radialDelta[i] + radius;
-                current.transform.position = center + direction;
+                proxies[i].Position = center + direction;
             }
+
+            return proxies;
         }
 
         public override void Teardown()

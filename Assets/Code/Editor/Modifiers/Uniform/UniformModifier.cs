@@ -6,7 +6,7 @@ namespace Prefabrikator
 {
     public abstract class UniformModifier : Modifier
     {
-        protected GameObject[] _targets = null;
+        protected TransformProxy[] _targets = null;
         protected Shared<Vector3> _target = null;
         protected Vector3Property _targetProperty = null;
 
@@ -16,14 +16,16 @@ namespace Prefabrikator
             //
         }
 
-        public override sealed void Process(GameObject[] objs)
+        public override sealed TransformProxy[] Process(TransformProxy[] proxies)
         {
-            if (_targets == null || objs.Length != _targets.Length)
+            if (_targets == null || proxies.Length != _targets.Length)
             {
-                _targets = objs;
+                _targets = proxies;
             }
 
-            ApplyModifier();
+            ApplyModifier(proxies);
+
+            return proxies;
         }
 
         public sealed override void OnRemoved()
@@ -47,6 +49,6 @@ namespace Prefabrikator
         }
 
         protected abstract void RestoreDefault(GameObject obj);
-        protected abstract void ApplyModifier();
+        protected abstract void ApplyModifier(TransformProxy[] proxies);
     }
 }

@@ -44,18 +44,20 @@ namespace Prefabrikator
             Owner.ApplyToAll((go, index) => { go.transform.position = Owner.GetDefaultPositionAtIndex(index); });
         }
 
-        public override void Process(GameObject[] objs)
+        public override TransformProxy[] Process(TransformProxy[] proxies)
         {
-            UpdateArray(objs);
+            UpdateArray(proxies);
 
-            int numObjs = objs.Length;
+            int numObjs = proxies.Length;
             Vector3 position = Vector3.zero;
             for (int i = 0; i < numObjs; ++i)
             {
                 // #DG: Need to store default positions
                 position = Extensions.BiUnitLerp(_minVector, _maxVector, _positions[i]);
-                objs[i].transform.position = position + Owner.GetDefaultPositionAtIndex(i);
+                proxies[i].Position = position + proxies[i].Position;
             }
+
+            return proxies;
         }
 
         protected override void OnInspectorUpdate()
@@ -108,9 +110,9 @@ namespace Prefabrikator
         }
 
         // #DG: fix this
-        private void UpdateArray(GameObject[] objs)
+        private void UpdateArray(TransformProxy[] proxies)
         {
-            int numObjs = objs.Length;
+            int numObjs = proxies.Length;
 
             if (_positions == null)
             {

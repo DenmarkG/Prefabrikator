@@ -14,17 +14,19 @@ namespace Prefabrikator
             //
         }
         
-        public override void Process(GameObject[] objs)
+        public override TransformProxy[] Process(TransformProxy[] proxies)
         {
             // #DG: make this account for change to starting scale
             Vector3 defaultScale = Owner.GetDefaultScale();
-            int numObjs = objs.Length;
+            int numObjs = proxies.Length;
             for (int i = 0; i < numObjs; ++i)
             {
                 float t = (float)i / (numObjs - 1);
                 Vector3 scale = Vector3.Lerp(defaultScale, Target, t);
-                objs[i].transform.localScale = scale;
+                proxies[i].Scale = scale;
             }
+
+            return proxies;
         }
 
         public override void OnRemoved()

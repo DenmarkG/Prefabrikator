@@ -19,9 +19,9 @@ namespace Prefabrikator
             Teardown();
         }
 
-        public override void Process(GameObject[] objs)
+        public override TransformProxy[] Process(TransformProxy[] proxies)
         {
-            //
+            return proxies;
         }
 
         protected override void OnInspectorUpdate()

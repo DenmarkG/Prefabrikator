@@ -71,9 +71,50 @@ namespace Prefabrikator
             Teardown();
         }
 
-        public override void Process(GameObject[] objs)
+        public override TransformProxy[] Process(TransformProxy[] proxies)
         {
-            //
+            if (_dropped)
+            {
+                if (_collisionType == CollisionType.VisibleGeometry)
+                {
+                    if (_targetMesh != null)
+                    {
+                        GenerateCollision();
+                    }
+                }
+
+                TransformProxy current;
+                int numObjs = proxies.Length;
+                for (int i = 0; i < numObjs; ++i)
+                {
+                    current = proxies[i];
+                    Vector3 start = current.Position;
+                    Collider collider = Owner.CreatedObjects[i].GetComponent<Collider>();
+
+                    float offset = _verticalOffset;
+                    if (collider != null)
+                    {
+                        if (_useCollider)
+                        {
+                            offset = Owner.CreatedObjects[i].transform.InverseTransformPoint(collider.bounds.min).y;
+                            start -= Vector3.down * offset;
+                        }
+
+                        collider.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+                    }
+
+                    if (Physics.Raycast(start, Vector3.down, out RaycastHit hit, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore))
+                    {
+                        Debug.DrawLine(start, hit.point, Color.red);
+                        proxies[i].Position = hit.point; // + (Vector3.down * offset);
+                    }
+                    else
+                    {
+                        Debug.DrawLine(start, hit.point, Color.white);
+                    }
+                }
+            }
+            return proxies;
         }
 
         protected override void OnInspectorUpdate()
@@ -121,57 +162,6 @@ namespace Prefabrikator
         private void Drop()
         {
             _dropped = true;
-            List<GameObject> objs = Owner.CreatedObjects;
-            Vector3[] positions = new Vector3[objs.Count];
-            
-            foreach (GameObject go in objs)
-            {
-                if (_collisionType == CollisionType.VisibleGeometry)
-                {
-                    if (_targetMesh != null)
-                    {
-                        GenerateCollision();
-                    }
-                }
-
-                GameObject current = null;
-                for (int i = 0; i < objs.Count; ++i)
-                {
-                    current = objs[i];
-                    Vector3 start = current.transform.position;
-                    Collider collider = current.GetComponent<Collider>();
-                    float offset = _verticalOffset;
-                    if (collider != null)
-                    {
-                        if (_useCollider)
-                        {
-                            offset = current.transform.InverseTransformPoint(collider.bounds.min).y;
-                            start -= Vector3.down * offset;
-                        }
-
-                        collider.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
-                    }
-
-                    if (Physics.Raycast(start, Vector3.down, out RaycastHit hit, _dropDistance, ~_layer.Get(), QueryTriggerInteraction.Ignore))
-                    {
-                        Debug.DrawLine(start, hit.point, Color.red);
-                        positions[i] = hit.point; // + (Vector3.down * offset);
-                    }
-                    else
-                    {
-                        Debug.DrawLine(start, hit.point, Color.white);
-                    }
-                }
-            }
-
-            Vector3[] previous = new Vector3[objs.Count];
-            for (int i = 0; i < objs.Count; ++i)
-            {
-                previous[i] = Owner.GetDefaultPositionAtIndex(i);
-            }
-
-            var valueChanged = new ValueChangedCommand<Vector3[]>(previous, positions, Apply);
-            Owner.CommandQueue.Enqueue(valueChanged);
         }
 
         private void Apply(Vector3[] positions)

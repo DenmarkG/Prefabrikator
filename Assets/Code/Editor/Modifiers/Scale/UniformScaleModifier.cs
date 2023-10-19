@@ -21,10 +21,13 @@ namespace Prefabrikator
             obj.transform.localScale = defaultScale;
         }
 
-        protected override void ApplyModifier()
+        protected override void ApplyModifier(TransformProxy[] proxies)
         {
-            Vector3 scale = _target;
-            Owner.ApplyToAll((go) => { go.transform.localScale = scale; });
+            int numObjs = proxies.Length;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                proxies[i].Scale += _target;
+            }
         }
     }
 }

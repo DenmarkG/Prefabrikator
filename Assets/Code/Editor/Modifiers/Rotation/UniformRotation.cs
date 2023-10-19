@@ -21,10 +21,13 @@ namespace Prefabrikator
             obj.transform.rotation = defaultRotation;
         }
 
-        protected override void ApplyModifier()
+        protected override void ApplyModifier(TransformProxy[] proxies)
         {
-            Quaternion rotation = Quaternion.Euler(_target);
-            Owner.ApplyToAll((go) => { go.transform.rotation = rotation; });
+            int numObjs = proxies.Length;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                proxies[i].Scale += _target;
+            }
         }
     }
 }

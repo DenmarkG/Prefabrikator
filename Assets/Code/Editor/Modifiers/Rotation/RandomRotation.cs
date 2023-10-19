@@ -39,14 +39,14 @@ namespace Prefabrikator
             Owner.ApplyToAll((go) => { go.transform.rotation = defaultRotation; });
         }
 
-        public override void Process(GameObject[] objs)
+        public override TransformProxy[] Process(TransformProxy[] proxies)
         {
-            UpdateArray(objs);
+            UpdateArray(proxies);
 
             IRotator rotator = null;
             bool isAdditive = IsAdditive(out rotator);
 
-            int numObjs = objs.Length;
+            int numObjs = proxies.Length;
             for (int i = 0; i < numObjs; ++i)
             {
                 Vector3 rot = Extensions.BiUnitLerp(_min, _max, _rotations[i]);
@@ -62,8 +62,10 @@ namespace Prefabrikator
                     rotation = Quaternion.Euler(Extensions.Clamp(rot, _min, _max));
                 }
 
-                objs[i].transform.rotation = rotation;
+                proxies[i].Rotation = rotation;
             }
+
+            return proxies;
         }
 
         protected override void OnInspectorUpdate()
@@ -116,9 +118,9 @@ namespace Prefabrikator
         }
 
         // #DG: Move this to parent. 
-        private void UpdateArray(GameObject[] objs)
+        private void UpdateArray(TransformProxy[] proxies)
         {
-            int numObjs = objs.Length;
+            int numObjs = proxies.Length;
 
             if (_rotations == null)
             {

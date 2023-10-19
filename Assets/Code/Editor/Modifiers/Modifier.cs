@@ -40,7 +40,7 @@ namespace Prefabrikator
         }
 
         protected abstract void OnInspectorUpdate();
-        public abstract TransformProxy[] Process(GameObject[] objs, TransformProxy[] proxies);
+        public abstract TransformProxy[] Process(TransformProxy[] proxies);
 
         public abstract void OnRemoved();
         public abstract void Teardown();

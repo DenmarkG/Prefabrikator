@@ -13,17 +13,19 @@ namespace Prefabrikator
             //
         }
 
-        public override void Process(GameObject[] objs)
+        public override TransformProxy[] Process(TransformProxy[] proxies)
         {
-            int numObjs = objs.Length;
+            int numObjs = proxies.Length;
             // #DG: make this account for changes to the starting rotation (uniform mod)
             Quaternion defaultRotation = Owner.GetDefaultRotation();
             for (int i = 0; i < numObjs; ++i)
             {
                 float t = (float)i / (numObjs - 1);
                 Quaternion rotation = Quaternion.Lerp(defaultRotation, Quaternion.Euler(Target), t);
-                objs[i].transform.rotation = rotation;
+                proxies[i].Rotation = rotation;
             }
+
+            return proxies;
         }
 
         public override void OnRemoved()

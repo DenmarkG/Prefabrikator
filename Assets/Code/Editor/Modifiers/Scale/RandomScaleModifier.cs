@@ -43,11 +43,11 @@ namespace Prefabrikator
             Randomize();
         }
 
-        public override void Process(GameObject[] objs)
+        public override TransformProxy[] Process(TransformProxy[] proxies)
         {
-            UpdateArray(objs);
+            UpdateArray(proxies);
 
-            int numObjs = objs.Length;
+            int numObjs = proxies.Length;
             Vector3 scale = Vector3.one;
             for (int i = 0; i < numObjs; ++i)
             {
@@ -60,8 +60,10 @@ namespace Prefabrikator
                     scale = Extensions.BiUnitLerp(_min, _max, _scales[i]);
                 }
                 
-                objs[i].transform.localScale = scale;
+                proxies[i].Scale = scale;
             }
+
+            return proxies;
         }
 
         public override void OnRemoved()
@@ -149,9 +151,9 @@ namespace Prefabrikator
             _maxFloatProperty = new FloatProperty(Max, _maxFloat, OnMaxFloatChanged);
         }
 
-        private void UpdateArray(GameObject[] objs)
+        private void UpdateArray(TransformProxy[] proxies)
         {
-            int numObjs = objs.Length;
+            int numObjs = proxies.Length;
 
             if (_scales == null)
             {

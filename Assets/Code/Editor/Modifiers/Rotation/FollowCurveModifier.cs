@@ -46,11 +46,11 @@ namespace Prefabrikator
             Teardown();
         }
 
-        public override void Process(GameObject[] objs)
+        public override TransformProxy[] Process(TransformProxy[] proxies)
         {
-            if (_rotations == null || _rotations.Length != objs.Length)
+            if (_rotations == null || _rotations.Length != proxies.Length)
             {
-                _rotations = new Quaternion[objs.Length];
+                _rotations = new Quaternion[proxies.Length];
             }
 
             switch (_curveMode)
@@ -61,13 +61,15 @@ namespace Prefabrikator
                     break;
 #endif
                 case CurveMode.Ellipse:
-                    SetRotationFromEllipse(objs);
+                    SetRotationFromEllipse(proxies);
                     break;
                 case CurveMode.Circle:
                 default:
-                    SetRoationFromCircle(objs);
+                    SetRoationFromCircle(proxies);
                     break;
             }
+
+            return proxies;
         }
 
         protected override void OnInspectorUpdate()
@@ -80,42 +82,42 @@ namespace Prefabrikator
             GUILayout.EndHorizontal();
         }
 
-        private void SetRoationFromCircle(GameObject[] objs)
+        private void SetRoationFromCircle(TransformProxy[] proxies)
         {
             CircularArrayCreator circle = Owner as CircularArrayCreator;
             if (circle != null)
             {
                 bool isSphere = Owner is SphereArrayCreator;
-                int numObjs = objs.Length;
+                int numObjs = proxies.Length;
                 Vector3 center = circle.Center;
-                GameObject current = null;
+                TransformProxy current;
                 for (int i = 0; i < numObjs; ++i)
                 {
-                    current = objs[i];
-                    Vector3 position = current.transform.position;
+                    current = proxies[i];
+                    Vector3 position = current.Position;
 
                     if (isSphere)
                     {
-                        current.transform.localRotation = Quaternion.LookRotation(center - position);
+                        current.Rotation = Quaternion.LookRotation(center - position);
                     }
                     else
                     {
                         Vector3 cross = Vector3.Cross((position - center).normalized, circle.UpVector);
-                        current.transform.localRotation = Quaternion.LookRotation(cross);
+                        current.Rotation = Quaternion.LookRotation(cross);
                     }
 
-                    _rotations[i] = current.transform.localRotation;
+                    _rotations[i] = current.Rotation;
                 }
             }
         }
 
-        private void SetRotationFromEllipse(GameObject[] objs)
+        private void SetRotationFromEllipse(TransformProxy[] proxies)
         {
             EllipseArrayCreator ellipse = Owner as EllipseArrayCreator;
             if (ellipse != null)
             {
-                int numObjs = objs.Length;
-                GameObject current = null;
+                int numObjs = proxies.Length;
+                TransformProxy current;
                 int n = numObjs - 1;
 
                 const float degrees = Mathf.PI * 2;
@@ -124,12 +126,12 @@ namespace Prefabrikator
                 for (int i = 0; i < numObjs; ++i)
                 {
                     float t = angle * i;
-                    current = objs[i];
+                    current = proxies[i];
                     float xTan = -(ellipse.XRadius * Mathf.Sin(t));
                     float zTan = ellipse.ZRadius * Mathf.Cos(t);
                     Vector3 tangent = new Vector3(xTan, 0f, zTan);
-                    current.transform.localRotation = Quaternion.LookRotation(tangent);
-                    _rotations[i] = current.transform.localRotation;
+                    current.Rotation = Quaternion.LookRotation(tangent);
+                    _rotations[i] = current.Rotation;
                 }
             }
         }
