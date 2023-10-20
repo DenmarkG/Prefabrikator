@@ -89,14 +89,14 @@ namespace Prefabrikator
                 {
                     current = proxies[i];
                     Vector3 start = current.Position;
-                    Collider collider = Owner.CreatedObjects[i].GetComponent<Collider>();
+                    Collider collider = Owner.Clones[i].GetComponent<Collider>();
 
                     float offset = _verticalOffset;
                     if (collider != null)
                     {
                         if (_useCollider)
                         {
-                            offset = Owner.CreatedObjects[i].transform.InverseTransformPoint(collider.bounds.min).y;
+                            offset = Owner.Clones[i].transform.InverseTransformPoint(collider.bounds.min).y;
                             start -= Vector3.down * offset;
                         }
 
@@ -212,7 +212,7 @@ namespace Prefabrikator
             if (_editMode.HasFlag(EditMode.Center))
             {
                 Handles.color = Color.cyan;
-                foreach (GameObject obj in Owner.CreatedObjects)
+                foreach (GameObject obj in Owner.Clones)
                 {
                     Handles.DrawLine(obj.transform.position, obj.transform.position + (Vector3.up * _verticalOffset));
                 }
@@ -220,10 +220,10 @@ namespace Prefabrikator
 
             if (_dropped)
             {
-                int numObjs = Owner.CreatedObjects.Count;
+                int numObjs = Owner.Clones.Count;
                 for (int i = 0; i < numObjs; ++i)
                 {
-                    GameObject current = Owner.CreatedObjects[i];
+                    GameObject current = Owner.Clones[i];
                     Vector3 start = current.transform.position;
                     Collider collider = current.GetComponent<Collider>();
                     float offset = _verticalOffset;

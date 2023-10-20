@@ -152,7 +152,7 @@ namespace Prefabrikator
                 }
             }
 
-            if (TargetCount != _createdObjects.Count)
+            if (TargetCount != Clones.Count)
             {
                 OnTargetCountChanged();
             }
@@ -170,7 +170,7 @@ namespace Prefabrikator
 
         public override void UpdateEditor()
         {
-            if (_target != null)
+            if (Original != null)
             {
                 if (NeedsRefresh)
                 {
@@ -178,7 +178,7 @@ namespace Prefabrikator
                 }
 
                 // Update Counts
-                if (_createdObjects.Count != TargetCount)
+                if (Clones.Count != TargetCount)
                 {
                     OnCountChange();
                 }
@@ -201,7 +201,7 @@ namespace Prefabrikator
 
         private void UpdatePositions()
         {
-            if (_createdObjects.Count > 0)
+            if (Clones.Count > 0)
             {
                 int index = 0;
                 GameObject currentObj = null;
@@ -230,7 +230,7 @@ namespace Prefabrikator
                         {
                             Vector3 posY = colStart + (colDirection * colOffsetDistance * y);
                             Vector3 position = posX + posY;
-                            currentObj = _createdObjects[index];
+                            currentObj = Clones[index];
                             currentObj.transform.position = position;
                             ++index;
                         }
@@ -257,7 +257,7 @@ namespace Prefabrikator
                             {
                                 Vector3 posY = colStart + (Vector3.up * _offsetY * y);
 
-                                currentObj = _createdObjects[index];
+                                currentObj = Clones[index];
                                 currentObj.transform.position = posX + posY + posZ;
                                 ++index;
                             }
@@ -265,20 +265,20 @@ namespace Prefabrikator
                     }
                 }
 
-                int count = _createdObjects.Count;
+                int count = Clones.Count;
                 if (_defaultPositions.Count != count)
                 {
                     _defaultPositions = new List<Vector3>();
                     for (int i = 0; i < count; ++i)
                     {
-                        _defaultPositions.Add(_createdObjects[i].transform.position);
+                        _defaultPositions.Add(Clones[i].transform.position);
                     }
                 }
                 else
                 {
                     for (int i = 0; i < count; ++i)
                     {
-                        _defaultPositions[i] = (_createdObjects[i].transform.position);
+                        _defaultPositions[i] = (Clones[i].transform.position);
                     }
                 }
             }
@@ -290,9 +290,9 @@ namespace Prefabrikator
 
             if (proxy != null)
             {
-                for (int i = 0; i < _createdObjects.Count; ++i)
+                for (int i = 0; i < Clones.Count; ++i)
                 {
-                    _createdObjects[i].transform.position = proxy.transform.position;
+                    Clones[i].transform.position = proxy.transform.position;
                 }
 
                 _needsPositionRefresh = false;
@@ -377,10 +377,10 @@ namespace Prefabrikator
 
             if (proxy != null)
             {
-                GameObject clone = GameObject.Instantiate(_target, _target.transform.position, _target.transform.rotation, _target.transform.parent);
+                GameObject clone = GameObject.Instantiate(Original, Original.transform.position, Original.transform.rotation, Original.transform.parent);
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
-                _createdObjects.Add(clone);
+                Clones.Add(clone);
             }
         }   
 

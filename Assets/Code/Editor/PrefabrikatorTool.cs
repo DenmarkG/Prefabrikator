@@ -208,7 +208,7 @@ namespace Prefabrikator
                                 _creator = GetCreator(_shapeType, _selectedObject);
                             }
 
-                            _creator.SetTarget(_selectedObject);
+                            _creator.SetOriginal(_selectedObject);
                         }
                     }
                     EditorGUILayout.EndHorizontal();
@@ -387,8 +387,8 @@ namespace Prefabrikator
 
             GenericMenu editMenu = new GenericMenu();
 
-            editMenu.Add("Undo", SaveAndContinue, _undoStack.UndoOperationsAvailable == 0);
-            editMenu.Add("Redo", SaveAndContinue, _undoStack.RedoOperationsAvailable == 0);
+            editMenu.Add("Undo", Undo, _undoStack.UndoOperationsAvailable == 0);
+            editMenu.Add("Redo", Redo, _undoStack.RedoOperationsAvailable == 0);
 
             //editMenu.ShowAsContext();
             Rect pos = new Rect();

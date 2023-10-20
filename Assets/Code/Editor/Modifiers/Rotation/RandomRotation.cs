@@ -18,7 +18,7 @@ namespace Prefabrikator
             _min = new Shared<Vector3>(new Vector3(-179f, -179f, -179f));
             _max = new Shared<Vector3>(new Vector3(180f, 180f, 180f));
 
-            int numObjs = Owner.CreatedObjects.Count;
+            int numObjs = Owner.Clones.Count;
             _rotations = new Vector3[numObjs];
             for (int i = 0; i < numObjs; ++i)
             {

@@ -31,7 +31,7 @@ namespace Prefabrikator
         public CircularArrayCreator(GameObject target)
             : base(target, DefaultCount)
         {
-            _center.Set(_target.transform.position);
+            _center.Set(Original.transform.position);
 
             void OnRadiusSet(float current, float previous)
             {
@@ -86,7 +86,7 @@ namespace Prefabrikator
 
         public override void UpdateEditor()
         {
-            if (_target != null)
+            if (Original != null)
             {
                 Refresh();
             }
@@ -98,9 +98,9 @@ namespace Prefabrikator
 
             if (proxy != null)
             {
-                for (int i = 0; i < _createdObjects.Count; ++i)
+                for (int i = 0; i < Clones.Count; ++i)
                 {
-                    _createdObjects[i].transform.localPosition = GetDefaultPositionAtIndex(i);
+                    Clones[i].transform.localPosition = GetDefaultPositionAtIndex(i);
                 }
             }
         }
@@ -110,7 +110,7 @@ namespace Prefabrikator
             GameObject proxy = GetProxy();
 
             const float degrees = Mathf.PI * 2;
-            float angle = (degrees / _createdObjects.Count);
+            float angle = (degrees / Clones.Count);
 
             float t = angle * index;
             float x = Mathf.Cos(t) * _radius;
@@ -121,9 +121,9 @@ namespace Prefabrikator
 
         protected override void CreateClone(int index = 0)
         {
-            Quaternion targetRotation = _target.transform.rotation;
+            Quaternion targetRotation = Original.transform.rotation;
 
-            GameObject clone = GameObject.Instantiate(_target, _center, targetRotation);
+            GameObject clone = GameObject.Instantiate(Original, _center, targetRotation);
             clone.SetActive(true);
             GameObject proxy = GetProxy();
 
@@ -132,12 +132,12 @@ namespace Prefabrikator
                 clone.transform.SetParent(proxy.transform);
             }
 
-            _createdObjects.Add(clone);
+            Clones.Add(clone);
         }
 
         protected virtual void VerifyTargetCount()
         {
-            if (TargetCount != _createdObjects.Count)
+            if (TargetCount != Clones.Count)
             {
                 OnTargetCountChanged();
             }

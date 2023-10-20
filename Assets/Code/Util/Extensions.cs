@@ -188,5 +188,17 @@ namespace Prefabrikator
             Debug.LogError("Attempt to divide by zero");
             return 0;
         }
+
+        public static void Add(this GenericMenu menu, string itemName, UnityEditor.GenericMenu.MenuFunction func, bool disabled = false)
+        {
+            if (disabled)
+            {
+                menu.AddDisabledItem(new GUIContent(itemName), false);
+            }
+            else
+            {
+                menu.AddItem(new GUIContent(itemName), false, func);
+            }
+        }
     }
 }

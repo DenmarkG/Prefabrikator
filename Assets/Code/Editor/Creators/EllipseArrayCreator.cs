@@ -57,7 +57,7 @@ namespace Prefabrikator
             GameObject proxy = GetProxy();
 
             const float degrees = Mathf.PI * 2;
-            float angle = (degrees / _createdObjects.Count);
+            float angle = (degrees / Clones.Count);
 
             float t = angle * index;
             float x = Mathf.Cos(t) * _radius;

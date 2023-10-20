@@ -99,13 +99,11 @@ namespace Prefabrikator
         public void Execute()
         {
             _creator.AddModifier(_modifier);
-            _creator.ApplyTransforms(_creator.ProcessModifiers());
         }
 
         public void Revert()
         {
             _creator.RemoveModifier(_modifier);
-            _creator.ApplyTransforms(_creator.ProcessModifiers());
         }
     }
 
@@ -123,13 +121,11 @@ namespace Prefabrikator
         public void Execute()
         {
             _creator.RemoveModifier(_modifier);
-            _creator.ProcessModifiers();
         }
 
         public void Revert()
         {
             _creator.AddModifier(_modifier);
-            _creator.ProcessModifiers();
         }
     }
 

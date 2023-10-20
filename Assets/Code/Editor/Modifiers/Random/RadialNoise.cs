@@ -23,7 +23,7 @@ namespace Prefabrikator
             _radialShape = owner as IRadial;
             Debug.Assert(_radialShape != null, "Not a radial Shape. Cannot add radial noise");
 
-            _radialDelta = new float[Owner.CreatedObjects.Count];
+            _radialDelta = new float[Owner.Clones.Count];
 
             float radius = _radialShape.Radius;
             _min.Set(DefaultMin);

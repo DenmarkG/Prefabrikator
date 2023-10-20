@@ -111,14 +111,14 @@ namespace Prefabrikator
                     _workingValue = ShowPropertyField();
                     ShowCustomButtons();
 
-                    if (GUILayout.Button(Constants.XButton))
+                    if (GUILayout.Button(Constants.XButton, GUILayout.Width(Constants.DefaultButtonWidth)))
                     {
                         _workingValue = _setValueCopy;
                         _editMode = EditMode.Disabled;
                         OnEditModeExit?.Invoke(ExitMode.Cancel);
                     }
 
-                    if (GUILayout.Button(Constants.CheckMark))
+                    if (GUILayout.Button(Constants.CheckMark, GUILayout.Width(Constants.DefaultButtonWidth)))
                     {
                         if (OnValidate != null)
                         {

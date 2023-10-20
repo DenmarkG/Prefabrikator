@@ -115,19 +115,19 @@ namespace Prefabrikator
         {
             base.OnRefreshStart(hardRefresh, useDefaultData);
 
-            if (_positions.Count != _createdObjects.Count)
+            if (_positions.Count != Clones.Count)
             {
-                int countDiff = _createdObjects.Count - _positions.Count;
+                int countDiff = Clones.Count - _positions.Count;
                 if (countDiff > 0)
                 {
-                    for (int i = _positions.Count - 1; i < _createdObjects.Count; ++i)
+                    for (int i = _positions.Count - 1; i < Clones.Count; ++i)
                     {
-                        _positions.Add(_createdObjects[i].transform.position);
+                        _positions.Add(Clones[i].transform.position);
                     }
                 }
                 else
                 {
-                    while (_positions.Count != _createdObjects.Count)
+                    while (_positions.Count != Clones.Count)
                     {
                         _positions.RemoveAt(_positions.Count - 1);
                     }

@@ -33,7 +33,7 @@ namespace Prefabrikator
 
             SetupProperties();
 
-            int numObjs = Owner.CreatedObjects.Count;
+            int numObjs = Owner.Clones.Count;
             _scales = new Vector3[numObjs];
             for (int i = 0; i < numObjs; ++i)
             {

@@ -15,15 +15,17 @@ namespace Prefabrikator
         public Queue<ICommand> CommandQueue => _commandQueue;
         private Queue<ICommand> _commandQueue = new Queue<ICommand>();
 
-        protected GameObject _target = null;
+        protected GameObject Original => _original;
+        private GameObject _original = null;
 
-        private GameObject _targetProxy = null;
+        protected GameObject CloneParent => _cloneParent;
+        private GameObject _cloneParent = null;
 
-        public List<GameObject> CreatedObjects => _createdObjects;
-        protected List<GameObject> _createdObjects = null;
+        public List<GameObject> Clones => _clones;
+        private List<GameObject> _clones = null;
 
         public int TargetCount => _targetCount;
-        private Shared<int> _targetCount = new Shared<int>(1);
+        protected Shared<int> _targetCount = new Shared<int>(1);
         private IntProperty _countProperty = null;
         
         protected bool NeedsRefresh => CommandQueue.Count > 0;
@@ -49,11 +51,9 @@ namespace Prefabrikator
 
         public abstract ShapeType Shape { get; }
 
-        public Vector3 Position => _targetProxy?.transform.position ?? Vector3.zero;
-
         public ArrayCreator(GameObject target, int defaultCount)
         {
-            _target = target;
+            _original = target;
 
             _targetCount.Set(defaultCount);
             void OnCountChange(int current, int previous)
@@ -75,7 +75,7 @@ namespace Prefabrikator
 
             _modifierDisplay.onSelectCallback = OnModifierSelectionChange;
 
-            _createdObjects = new List<GameObject>(_targetCount);
+            _clones = new List<GameObject>(_targetCount);
             OnTargetCountChanged();
 
             SceneView.duringSceneGui += OnSceneGUI;
@@ -114,7 +114,8 @@ namespace Prefabrikator
         {
             ExecuteAllCommands();
             OnRefreshStart(hardRefresh, useDefaultData);
-            ProcessModifiers();
+            TransformProxy[] proxies = ProcessModifiers();
+            ApplyTransforms(proxies);
         }
 
         private void ExecuteAllCommands()
@@ -129,24 +130,24 @@ namespace Prefabrikator
 
         protected void DestroyAll()
         {
-            if (_targetProxy != null)
+            if (_cloneParent != null)
             {
-                GameObject.DestroyImmediate(_targetProxy);
+                GameObject.DestroyImmediate(_cloneParent);
             }
 
-            if (_createdObjects.Count > 0)
+            if (_clones.Count > 0)
             {
-                int numObjectsCreated = _createdObjects.Count;
+                int numObjectsCreated = _clones.Count;
                 if (numObjectsCreated > 0)
                 {
                     for (int i = 0; i < numObjectsCreated; ++i)
                     {
-                        GameObject.DestroyImmediate(_createdObjects[i]);
+                        GameObject.DestroyImmediate(_clones[i]);
                     }
                 }
             }
 
-            _createdObjects.Clear();
+            _clones.Clear();
         }
 
         public void OnCloseWindow(ToolCloseMode closeMode)
@@ -169,15 +170,15 @@ namespace Prefabrikator
 
         private void SaveAndClose()
         {
-            _targetProxy = null;
-            _createdObjects.Clear();
+            _cloneParent = null;
+            _clones.Clear();
             Teardown();
         }
 
         private void SaveAndContinue()
         {
-            _targetProxy = null;
-            _createdObjects.Clear();
+            _cloneParent = null;
+            _clones.Clear();
             Refresh(true);
         }
 
@@ -199,19 +200,19 @@ namespace Prefabrikator
 
         public virtual void OnSelectionChange()
         {
-            if ((Selection.activeObject is GameObject activeObject) && activeObject != _target && activeObject != _targetProxy)
+            if ((Selection.activeObject is GameObject activeObject) && activeObject != _original && activeObject != _cloneParent)
             {
                 if (!string.IsNullOrEmpty(activeObject.scene.name))
                 {
-                    bool isChildSelection = (_createdObjects.Count > 0 && _createdObjects.Contains(activeObject));
+                    bool isChildSelection = (_clones.Count > 0 && _clones.Contains(activeObject));
                     if (!isChildSelection)
                     {
-                        _target = activeObject;
+                        _original = activeObject;
                         Refresh(hardRefresh: true);
                     }
                     else
                     {
-                        Selection.activeGameObject = _target;
+                        Selection.activeGameObject = _original;
                     }
                 }
             }
@@ -226,15 +227,15 @@ namespace Prefabrikator
 
         protected void DestroyClone(GameObject clone)
         {
-            _createdObjects.RemoveAt(_createdObjects.IndexOf(clone));
+            _clones.RemoveAt(_clones.IndexOf(clone));
             GameObject.DestroyImmediate(clone);
         }
 
-        public void SetTarget(GameObject target)
+        public void SetOriginal(GameObject original)
         {
-            if (target != null)
+            if (original != null)
             {
-                _target = target;
+                _original = original;
                 EstablishHelper();
 
                 Refresh(true);
@@ -243,41 +244,27 @@ namespace Prefabrikator
 
         protected GameObject GetProxy()
         {
-            if (_targetProxy == null)
+            if (_cloneParent == null)
             {
                 EstablishHelper();
             }
 
-            return _targetProxy;
+            return _cloneParent;
         }
 
         protected void EstablishHelper(bool useDefaultData = false)
         {
-            if (_targetProxy == null)
+            if (_cloneParent == null)
             {
-                _targetProxy = new GameObject($"{_target.name} {Name}");
+                _cloneParent = new GameObject($"{_original.name} {Name}");
             }
         }
 
         protected virtual void UpdateLocalRotations()
         {
-            for (int i = 0; i < _createdObjects.Count; ++i)
+            for (int i = 0; i < _clones.Count; ++i)
             {
-                _createdObjects[i].transform.localRotation = _targetRotation;
-            }
-        }
-
-        protected void PopulateFromExistingClones(GameObject targetProxy)
-        {
-            _targetProxy = targetProxy;
-            int childCount = _targetProxy.transform.childCount;
-            for (int i = 0; i < childCount; ++i)
-            {
-                Transform child = _targetProxy.transform.GetChild(i);
-                if (child != null)
-                {
-                    _createdObjects.Add(child.gameObject);
-                }
+                _clones[i].transform.localRotation = _targetRotation;
             }
         }
 
@@ -312,14 +299,14 @@ namespace Prefabrikator
 
         protected void OnTargetCountChanged()
         {
-            if (TargetCount < _createdObjects.Count)
+            if (TargetCount < _clones.Count)
             {
-                while (_createdObjects.Count > TargetCount)
+                while (_clones.Count > TargetCount)
                 {
-                    int index = _createdObjects.Count - 1;
+                    int index = _clones.Count - 1;
                     if (index >= 0)
                     {
-                        DestroyClone(_createdObjects[_createdObjects.Count - 1]);
+                        DestroyClone(_clones[_clones.Count - 1]);
                     }
                     else
                     {
@@ -329,7 +316,7 @@ namespace Prefabrikator
             }
             else
             {
-                while (TargetCount > _createdObjects.Count)
+                while (TargetCount > _clones.Count)
                 {
                     CreateClone();
                 }
@@ -344,9 +331,9 @@ namespace Prefabrikator
 
         public Vector3 GetDefaultScale()
         {
-            if (_target != null)
+            if (_original != null)
             {
-                return _target.transform.localScale;
+                return _original.transform.localScale;
             }
 
             return new Vector3(1f, 1f, 1f);
@@ -354,9 +341,9 @@ namespace Prefabrikator
 
         public Quaternion GetDefaultRotation()
         {
-            if (_target != null)
+            if (_original != null)
             {
-                return _target.transform.rotation;
+                return _original.transform.rotation;
             }
 
             return Quaternion.identity;
@@ -364,31 +351,32 @@ namespace Prefabrikator
 
         public void ApplyToAll(ApplicatorDelegate applicator)
         {
-            int numObjs = _createdObjects.Count;
+            int numObjs = _clones.Count;
             for (int i = 0; i < numObjs; ++i)
             {
-                applicator(_createdObjects[i]);
+                applicator(_clones[i]);
             }
         }
 
         public void ApplyToAll(IndexedApplicatorDelegate applicator)
         {
-            int numObjs = _createdObjects.Count;
+            int numObjs = _clones.Count;
             for (int i = 0; i < numObjs; ++i)
             {
-                applicator(_createdObjects[i], i);
+                applicator(_clones[i], i);
             }
         }
 
         public void ApplyTransforms(TransformProxy[] proxies)
         {
-            int numObjs = _createdObjects.Count;
+            int numObjs = _clones.Count;
+
             for (int i = 0; i < numObjs; ++i)
             {
                 TransformProxy proxy = proxies[i];
-                _createdObjects[i].transform.position = proxy.Position;
-                _createdObjects[i].transform.rotation = proxy.Rotation;
-                _createdObjects[i].transform.localScale = proxy.Scale;
+                _clones[i].transform.position = proxy.Position;
+                _clones[i].transform.rotation = proxy.Rotation;
+                _clones[i].transform.localScale = proxy.Scale;
             }
         }
 
@@ -491,8 +479,8 @@ namespace Prefabrikator
 
         public TransformProxy[] ProcessModifiers()
         {
-            TransformProxy[] proxies = new TransformProxy[_createdObjects.Count];
-            for (int i = 0; i < _createdObjects.Count; ++i)
+            TransformProxy[] proxies = new TransformProxy[_clones.Count];
+            for (int i = 0; i < _clones.Count; ++i)
             {
                 Vector3 position = GetDefaultPositionAtIndex(i);
                 Quaternion rotation = GetDefaultRotation();

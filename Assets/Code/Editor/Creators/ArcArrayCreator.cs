@@ -46,24 +46,24 @@ namespace Prefabrikator
 
         protected override void UpdatePositions()
         {
-            for (int i = 0; i < _createdObjects.Count; ++i)
+            for (int i = 0; i < Clones.Count; ++i)
             {
                 Vector3 position = GetDefaultPositionAtIndex(i);
-                _createdObjects[i].transform.localPosition = position + _center;
+                Clones[i].transform.localPosition = position + _center;
             }
         }
 
         public override Vector3 GetDefaultPositionAtIndex(int index)
         {
             float degrees = (360f * _fillPercent) * Mathf.Deg2Rad;
-            int n = _createdObjects.Count - 1;
+            int n = Clones.Count - 1;
             float angle = (n != 0f) ? (degrees / n) : 0f;
 
             float t = angle * index;
             float x = Mathf.Cos(t) * _radius;
             float z = Mathf.Sin(t) * _radius;
 
-            return new Vector3(x, _target.transform.position.y, z);
+            return new Vector3(x, Original.transform.position.y, z);
         }
 
         private void OnSliderChange(float current, float previous)

@@ -4,6 +4,8 @@ using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
+    using Runtime;
+
     public class LinearArrayCreator : ArrayCreator
     {
         public override ShapeType Shape => ShapeType.Line;
@@ -24,6 +26,9 @@ namespace Prefabrikator
         {
             _start.Set(target.transform.position);
             SetupProperties();
+
+            var line = CloneParent.AddComponent<LineArray>();
+            line.InitFromSharedData(_start, _offset, _targetCount);
 
             Refresh();
         }
@@ -53,7 +58,7 @@ namespace Prefabrikator
 
         public override void UpdateEditor()
         {
-            if (_target != null)
+            if (Original != null)
             {
                 if (NeedsRefresh)
                 {
@@ -74,7 +79,7 @@ namespace Prefabrikator
 
             EstablishHelper(useDefaultData);
 
-            if (TargetCount != _createdObjects.Count)
+            if (TargetCount != Clones.Count)
             {
                 OnTargetCountChanged();
             }
@@ -87,11 +92,11 @@ namespace Prefabrikator
         {
             GameObject proxy = GetProxy();
 
-            if (_createdObjects.Count > 0 && proxy != null)
+            if (Clones.Count > 0 && proxy != null)
             {
-                for (int i = 0; i < _createdObjects.Count; ++i)
+                for (int i = 0; i < Clones.Count; ++i)
                 {
-                    _createdObjects[i].transform.position = GetDefaultPositionAtIndex(i);
+                    Clones[i].transform.position = GetDefaultPositionAtIndex(i);
                 }
             }
         }
@@ -100,7 +105,7 @@ namespace Prefabrikator
         {
             GameObject proxy = GetProxy();
 
-            if (_createdObjects.Count > 0 && proxy != null)
+            if (Clones.Count > 0 && proxy != null)
             {
                 Vector3 offset = (Vector3)_offset * index;
                 return _start + offset;
@@ -121,24 +126,24 @@ namespace Prefabrikator
 
             if (proxy != null)
             {
-                GameObject clone = GameObject.Instantiate(_target, _target.transform.position, _target.transform.rotation, _target.transform.parent);
+                GameObject clone = GameObject.Instantiate(Original, Original.transform.position, Original.transform.rotation, Original.transform.parent);
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
 
-                int lastIndex = _createdObjects.Count - 1;
+                int lastIndex = Clones.Count - 1;
 
-                if (_createdObjects.Count > 0)
+                if (Clones.Count > 0)
                 {
-                    clone.transform.position = _createdObjects[lastIndex].transform.position + _offset;
-                    clone.transform.rotation = _createdObjects[lastIndex].transform.rotation;
+                    clone.transform.position = Clones[lastIndex].transform.position + _offset;
+                    clone.transform.rotation = Clones[lastIndex].transform.rotation;
                 }
                 else
                 {
-                    clone.transform.position = _target.transform.position + _offset;
-                    clone.transform.rotation = _target.transform.rotation;
+                    clone.transform.position = Original.transform.position + _offset;
+                    clone.transform.rotation = Original.transform.rotation;
                 }
 
-                _createdObjects.Add(clone);
+                Clones.Add(clone);
             }
         }
 
@@ -157,7 +162,7 @@ namespace Prefabrikator
                 {
                     Handles.color = Color.green;
                     Vector3 start = proxy.transform.position;
-                    Vector3 end = start + (_offset.Get() * (_createdObjects.Count - 1));
+                    Vector3 end = start + (_offset.Get() * (Clones.Count - 1));
 
                     Handles.DrawLine(start, end);
 
@@ -166,7 +171,7 @@ namespace Prefabrikator
 
                     if (end2 != end)
                     {
-                        _offset.Set((end2 - start) / (_createdObjects.Count - 1));
+                        _offset.Set((end2 - start) / (Clones.Count - 1));
                     }
                 }
 

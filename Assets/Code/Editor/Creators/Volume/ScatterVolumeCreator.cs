@@ -46,12 +46,12 @@ namespace Prefabrikator
             {
                 Vector3 position = GetRandomPointInBounds();
 
-                GameObject clone = GameObject.Instantiate(_target, position, _target.transform.rotation);
+                GameObject clone = GameObject.Instantiate(Original, position, Original.transform.rotation);
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
 
                 _positions.Add(position);
-                _createdObjects.Add(clone);
+                Clones.Add(clone);
             }
         }
 
@@ -85,7 +85,7 @@ namespace Prefabrikator
 
         public override void UpdateEditor()
         {
-            if (_target != null)
+            if (Original != null)
             {
                 if (IsDirty)
                 {
@@ -110,7 +110,7 @@ namespace Prefabrikator
 
             EstablishHelper(useDefaultData);
 
-            if (TargetCount != _createdObjects.Count)
+            if (TargetCount != Clones.Count)
             {
                 OnTargetCountChanged();
             }
@@ -141,7 +141,7 @@ namespace Prefabrikator
             Vector3[] previous = _positions.ToArray();
             _positions = ScatterPoisson();
 
-            while (_positions.Count < _createdObjects.Count)
+            while (_positions.Count < Clones.Count)
             {
                 _positions.Add(GetRandomPointInBounds());
             }
@@ -197,12 +197,12 @@ namespace Prefabrikator
         
         protected Vector3? GetRandomPoisson(Vector3? initialSample = null)
         {
-            if (_createdObjects.Count == 0)
+            if (Clones.Count == 0)
             {
                 return null;
             }
 
-            foreach (GameObject activeObject in _createdObjects)
+            foreach (GameObject activeObject in Clones)
             {
                 initialSample ??= activeObject.transform.position;
                 Vector3[] samplePoints = GenerateSampleSet(initialSample.Value, _scatterRadius, 2f * _scatterRadius, GetDimension());
@@ -221,11 +221,11 @@ namespace Prefabrikator
 
         private void UpdatePositions()
         {
-            int count = _createdObjects.Count;
+            int count = Clones.Count;
 
-            for (int i = 0; i < _createdObjects.Count; ++i)
+            for (int i = 0; i < Clones.Count; ++i)
             {
-                _createdObjects[i].transform.position = _positions[i];
+                Clones[i].transform.position = _positions[i];
             }
         }
 

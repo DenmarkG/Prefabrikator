@@ -1,8 +1,9 @@
 using System;
 
+[Serializable]
 public class Shared<T> where T : struct
 {
-    private T _value = default(T);
+    [UnityEngine.SerializeField] private T _value = default(T);
 
     public event Action<T> OnValueChanged = null;
 

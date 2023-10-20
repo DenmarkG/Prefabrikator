@@ -62,7 +62,7 @@ namespace Prefabrikator
 
         protected override void UpdatePositions()
         {
-            if (TargetCount < MinCount || _createdObjects.Count < MinCount)
+            if (TargetCount < MinCount || Clones.Count < MinCount)
             {
                 return;
             }
@@ -82,7 +82,7 @@ namespace Prefabrikator
                 float y = rCosPhi * Mathf.Sin(sectorAngle);
 
                 Vector3 position = new Vector3(x, y, z);
-                _createdObjects[0].transform.localPosition = position + _center;
+                Clones[0].transform.localPosition = position + _center;
 
                 ++index;
             }
@@ -100,7 +100,7 @@ namespace Prefabrikator
                     float y = rCosPhi * Mathf.Sin(sectorAngle);
 
                     Vector3 position = new Vector3(x, y, z);
-                    _createdObjects[index].transform.localPosition = position + _center;
+                    Clones[index].transform.localPosition = position + _center;
 
                     ++index;
                 }
@@ -117,23 +117,23 @@ namespace Prefabrikator
                 float y = rCosPhi * Mathf.Sin(sectorAngle);
 
                 Vector3 position = new Vector3(x, y, z);
-                _createdObjects[_createdObjects.Count - 1].transform.localPosition = position + _center;
+                Clones[Clones.Count - 1].transform.localPosition = position + _center;
             }
 
-            int count = _createdObjects.Count;
+            int count = Clones.Count;
             if (_defaultPositions.Count != count)
             {
                 _defaultPositions = new List<Vector3>();
                 for (int i = 0; i < count; ++i)
                 {
-                    _defaultPositions.Add(_createdObjects[i].transform.position);
+                    _defaultPositions.Add(Clones[i].transform.position);
                 }
             }
             else
             {
                 for (int i = 0; i < count; ++i)
                 {
-                    _defaultPositions[i] = (_createdObjects[i].transform.position);
+                    _defaultPositions[i] = (Clones[i].transform.position);
                 }
             }
         }
