@@ -99,13 +99,13 @@ namespace Prefabrikator
         public void Execute()
         {
             _creator.AddModifier(_modifier);
-            _creator.ProcessModifiers();
+            _creator.ApplyTransforms(_creator.ProcessModifiers());
         }
 
         public void Revert()
         {
             _creator.RemoveModifier(_modifier);
-            _creator.ProcessModifiers();
+            _creator.ApplyTransforms(_creator.ProcessModifiers());
         }
     }
 

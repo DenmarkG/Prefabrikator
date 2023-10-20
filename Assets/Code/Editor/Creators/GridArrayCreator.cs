@@ -97,7 +97,7 @@ namespace Prefabrikator
                     SetTargetCount(targetCount);
                 }
 
-                GUILayout.Space(Extensions.IndentSize);
+                GUILayout.Space(Constants.IndentSize);
                 EditorGUILayout.LabelField("Offsets", EditorStyles.boldLabel);
                 if (ShouldShowX())
                 {
@@ -123,7 +123,7 @@ namespace Prefabrikator
                     }
                 }
 
-                GUILayout.Space(Extensions.IndentSize / 2);
+                GUILayout.Space(Constants.IndentSize / 2);
                 _center.Set(_centerProperty.Update());
             }
             EditorGUILayout.EndVertical();

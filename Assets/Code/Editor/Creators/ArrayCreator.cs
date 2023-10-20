@@ -430,20 +430,20 @@ namespace Prefabrikator
             GUILayout.Space(indentLevel);
             EditorGUILayout.LabelField("Modifiers", EditorStyles.boldLabel);
 
-            EditorGUILayout.BeginHorizontal(GUILayout.MaxWidth(PrefabrikatorTool.MaxWidth - indentLevel));
+            EditorGUILayout.BeginHorizontal(GUILayout.MaxWidth(Constants.MaxWidth - indentLevel));
             {
                 GUILayout.Space(indentLevel);
                 // #DG: Get the modifier list from the Array itself. 
                 string[] options = GetAllowedModifiers();
                 _indexOfModifierToAdd = EditorGUILayout.Popup(_indexOfModifierToAdd, options);
-                if (GUILayout.Button(Constants.PlusButton))
+                if (GUILayout.Button(Constants.PlusButton, GUILayout.Width(Constants.DefaultButtonWidth)))
                 {
                     AddModifier(options[_indexOfModifierToAdd]);
                 }
             }
             EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.BeginHorizontal(GUILayout.MaxWidth(PrefabrikatorTool.MaxWidth- indentLevel));
+            EditorGUILayout.BeginHorizontal(GUILayout.MaxWidth(Constants.MaxWidth- indentLevel));
             {
                 GUILayout.Space(20);
                 EditorGUILayout.BeginVertical();
@@ -494,7 +494,11 @@ namespace Prefabrikator
             TransformProxy[] proxies = new TransformProxy[_createdObjects.Count];
             for (int i = 0; i < _createdObjects.Count; ++i)
             {
-                proxies[i] = _createdObjects[i].transform;
+                Vector3 position = GetDefaultPositionAtIndex(i);
+                Quaternion rotation = GetDefaultRotation();
+                Vector3 scale = GetDefaultScale();
+
+                proxies[i] = new TransformProxy(position, rotation, scale);
             }
 
             int numMods = _modifierStack.Count;

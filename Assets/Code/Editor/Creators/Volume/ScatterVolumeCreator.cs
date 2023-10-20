@@ -62,7 +62,7 @@ namespace Prefabrikator
                 EditorGUILayout.BeginHorizontal();
                 {
                     _scatterRadius.Set(_scatterRadiusProperty.Update());
-                    GUILayout.Space(Extensions.IndentSize);
+                    GUILayout.Space(Constants.IndentSize);
                     if (GUILayout.Button("Scatter"))
                     {
                         Scatter();

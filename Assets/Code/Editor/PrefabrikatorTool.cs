@@ -21,10 +21,6 @@ namespace Prefabrikator
         private ArrayCreator _creator = null;
         private ShapeType _shapeType = ShapeType.Line;
 
-        public const float MaxWidth = 500;
-        public const float MaxHeght = 750;
-        private const int ToolbarButtonWidth = 75;
-
         private static PrefabrikatorTool _window = null;
 
         private GameObject _selectedObject = null;
@@ -48,7 +44,7 @@ namespace Prefabrikator
         public static void Open(OpenMode mode = OpenMode.Create)
         {
             _window = ScriptableObject.CreateInstance<PrefabrikatorTool>();
-            _window.maxSize = new Vector2(MaxWidth, MaxHeght);
+            _window.maxSize = new Vector2(Constants.MaxWidth, Constants.MaxHeght);
             _window.minSize = _window.maxSize;
             _window.titleContent = new GUIContent(WindowName);
             _window._openMode = mode;
@@ -230,7 +226,7 @@ namespace Prefabrikator
                 EditorGUILayout.EndVertical();
 
                 // Shape Options
-                GUILayout.Space(Extensions.IndentSize);
+                GUILayout.Space(Constants.IndentSize);
                 EditorGUILayout.LabelField("Shape Options", EditorStyles.boldLabel);
                 if (_creator != null)
                 {
@@ -266,7 +262,7 @@ namespace Prefabrikator
         private void ResizeWindow(ArrayCreator creator)
         {
             float maxHeight = Mathf.Max(creator.MaxWindowHeight, _window.maxSize.y);
-            _window.maxSize = new Vector2(MaxWidth, maxHeight);
+            _window.maxSize = new Vector2(Constants.MaxWidth, maxHeight);
             _window.minSize = _window.maxSize;
         }
 
@@ -368,7 +364,7 @@ namespace Prefabrikator
 
         private bool ToolbarButton(string buttonName)
         {
-            return GUILayout.Button(buttonName, EditorStyles.toolbarButton, GUILayout.Width(ToolbarButtonWidth));
+            return GUILayout.Button(buttonName, EditorStyles.toolbarButton, GUILayout.Width(Constants.ToolbarButtonWidth));
         }
 
         private void ShowFileMenu()
@@ -396,7 +392,7 @@ namespace Prefabrikator
 
             //editMenu.ShowAsContext();
             Rect pos = new Rect();
-            pos.x = ToolbarButtonWidth;
+            pos.x = Constants.ToolbarButtonWidth;
             pos.y = EditorStyles.toolbar.fixedHeight;
 
             editMenu.DropDown(pos);

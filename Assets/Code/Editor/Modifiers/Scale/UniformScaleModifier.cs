@@ -26,7 +26,13 @@ namespace Prefabrikator
             int numObjs = proxies.Length;
             for (int i = 0; i < numObjs; ++i)
             {
-                proxies[i].Scale += _target;
+                Vector3 scale = proxies[i].Scale;
+
+                scale.x *= Mathf.Abs(((Vector3)_target).x);
+                scale.y *= Mathf.Abs(((Vector3)_target).y);
+                scale.z *= Mathf.Abs(((Vector3)_target).z);
+
+                proxies[i].Scale = scale;
             }
         }
     }

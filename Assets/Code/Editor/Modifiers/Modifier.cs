@@ -32,7 +32,7 @@ namespace Prefabrikator
 
         public void UpdateInspector()
         {
-            EditorGUILayout.BeginVertical(new GUIStyle("Tooltip"), GUILayout.MaxWidth(PrefabrikatorTool.MaxWidth - Extensions.IndentSize), GUILayout.ExpandWidth(false));
+            EditorGUILayout.BeginVertical(new GUIStyle("Tooltip"), GUILayout.MaxWidth(Constants.MaxWidth - Constants.IndentSize), GUILayout.ExpandWidth(false));
             {
                 OnInspectorUpdate();
             }

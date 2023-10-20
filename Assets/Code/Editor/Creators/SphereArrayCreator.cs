@@ -158,9 +158,9 @@ namespace Prefabrikator
         {
             bool needsRefresh = false;
 
-            EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle, GUILayout.Width(PrefabrikatorTool.MaxWidth));
+            EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle, GUILayout.Width(Constants.MaxWidth));
             {
-                EditorGUILayout.LabelField(label ?? "Count", GUILayout.Width(Extensions.LabelWidth));
+                EditorGUILayout.LabelField(label ?? "Count", GUILayout.Width(Constants.LabelWidth));
 
                 if (GUILayout.Button("-", GUILayout.Width(20)))
                 {
@@ -172,7 +172,7 @@ namespace Prefabrikator
                 }
 
                 var style = new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter };
-                EditorGUILayout.LabelField(targetCount.ToString(), style, GUILayout.ExpandWidth(true), GUILayout.Width(Extensions.LabelWidth));
+                EditorGUILayout.LabelField(targetCount.ToString(), style, GUILayout.ExpandWidth(true), GUILayout.Width(Constants.LabelWidth));
 
                 if (GUILayout.Button("+", GUILayout.Width(20)))
                 {

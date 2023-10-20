@@ -58,7 +58,7 @@ namespace Prefabrikator
 
             public bool Show() 
             {
-                return GUILayout.Button(_content, GUILayout.Width(Extensions.IndentSize));
+                return GUILayout.Button(_content, GUILayout.Width(Constants.IndentSize));
             }
 
             public void Click(T value)
@@ -103,7 +103,7 @@ namespace Prefabrikator
             {
                 if (_shouldShowLabel)
                 {
-                    EditorGUILayout.LabelField(_label, GUILayout.MaxWidth(Extensions.LabelWidth));
+                    EditorGUILayout.LabelField(_label, GUILayout.MaxWidth(Constants.LabelWidth));
                 }
 
                 if (_editMode == EditMode.Enabled)

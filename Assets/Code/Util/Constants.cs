@@ -26,5 +26,12 @@ namespace Prefabrikator
         public static GUIContent MinusButton => EditorGUIUtility.IconContent("d_Toolbar Minus", "|Remove");
         public static GUIContent CheckMark => EditorGUIUtility.IconContent("d_FilterSelectedOnly", "|Apply");
         public static GUIContent XButton => EditorGUIUtility.IconContent("d_winbtn_win_close", "|Cancel");
+
+        public const float MaxWidth = 500;
+        public const float MaxHeght = 750;
+        public const int ToolbarButtonWidth = 75;
+        public const int DefaultButtonWidth = 25;
+        public const float LabelWidth = 60f;
+        public const int IndentSize = 20;
     }
 }

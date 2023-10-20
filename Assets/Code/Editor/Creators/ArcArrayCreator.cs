@@ -35,7 +35,7 @@ namespace Prefabrikator
             {
                 EditorGUILayout.BeginHorizontal();
                 {
-                    EditorGUILayout.LabelField("Fill", GUILayout.Width(Extensions.LabelWidth));
+                    EditorGUILayout.LabelField("Fill", GUILayout.Width(Constants.LabelWidth));
                     _fillPercent.Set(_fillProperty.Update());
                 }
                 EditorGUILayout.EndHorizontal();
