@@ -105,6 +105,14 @@ namespace Prefabrikator
 
         private void OnDestroy()
         {
+            if (_undoStack.UndoOperationsAvailable > 0 && _isSaving == false)
+            {
+                if (EditorUtility.DisplayDialog("Save and Close", "Would you like to save changes?", "Save", "Close"))
+                {
+                    _isSaving = true;
+                }
+            }
+
             if (_creator != null)
             {
                 _creator.ClearSceneGUI();

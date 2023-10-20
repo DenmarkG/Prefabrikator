@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Prefabrikator
 {
-    public class FollowCurveModifier : Modifier, IRotator
+    public class FollowCurveModifier : Modifier
     {
         private enum CurveMode
         {
@@ -106,6 +106,7 @@ namespace Prefabrikator
                         current.Rotation = Quaternion.LookRotation(cross);
                     }
 
+                    proxies[i] = current;
                     _rotations[i] = current.Rotation;
                 }
             }
@@ -131,6 +132,8 @@ namespace Prefabrikator
                     float zTan = ellipse.ZRadius * Mathf.Cos(t);
                     Vector3 tangent = new Vector3(xTan, 0f, zTan);
                     current.Rotation = Quaternion.LookRotation(tangent);
+
+                    proxies[i] = current;
                     _rotations[i] = current.Rotation;
                 }
             }
