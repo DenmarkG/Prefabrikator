@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using static Prefabrikator.GridArrayCreator;
 
 namespace Prefabrikator
 {
@@ -15,6 +17,10 @@ namespace Prefabrikator
 
         protected override string DisplayName => ModifierType.FollowCurve;
         private CurveMode _curveMode = CurveMode.Circle;
+
+        private Shared<Axis> _axis = new(Axis.Z);
+        private Shared<bool> _negateAxis = new(false);
+        private BoolProperty _negateProperty = null;
 
         private Quaternion[] _rotations = null;
 
@@ -39,6 +45,12 @@ namespace Prefabrikator
             {
                 Debug.LogError("Attempting to an invalid curve modifier");
             }
+
+            void OnNegateChanged(bool current, bool previous)
+            {
+                Owner.CommandQueue.Enqueue(new GenericCommand<bool>(_negateAxis, previous, current));
+            }
+            _negateProperty = new BoolProperty("Flip Axis", _negateAxis, OnNegateChanged);
         }
 
         public override void OnRemoved()
@@ -74,12 +86,13 @@ namespace Prefabrikator
 
         protected override void OnInspectorUpdate()
         {
-            // #DG: Add follow axis? 
-            GUILayout.BeginHorizontal(Extensions.LogStyle);
+            Axis axis = (Axis)EditorGUILayout.EnumPopup("Follow Axis", _axis);
+            if (axis != _axis)
             {
-                GUILayout.Label("This modifier has no editable options");
+                Owner.CommandQueue.Enqueue(new GenericCommand<Axis>(_axis, _axis.Get(), axis));
             }
-            GUILayout.EndHorizontal();
+
+            _negateAxis.Set(_negateProperty.Update());
         }
 
         private void SetRoationFromCircle(TransformProxy[] proxies)
@@ -102,8 +115,19 @@ namespace Prefabrikator
                     }
                     else
                     {
-                        Vector3 cross = Vector3.Cross((position - center).normalized, circle.UpVector);
-                        current.Rotation = Quaternion.LookRotation(cross);
+                        Vector3 relativePosition = (position - center).normalized;
+                        Vector3 cross = Vector3.Cross(relativePosition, circle.UpVector);
+
+                        float directionScalar = _negateAxis.Get() ? -1 : 1;
+
+                        Quaternion targetRotation = _axis.Get() switch
+                        {
+                            Axis.X => Quaternion.LookRotation(-relativePosition * directionScalar),
+                            Axis.Y => Quaternion.LookRotation(-circle.UpVector * directionScalar),
+                            _ => Quaternion.LookRotation(cross * directionScalar)
+                        };
+
+                        current.Rotation = targetRotation;
                     }
 
                     proxies[i] = current;
