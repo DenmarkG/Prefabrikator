@@ -1,11 +1,25 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using UnityEditor.Graphs;
 
 namespace Prefabrikator
 {
     public class SphereArrayCreator : CircularArrayCreator
     {
+        public struct RotationInfo
+        {
+            public float RotX;
+            public float RotY;
+            //public float Forward;
+
+            public void Deconstruct(out float rotX, out float rotY)
+            {
+                rotX = RotX;
+                rotY = RotY;
+            }
+        }
+
         public override ShapeType Shape => ShapeType.Sphere;
         public override float MaxWindowHeight => 350f;
         public override string Name => "Sphere";
@@ -20,6 +34,8 @@ namespace Prefabrikator
         private const float TwoPi = Mathf.PI * 2f; // 360
 
         private List<Vector3> _defaultPositions = new List<Vector3>();
+        private List<RotationInfo> _rotations = null;
+
 
         public SphereArrayCreator(GameObject target)
             : base(target)
@@ -62,12 +78,16 @@ namespace Prefabrikator
 
 
         // Algorithm is here: https://www.songho.ca/opengl/gl_sphere.html
+        // Sector = y rotation
+        // Stack = x rotation
         protected override void UpdatePositions()
         {
             if (TargetCount < MinCount || Clones.Count < MinCount)
             {
                 return;
             }
+
+            _rotations = new(new RotationInfo[Clones.Count]);
 
             float sectorStep = Mathf.PI * 2 / _sectorCount;
             float stackStep = Mathf.PI / _stackCount;
@@ -85,6 +105,8 @@ namespace Prefabrikator
 
                 Vector3 position = new Vector3(x, y, z);
                 Clones[0].transform.localPosition = position + _center;
+
+                _rotations[0] = new RotationInfo() { RotX = stackAngle, RotY = sectorAngle };
 
                 ++index;
             }
@@ -104,6 +126,8 @@ namespace Prefabrikator
                     Vector3 position = new Vector3(x, y, z);
                     Clones[index].transform.localPosition = position + _center;
 
+                    _rotations[index] = new RotationInfo() { RotX = stackAngle, RotY = sectorAngle };
+
                     ++index;
                 }
             }
@@ -120,6 +144,8 @@ namespace Prefabrikator
 
                 Vector3 position = new Vector3(x, y, z);
                 Clones[Clones.Count - 1].transform.localPosition = position + _center;
+                
+                _rotations[Clones.Count - 1] = new RotationInfo() { RotX = stackAngle, RotY = sectorAngle };
             }
 
             int count = Clones.Count;
@@ -143,6 +169,11 @@ namespace Prefabrikator
         public override Vector3 GetDefaultPositionAtIndex(int index)
         {
             return _defaultPositions[index];
+        }
+
+        public RotationInfo GetRotationsAtIndex(int index)
+        {
+            return _rotations[index];
         }
 
         protected override sealed void VerifyTargetCount()

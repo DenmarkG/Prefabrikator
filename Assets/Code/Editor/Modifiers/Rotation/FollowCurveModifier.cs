@@ -102,25 +102,42 @@ namespace Prefabrikator
             CircularArrayCreator circle = Owner as CircularArrayCreator;
             if (circle != null)
             {
-                bool isSphere = Owner is SphereArrayCreator;
                 int numObjs = proxies.Length;
                 Vector3 center = circle.Center;
                 TransformProxy current;
                 for (int i = 0; i < numObjs; ++i)
                 {
                     current = proxies[i];
-                    Vector3 position = current.Position;
 
-                    if (isSphere)
+                    Vector3 position = current.Position;
+                    Vector3 relativePosition = (position - center).normalized;
+                    float directionScalar = _negateAxis.Get() ? -1 : 1;
+
+                    if (Owner is SphereArrayCreator sphere)
                     {
-                        current.Rotation = Quaternion.LookRotation(center - position);
+                        
+
+                        var (RotX, RotY) = sphere.GetRotationsAtIndex(i);
+
+                        Vector3 upVector = Quaternion.Euler(RotX, 0f, 0f) * Vector3.up;
+                        Vector3 rightVector = Quaternion.Euler(0f, RotY, 0f) * Vector3.right;
+
+                        Vector3 upTangent = Vector3.Cross(relativePosition, upVector);
+                        Vector3 rightTangent = Vector3.Cross(relativePosition, rightVector);
+
+                        Quaternion targetRotation = _axis.Get() switch
+                        {
+                            Axis.X => Quaternion.LookRotation(-relativePosition * directionScalar),
+                            Axis.Y => Quaternion.LookRotation(upVector, upTangent),
+                            _ => Quaternion.LookRotation(upTangent * directionScalar)
+                        };
+
+                        current.Rotation = targetRotation;
                     }
                     else
                     {
-                        Vector3 relativePosition = (position - center).normalized;
+                        
                         Vector3 cross = Vector3.Cross(relativePosition, circle.UpVector);
-
-                        float directionScalar = _negateAxis.Get() ? -1 : 1;
 
                         Quaternion targetRotation = _axis.Get() switch
                         {
