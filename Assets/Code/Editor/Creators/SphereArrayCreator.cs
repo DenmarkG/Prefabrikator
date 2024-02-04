@@ -60,6 +60,8 @@ namespace Prefabrikator
             }
         }
 
+
+        // Algorithm is here: https://www.songho.ca/opengl/gl_sphere.html
         protected override void UpdatePositions()
         {
             if (TargetCount < MinCount || Clones.Count < MinCount)

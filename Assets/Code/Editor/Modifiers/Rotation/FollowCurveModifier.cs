@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static Prefabrikator.GridArrayCreator;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace Prefabrikator
 {
@@ -123,7 +125,7 @@ namespace Prefabrikator
                         Quaternion targetRotation = _axis.Get() switch
                         {
                             Axis.X => Quaternion.LookRotation(-relativePosition * directionScalar),
-                            Axis.Y => Quaternion.LookRotation(-circle.UpVector * directionScalar),
+                            Axis.Y => Quaternion.LookRotation(-circle.UpVector, cross),
                             _ => Quaternion.LookRotation(cross * directionScalar)
                         };
 
@@ -155,7 +157,17 @@ namespace Prefabrikator
                     float xTan = -(ellipse.XRadius * Mathf.Sin(t));
                     float zTan = ellipse.ZRadius * Mathf.Cos(t);
                     Vector3 tangent = new Vector3(xTan, 0f, zTan);
-                    current.Rotation = Quaternion.LookRotation(tangent);
+                    Vector3 relativePosition = (current.Position - ellipse.Center).normalized;
+
+                    float directionScalar = _negateAxis.Get() ? -1 : 1;
+                    Quaternion targetRotation = _axis.Get() switch
+                    {
+                        Axis.X => Quaternion.LookRotation(-relativePosition * directionScalar),
+                        Axis.Y => Quaternion.LookRotation(-ellipse.UpVector, tangent),
+                        _ => Quaternion.LookRotation(tangent)
+                    };
+
+                    current.Rotation = targetRotation;
 
                     proxies[i] = current;
                     _rotations[i] = current.Rotation;
