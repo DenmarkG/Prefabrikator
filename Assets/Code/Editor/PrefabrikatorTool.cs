@@ -371,7 +371,7 @@ namespace Prefabrikator
         {
             GenericMenu fileMenu = new GenericMenu();
             fileMenu.Add("Save", SaveAndContinue);
-            fileMenu.Add("Save and Close", SaveAndContinue);
+            fileMenu.Add("Save and Close", SaveAndClose);
             fileMenu.AddSeparator("");
             fileMenu.Add("Cancel", Cancel);
 
