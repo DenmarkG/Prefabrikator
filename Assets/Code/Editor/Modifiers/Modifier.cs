@@ -44,5 +44,10 @@ namespace Prefabrikator
 
         public abstract void OnRemoved();
         public abstract void Teardown();
+
+        public CustomProperty<T>.OnValueSetDelegate CreateCommand<T>(Shared<T> field) where T : struct
+        {
+            return (T current, T previous) => { Owner.CommandQueue.Enqueue(new GenericCommand<T>(field, previous, current)); };
+        }
     }
 }

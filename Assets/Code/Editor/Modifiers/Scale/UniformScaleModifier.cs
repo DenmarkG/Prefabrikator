@@ -9,10 +9,9 @@ namespace Prefabrikator
         protected override string DisplayName => "Uniform Scale";
 
         public UniformScaleModifier(ArrayCreator owner)
-            : base(owner)
+            : base(owner, "Scale", 1f)
         {
-            _target = new Shared<Vector3>(new Vector3(1f, 1f, 1f));
-            _targetProperty = new Vector3Property("Scale", _target, OnValueChanged);
+            //
         }
 
         protected override void RestoreDefault(GameObject obj)

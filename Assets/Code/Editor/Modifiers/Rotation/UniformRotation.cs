@@ -9,10 +9,9 @@ namespace Prefabrikator
         protected override string DisplayName => "Uniform Rotation";
 
         public UniformRotation(ArrayCreator owner)
-            : base(owner)
+            : base(owner, "Rotation", 0f)
         {
-            _target = new Shared<Vector3>(new Vector3());
-            _targetProperty = new Vector3Property("Rotation", _target, OnValueChanged);
+            //
         }
 
         protected override void RestoreDefault(GameObject obj)
