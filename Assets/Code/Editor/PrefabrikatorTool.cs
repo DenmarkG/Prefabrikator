@@ -146,12 +146,11 @@ namespace Prefabrikator
 
         private void OnGUI()
         {
+            ShowToolBar();
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
             {
                 if (!IsInEditMode)
                 {
-                    ShowToolBar();
-
                     EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                     {
                         ShapeType type = (ShapeType)EditorGUILayout.EnumPopup("Shape", _shapeType);
@@ -357,6 +356,21 @@ namespace Prefabrikator
                 if (ToolbarButton("Edit"))
                 {
                     ShowEditMenu();
+                }
+
+                GUILayout.FlexibleSpace();
+
+                if (GUILayout.Button(Constants.SaveButton, EditorStyles.toolbarButton, GUILayout.Width(Constants.SmallButtonWidth)))
+                {
+                    SaveAndClose();
+                }
+                if (GUILayout.Button(Constants.UndoButton, EditorStyles.toolbarButton, GUILayout.Width(Constants.SmallButtonWidth)))
+                {
+                    Undo();
+                }
+                if (GUILayout.Button(Constants.RedoButton, EditorStyles.toolbarButton, GUILayout.Width(Constants.SmallButtonWidth)))
+                {
+                    Redo();
                 }
             }
             EditorGUILayout.EndHorizontal();

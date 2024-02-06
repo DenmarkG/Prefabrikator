@@ -26,6 +26,10 @@ namespace Prefabrikator
         public static GUIContent MinusButton => EditorGUIUtility.IconContent("d_Toolbar Minus", "|Remove");
         public static GUIContent CheckMark => EditorGUIUtility.IconContent("d_FilterSelectedOnly", "|Apply");
         public static GUIContent XButton => EditorGUIUtility.IconContent("d_winbtn_win_close", "|Cancel");
+        public static GUIContent SaveButton => EditorGUIUtility.IconContent("SaveActive", "|Save");
+
+        public static GUIContent UndoButton => EditorGUIUtility.IconContent("oi--action-undo", "|Undo");
+        public static GUIContent RedoButton => EditorGUIUtility.IconContent("oi--action-redo", "|Redo");
 
         public const float MaxWidth = 500;
         public const float MaxHeght = 750;
@@ -33,5 +37,6 @@ namespace Prefabrikator
         public const int DefaultButtonWidth = 25;
         public const float LabelWidth = 60f;
         public const int IndentSize = 20;
+        public const int SmallButtonWidth = 30;
     }
 }
