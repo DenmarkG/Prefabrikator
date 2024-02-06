@@ -364,11 +364,16 @@ namespace Prefabrikator
                 {
                     SaveAndClose();
                 }
-                if (GUILayout.Button(Constants.UndoButton, EditorStyles.toolbarButton, GUILayout.Width(Constants.SmallButtonWidth)))
+
+                GUIContent undoButton = (_undoStack.UndoOperationsAvailable > 0) ? Constants.UndoButton : Constants.UndoDisabledButton;
+
+                if (GUILayout.Button(undoButton, EditorStyles.toolbarButton, GUILayout.Width(Constants.SmallButtonWidth)))
                 {
                     Undo();
                 }
-                if (GUILayout.Button(Constants.RedoButton, EditorStyles.toolbarButton, GUILayout.Width(Constants.SmallButtonWidth)))
+
+                GUIContent redoButton = (_undoStack.RedoOperationsAvailable > 0) ? Constants.RedoButton : Constants.RedoDisabledButton;
+                if (GUILayout.Button(redoButton, EditorStyles.toolbarButton, GUILayout.Width(Constants.SmallButtonWidth)))
                 {
                     Redo();
                 }
