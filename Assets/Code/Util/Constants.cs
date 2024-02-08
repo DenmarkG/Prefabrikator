@@ -39,5 +39,7 @@ namespace Prefabrikator
         public const float LabelWidth = 60f;
         public const int IndentSize = 20;
         public const int SmallButtonWidth = 30;
+        public static readonly int HalfLabelWidth = 30;
+        public static readonly int ThreeQuarterLabelWidth = 45;
     }
 }

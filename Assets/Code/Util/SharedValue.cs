@@ -1,38 +1,42 @@
 using System;
 
-[Serializable]
-public class Shared<T> where T : struct
+
+namespace Prefabrikator
 {
-    [UnityEngine.SerializeField] private T _value = default(T);
-
-    public event Action<T> OnValueChanged = null;
-
-    public Shared(T t = default(T))
+    [Serializable]
+    public class Shared<T> where T : struct
     {
-        _value = t;
-    }
+        [UnityEngine.SerializeField] private T _value = default(T);
 
-    public Shared(T t, Action<T> onValueChaned)
-    {
-        _value = t;
-        OnValueChanged = onValueChaned;
-    }
+        public event Action<T> OnValueChanged = null;
 
-    public static implicit operator T(Shared<T> t) => t._value;
+        public Shared(T t = default(T))
+        {
+            _value = t;
+        }
 
-    public void Set(T t)
-    {
-        _value = t;
-        OnValueChanged?.Invoke(_value);
-    }
+        public Shared(T t, Action<T> onValueChaned)
+        {
+            _value = t;
+            OnValueChanged = onValueChaned;
+        }
 
-    public T Get()
-    {
-        return _value;
-    }
+        public static implicit operator T(Shared<T> t) => t._value;
 
-    public ref T GetRef()
-    {
-        return ref _value;
+        public void Set(T t)
+        {
+            _value = t;
+            OnValueChanged?.Invoke(_value);
+        }
+
+        public T Get()
+        {
+            return _value;
+        }
+
+        public ref T GetRef()
+        {
+            return ref _value;
+        }
     }
 }

@@ -88,6 +88,7 @@
     <Compile Include="Assets\Code\Editor\Modifiers\Random\RadialNoise.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Scale\IncrementalScaleModifier.cs" />
     <Compile Include="Assets\Code\Editor\Creators\Interfaces\IRadial.cs" />
+    <Compile Include="Assets\Code\Editor\PropertyDrawers\SharedVectorPropertyDrawer.cs" />
     <Compile Include="Assets\Code\Editor\UndoRedo\Commands.cs" />
     <Compile Include="Assets\Code\Editor\Creators\ArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Creators\BezierArrayCreator.cs" />
