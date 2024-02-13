@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterVolumeCreator.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Rotation\IncrementalRotationModifier.cs" />
+    <Compile Include="Assets\Code\Editor\PropertyDrawers\SharedIntPropertyDrawer.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Rotation\IRotator.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Scale\RandomScaleModifier.cs" />
     <Compile Include="Assets\Code\Editor\Creators\ArcArrayCreator.cs" />

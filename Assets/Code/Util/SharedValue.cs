@@ -22,6 +22,7 @@ namespace Prefabrikator
         }
 
         public static implicit operator T(Shared<T> t) => t._value;
+        public static explicit operator Shared<T>(T t) => new Shared<T>(t);
 
         public void Set(T t)
         {
