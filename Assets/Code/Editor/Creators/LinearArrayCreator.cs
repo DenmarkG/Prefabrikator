@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using UnityEditor.IMGUI.Controls;
 
 namespace Prefabrikator
 {
     using Runtime;
+    using Shapes;
 
     public class LinearArrayCreator : ArrayCreator
     {
@@ -28,7 +28,7 @@ namespace Prefabrikator
             SetupProperties();
 
             var line = CloneParent.AddComponent<LineArray>();
-            line.InitFromSharedData(_start, _offset, _targetCount);
+            line.InitFromSharedData(_start, _offset);
 
             Refresh();
         }
@@ -103,16 +103,7 @@ namespace Prefabrikator
 
         public override Vector3 GetDefaultPositionAtIndex(int index)
         {
-            GameObject proxy = GetProxy();
-
-            if (Clones.Count > 0 && proxy != null)
-            {
-                Vector3 offset = (Vector3)_offset * index;
-                return _start + offset;
-            }
-
-            Debug.LogError($"Proxy not found for Array Creator. Positions may not appear correctly");
-            return default;
+            return Line.GetPositionAtIndex(index, _start, _offset);
         }
 
         private void OnOffsetChange()
