@@ -9,7 +9,9 @@ namespace Prefabrikator.Runtime
     [ExecuteInEditMode]
     public class LineArray : MonoBehaviour
     {
-        [SerializeField] private Shared<Vector3> _offset = new(new Vector3(2f, 0f, 0f));
+        private static readonly Shared<Vector3> DefaultOffset = new(new Vector3(2f, 0f, 0f));
+
+        [SerializeField] private Shared<Vector3> _offset = DefaultOffset;
         [SerializeField] private Shared<Vector3> _start = new(); 
         [SerializeField] private List<Transform> _objects = null;
         
@@ -33,7 +35,7 @@ namespace Prefabrikator.Runtime
 
         public void Refresh()
         {
-            if (_objects != null)
+            if (_objects != null && Line.IsValid(_objects))
             {
                 // #DG: Throws error when any item is null. Need to only call when all objects are valid
                 Line.Refresh(_objects, _start, _offset);
@@ -41,11 +43,33 @@ namespace Prefabrikator.Runtime
         }
 
 #if UNITY_EDITOR
+
+        private bool _isInitialized = false;
+        private void OnEnable()
+        {
+            if (_isInitialized)
+            {
+                return;
+            }
+
+            _start.Set(this.transform.position);
+            _isInitialized = true;
+        }
+
+        [ContextMenu("Reset Positions")]
+        private void Reset()
+        {
+            _offset = DefaultOffset;
+            _start.Set(this.transform.position);
+            _isInitialized = false;
+        }
+
         public void InitFromSharedData(Shared<Vector3> start, Shared<Vector3> offset)
         {
             _start = start;
             _offset = offset;
         }
+
 #endif // UNITY_EDITOR
     }
 }

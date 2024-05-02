@@ -14,6 +14,7 @@ namespace Prefabrikator
             {
                 EditorGUIUtility.labelWidth = ThreeQuarterLabelWidth;
                 SerializedProperty valueProperty = property.FindPropertyRelative("_value");
+
                 EditorGUI.PropertyField(position, valueProperty, new GUIContent(property.displayName));
             }
             EditorGUI.EndProperty();

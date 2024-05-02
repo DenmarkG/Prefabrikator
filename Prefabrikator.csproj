@@ -61,6 +61,8 @@
     <Compile Include="Assets\Code\Util\Properties\MinMaxProperty.cs" />
     <Compile Include="Assets\Code\Util\MinMax.cs" />
     <Compile Include="Assets\Code\Util\GlobalEnums.cs" />
+    <Compile Include="Assets\Code\Shapes\Line.cs" />
+    <Compile Include="Assets\Code\Shapes\Shape.cs" />
     <Compile Include="Assets\Code\PoissonTest.cs" />
     <Compile Include="Assets\Code\Util\Properties\CustomProperty.cs" />
     <Compile Include="Assets\Code\Runtime\Components\LineArray.cs" />
@@ -71,8 +73,6 @@
     <Compile Include="Assets\Code\External\Editor\EditorIcons.cs" />
     <Compile Include="Assets\Code\Util\Constants.cs" />
     <Compile Include="Assets\Code\Util\MathUtils.cs" />
-    <Compile Include="Assets\Code\Shapes\Shape.cs" />
-    <Compile Include="Assets\Code\Shapes\Line.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Code\Prefabrikator.asmdef" />
