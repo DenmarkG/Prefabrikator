@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Code/GraphView/PrefabrikatorGraph.uss?fileID=7433441132597879392&amp;guid=742ff7111b500d943b199ce24de9d211&amp;type=3#PrefabrikatorGraph" />
+    <uie:Toolbar>
+        <uie:ToolbarMenu tabindex="-1" display-tooltip-when-elided="true" name="File" text="File" />
+    </uie:Toolbar>
+    <CustomSplitView fixed-pane-initial-dimension="200">
+        <ui:VisualElement>
+            <ui:Label tabindex="-1" text="Inspector" display-tooltip-when-elided="true" name="Inspector" />
+        </ui:VisualElement>
+        <ui:VisualElement>
+            <ui:Label tabindex="-1" text="GraphView" display-tooltip-when-elided="true" name="GraphView" />
+            <CustomGraphView focusable="true" style="flex-grow: 1;" />
+        </ui:VisualElement>
+    </CustomSplitView>
+</ui:UXML>
