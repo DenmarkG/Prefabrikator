@@ -35,7 +35,7 @@ namespace Prefabrikator
 
         private bool _keepOriginal = false;
 
-        [MenuItem("Prefabikator/Duplicator &a")]
+        [MenuItem("Prefabrikator/Duplicator &a")]
         private static void ArrayToolWindow()
         {
             Open();
