@@ -85,7 +85,15 @@ namespace Prefabrikator.Editor
             Vector2 cachedLocalPosition = evt.localMousePosition;
             IEventHandler currentTarget = evt.currentTarget;
 
-            evt.menu.AppendAction("Add Node", (menuAction) => CreateNode(cachedLocalPosition));
+            // Figure out search provider to replace this; check out game dev guid search window video
+            TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom<NodeView>();
+            foreach (Type type in types)
+            {
+                evt.menu.AppendAction($"Add {type.Name}", (menuAction) => CreateNode(type, cachedLocalPosition));
+            }
+            
+
+            
             evt.menu.AppendSeparator();
             evt.menu.AppendAction("Delete Node", (menuAction) => DeleteNode(currentTarget));
         }
@@ -101,10 +109,10 @@ namespace Prefabrikator.Editor
             }
         }
 
-        private void CreateNode(Vector2 position)
+        private void CreateNode(System.Type type, Vector2 position)
         {
-            // Pass in and set position from event
-            NodeView node = new("New node", position);
+            var node = Activator.CreateInstance(type, new object[] { position }) as NodeView;
+            //NodeView node = new("New node", position);
             AddElement(node);
         }
     }

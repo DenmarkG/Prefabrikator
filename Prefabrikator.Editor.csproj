@@ -102,6 +102,7 @@
     <Compile Include="Assets\Code\Editor\Modifiers\Drop\DropModifier.cs" />
     <Compile Include="Assets\Code\Editor\Creators\LinearArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\PrefabrikatorTool.cs" />
+    <Compile Include="Assets\Code\Editor\Nodes\Atomic\Vector3Node.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Random\RadialNoise.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Rotation\RandomRotation.cs" />
     <Compile Include="Assets\Code\Editor\Creators\SphereArrayCreator.cs" />

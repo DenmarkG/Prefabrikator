@@ -1,50 +1,55 @@
+using Codice.CM.Client.Differences.Graphic;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Prefabrikator.Editor
 {
-    public class NodeView : Node
+    public abstract class NodeView : Node
     {
-        private Port _input;
-        private Port _outPut;
+        protected Port[] _inputs;
+        protected Port[] _outPuts;
 
-        private static readonly Vector2 DefaultSize = new Vector2(75, 50);
+        protected virtual Vector2 DefaultSize { get; } = new Vector2(75, 50);
+        public string Name { get; }
 
         public NodeView(string name, Vector2 position)
             : base()
         {
-            this.title = name;
-
-            SetPosition(new Rect(position, DefaultSize));
-            style.left = position.x;
-            style.top = position.y;
+            Name = name;
+            this.title = Name;
 
             CreateInputs();
             CreateOutputs();
         }
 
-        public override void SetPosition(Rect newPos)
+        public override sealed void SetPosition(Rect newPos)
         {
-            base.SetPosition(newPos);
-
+            style.position = Position.Relative;
+            style.left = newPos.x;
+            style.top = newPos.y;
+            style.width = newPos.width;
+            style.height = newPos.height;
         }
 
-        private void CreateInputs()
+        protected virtual void CreateInputs()
         {
-            _input = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(bool));
+            _inputs = new Port[1];
+            _inputs[0] = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(bool));
 
-            _input.portName = "Input";
-            inputContainer.Add(_input);
+            _inputs[0].portName = "Input";
+            inputContainer.Add(_inputs[0]);
         }
 
-        private void CreateOutputs()
+        protected virtual void CreateOutputs()
         {
-            _outPut = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));
-            _outPut.portName = "Output";
-            outputContainer.Add(_outPut);
+            _outPuts = new Port[1];
+            _outPuts[0] = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));
+            _outPuts[0].portName = "Output";
+            outputContainer.Add(_outPuts[0]);
         }
     }
 }
