@@ -5,7 +5,6 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace Prefabrikator.Editor
 {
@@ -86,13 +85,12 @@ namespace Prefabrikator.Editor
             IEventHandler currentTarget = evt.currentTarget;
 
             // Figure out search provider to replace this; check out game dev guid search window video
+            // https://docs.unity3d.com/ScriptReference/Experimental.GraphView.ISearchWindowProvider.html
             TypeCache.TypeCollection types = TypeCache.GetTypesDerivedFrom<NodeView>();
             foreach (Type type in types)
             {
                 evt.menu.AppendAction($"Add {type.Name}", (menuAction) => CreateNode(type, cachedLocalPosition));
             }
-            
-
             
             evt.menu.AppendSeparator();
             evt.menu.AppendAction("Delete Node", (menuAction) => DeleteNode(currentTarget));

@@ -1,7 +1,3 @@
-using Codice.CM.Client.Differences.Graphic;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,7 +9,7 @@ namespace Prefabrikator.Editor
         protected Port[] _inputs;
         protected Port[] _outPuts;
 
-        protected virtual Vector2 DefaultSize { get; } = new Vector2(75, 50);
+        protected virtual Vector2 DefaultSize { get; } = new Vector2(200, 100);
         public string Name { get; }
 
         public NodeView(string name, Vector2 position)
@@ -28,7 +24,7 @@ namespace Prefabrikator.Editor
 
         public override sealed void SetPosition(Rect newPos)
         {
-            style.position = Position.Relative;
+            style.position = Position.Absolute;
             style.left = newPos.x;
             style.top = newPos.y;
             style.width = newPos.width;
@@ -50,6 +46,16 @@ namespace Prefabrikator.Editor
             _outPuts[0] = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));
             _outPuts[0].portName = "Output";
             outputContainer.Add(_outPuts[0]);
+        }
+
+        public void OnConnected()
+        {
+            //
+        }
+
+        public void OnDisconnected()
+        {
+            //
         }
     }
 }

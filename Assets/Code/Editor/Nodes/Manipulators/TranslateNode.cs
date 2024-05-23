@@ -4,26 +4,29 @@ using UnityEngine.UIElements;
 
 namespace Prefabrikator.Editor
 {
-    public class Vector3Node : NodeView
+    public class TranslateNode : NodeView
     {
-        private Vector3Field _vectorField = null;
-        [SerializeField] private Vector3 _vector;
-        
-        public Vector3Node(Vector2 position) 
-            : base("Vector3", position)
+        private Vector3Field _vectorField;
+        public TranslateNode(Vector2 position) 
+            : base("Translate", position)
         {
             SetPosition(new Rect(position, DefaultSize));
+
+            var spacer = new VisualElement();
+            spacer.style.height = 10;
+            mainContainer.Add(spacer);
+            
             _vectorField = new Vector3Field();
             mainContainer.Add(_vectorField);
         }
 
         protected override void CreateInputs()
         {
-            //_inputs = new Port[1];
-            //_inputs[0] = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(Vector3));
+            _inputs = new Port[1];
+            _inputs[0] = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(Vector3));
 
-            //_inputs[0].portName = "Input";
-            //inputContainer.Add(_inputs[0]);
+            _inputs[0].portName = "Input";
+            inputContainer.Add(_inputs[0]);
         }
 
         protected override void CreateOutputs()
