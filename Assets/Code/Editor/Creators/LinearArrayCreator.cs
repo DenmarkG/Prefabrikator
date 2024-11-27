@@ -27,7 +27,7 @@ namespace Prefabrikator
             _start.Set(target.transform.position);
             SetupProperties();
 
-            var line = CloneParent.AddComponent<LineArray>();
+            var line = CloneParent.AddComponent<MakeLinear>();
             line.InitFromSharedData(_start, _offset);
 
             Refresh();

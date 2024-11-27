@@ -5,32 +5,41 @@ using UnityEngine;
 namespace Prefabrikator.Runtime
 {
     using Shapes;
+    using System.Diagnostics.Contracts;
 
     [ExecuteInEditMode]
-    public class LineArray : MonoBehaviour
+    public class MakeLinear : MonoBehaviour
     {
-        private static readonly Shared<Vector3> DefaultOffset = new(new Vector3(2f, 0f, 0f));
+        private static readonly Vector3 DefaultOffset = new Vector3(2f, 0f, 0f);
 
-        [SerializeField] private Shared<Vector3> _offset = DefaultOffset;
+        public Vector3 Offset => _offset;
+        [SerializeField] private Shared<Vector3> _offset = new(DefaultOffset);
+
+        public Vector3 StartPosition => _start;
         [SerializeField] private Shared<Vector3> _start = new(); 
-        [SerializeField] private List<Transform> _objects = null;
-        
-        private Transform _transform = null;
 
-        private void Awake()
+        [SerializeField] private List<Transform> _objects = null;
+
+        private void Start()
         {
-            _transform = this.transform;
+            _offset.OnValueChanged += OnValueChanged;
+            _start.OnValueChanged += OnValueChanged;
         }
 
         private void Update()
         {
             _objects ??= new List<Transform>();
-            _transform ??= this.transform; // #DG: edit time only
         }
 
         private void OnValidate()
         {
             Refresh();
+        }
+
+        private void OnDestroy()
+        {
+            _offset.OnValueChanged -= OnValueChanged;
+            _start.OnValueChanged -= OnValueChanged;
         }
 
         public void Refresh()
@@ -41,6 +50,29 @@ namespace Prefabrikator.Runtime
                 Line.Refresh(_objects, _start, _offset);
             }
         }
+
+        private void OnValueChanged(Vector3 value)
+        {
+            Refresh();
+        }
+
+        public void AddTransform(Transform xform)
+        {
+            if (xform != null)
+            {
+                _objects.Add(xform);
+            }
+        }
+
+        public void SetOffset(Vector3 offset)
+        {
+            _offset.Set(offset);
+        }
+
+        public Shared<Vector3> GetSharedOffset() => _offset;
+        public Shared<Vector3> GetShareStart() => _start;
+
+
 
 #if UNITY_EDITOR
 
@@ -59,7 +91,7 @@ namespace Prefabrikator.Runtime
         [ContextMenu("Reset Positions")]
         private void Reset()
         {
-            _offset = DefaultOffset;
+            _offset.Set(DefaultOffset);
             _start.Set(this.transform.position);
             _isInitialized = false;
         }

@@ -65,35 +65,26 @@
     <Compile Include="Assets\Code\Editor\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Scale\RandomScaleModifier.cs" />
     <Compile Include="Assets\Code\Editor\Util\ToolCloseMode.cs" />
-    <Compile Include="Assets\Code\Editor\Nodes\Manipulators\SetPositionNode.cs" />
     <Compile Include="Assets\Code\Editor\Creators\Interfaces\IRadial.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Scale\IncrementalScaleModifier.cs" />
-    <Compile Include="Assets\Code\Editor\GraphView\NodeView.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Random\RandomModifier.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Scale\UniformScaleModifier.cs" />
     <Compile Include="Assets\Code\Editor\PropertyDrawers\SharedIntPropertyDrawer.cs" />
-    <Compile Include="Assets\Code\Editor\Nodes\Atomic\ObjectPickerNode.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Uniform\UniformModifier.cs" />
     <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterPlaneCreator.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\IncrementalModifier.cs" />
     <Compile Include="Assets\Code\Editor\Creators\LinearArrayCreator.cs" />
-    <Compile Include="Assets\Code\Editor\Nodes\Atomic\Vector3Node.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Random\RadialNoise.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Rotation\RandomRotation.cs" />
     <Compile Include="Assets\Code\Editor\Creators\SphereArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\UndoRedo\UndoStack.cs" />
     <Compile Include="Assets\Code\Editor\Util\TransformProxy.cs" />
-    <Compile Include="Assets\Code\Editor\GraphView\SplitView.cs" />
     <Compile Include="Assets\Code\Editor\UndoRedo\Commands.cs" />
     <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterSphereCreator.cs" />
     <Compile Include="Assets\Code\Editor\UndoRedo\Command.cs" />
     <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterBoxCreator.cs" />
     <Compile Include="Assets\Code\Editor\Creators\GridArrayCreator.cs" />
-    <Compile Include="Assets\Code\Editor\GraphView\NodeGraph.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Modifier.cs" />
-    <Compile Include="Assets\Code\Editor\Nodes\Atomic\OutputNode.cs" />
-    <Compile Include="Assets\Code\Editor\GraphView\NodeInspectorView.cs" />
-    <Compile Include="Assets\Code\Editor\Nodes\Manipulators\TranslateNode.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Position\CheckerBoardModifier.cs" />
     <Compile Include="Assets\Code\Editor\Creators\ArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Noise\PositionNoiseModifier.cs" />
@@ -104,15 +95,12 @@
     <Compile Include="Assets\Code\Editor\Creators\ArcArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Rotation\FollowCurveModifier.cs" />
     <Compile Include="Assets\Code\Editor\Creators\EllipseArrayCreator.cs" />
-    <Compile Include="Assets\Code\Editor\GraphView\NodeGraphView.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\ModifierFactory.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Drop\DropModifier.cs" />
     <Compile Include="Assets\Code\Editor\PrefabrikatorTool.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Code\Editor\Prefabrikator.Editor.asmdef" />
-    <None Include="Assets\Code\Editor\GraphView\NodeGraph.uss" />
-    <None Include="Assets\Code\Editor\GraphView\NodeGraph.uxml" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -859,11 +847,11 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.TestRunner">
-      <HintPath>Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TestRunner">
+      <HintPath>Library\ScriptAssemblies\UnityEngine.TestRunner.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
