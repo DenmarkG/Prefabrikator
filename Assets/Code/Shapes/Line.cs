@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEditor;
 using UnityEngine;
 
 namespace Prefabrikator.Shapes
 {
+    [System.Serializable]
     public struct LineData : IShapeData
     {
         public Vector3 Start;
@@ -18,8 +20,8 @@ namespace Prefabrikator.Shapes
 
     public class Line : Shape<LineData>
     {
-        public static readonly int MaxCount = 50;
-        public static readonly int MinCount = 0;
+        public override int MaxCount => 50;
+        public override int MinCount => 0;
 
         public static Vector3 GetPositionAtIndex(int i, Vector3 start, Vector3 offset)
         {
@@ -59,6 +61,11 @@ namespace Prefabrikator.Shapes
                     current.position = GetPositionAtIndex(i, start, offset);
                 }
             }
+        }
+
+        public static void Refresh(List<Transform> transforms, LineData lineData)
+        {
+            Refresh(transforms, lineData.Start, lineData.Offset);
         }
     }
 }

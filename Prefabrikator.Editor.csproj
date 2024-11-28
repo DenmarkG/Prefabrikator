@@ -92,6 +92,7 @@
     <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterVolumeCreator.cs" />
     <Compile Include="Assets\Code\Editor\Creators\CircularArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Util\PropertyExtensions.cs" />
+    <Compile Include="Assets\Code\Editor\Components\PrefabrikatorComponentInspector.cs" />
     <Compile Include="Assets\Code\Editor\Creators\ArcArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\Rotation\FollowCurveModifier.cs" />
     <Compile Include="Assets\Code\Editor\Creators\EllipseArrayCreator.cs" />

@@ -9,9 +9,6 @@ namespace Prefabrikator
     {
         public event System.Action<ICommand> OnCommandExecuted = null;
 
-        public delegate void ApplicatorDelegate(GameObject go);
-        public delegate void IndexedApplicatorDelegate(GameObject go, int index);
-
         public Queue<ICommand> CommandQueue => _commandQueue;
         private Queue<ICommand> _commandQueue = new Queue<ICommand>();
 
