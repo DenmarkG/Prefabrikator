@@ -15,8 +15,7 @@ namespace Prefabrikator.Runtime
         protected LineData LineInternal => _lineData;
         [SerializeField] private LineData _lineData = new();
 
-        protected List<Transform> Objects => _objects;
-        [SerializeField] private List<Transform> _objects = new();
+        protected abstract List<Transform> Objects { get; }
 
         public ref Vector3 GetSharedOffset() => ref _lineData.Offset;
         public ref Vector3 GetShareStart() => ref _lineData.Start;
@@ -32,7 +31,7 @@ namespace Prefabrikator.Runtime
         {
             if (xform != null)
             {
-                _objects.Add(xform);
+                Objects.Add(xform);
                 Refresh();
             }
         }

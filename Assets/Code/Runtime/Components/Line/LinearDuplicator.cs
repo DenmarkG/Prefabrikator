@@ -1,5 +1,6 @@
 using Prefabrikator.Shapes;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace Prefabrikator.Runtime
@@ -9,47 +10,57 @@ namespace Prefabrikator.Runtime
     {
         private static readonly int DefaultCount = 3;
 
+        protected override List<Transform> Objects => _objects;
+        [SerializeField][HideInInspector] private List<Transform> _objects = new();
         [SerializeField] private GameObject _original;
 
-        public int Count
-        {
-            get => _count;
-            set => _count.Set(value);
-        }
-        
-        [SerializeField] private Shared<int> _count = new(DefaultCount);
+        public int Count => _count;
+        [SerializeField] private int _count = DefaultCount;
         [SerializeField] private bool _keepOriginal;
 
         private Transform _transform;
 
+        private bool _isDirty = false;
+
         private void Awake()
         {
             _transform = this.transform;
-            _count.OnValueChanged += OnCountChange;
         }
 
-        private void OnDestroy()
+        private void Update()
         {
-            _count.OnValueChanged -= OnCountChange;
+            if (_isDirty)
+            {
+                Refresh();
+            }
         }
 
         public override void Refresh()
         {
+            OnCountChange();
             Line.Refresh(Objects, LineInternal);
         }
 
+        /// <summary>
+        /// Ignored for this component
+        /// </summary>
+        /// <param name="xForm"></param>
         public override void AddTransform(Transform xForm = null)
         {
             return;
         }
 
-        private void Update()
+        public void SetCount(int count)
         {
-            //
+            _count = Mathf.Max(count, 0);
+            OnCountChange();
         }
 
-        private void OnCountChange(int _)
+        private void OnCountChange()
         {
+            if (_original == null)
+                return;
+
             if (_count < Objects.Count)
             {
                 while (Objects.Count > _count)
@@ -57,11 +68,9 @@ namespace Prefabrikator.Runtime
                     int index = Objects.Count - 1;
                     if (index >= 0)
                     {
-                        DestroyClone(Objects[Objects.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
+                        var clone = Objects[index];
+                        Objects.RemoveAt(index);
+                        DestroyClone(clone);
                     }
                 }
             }
@@ -126,30 +135,42 @@ namespace Prefabrikator.Runtime
 
             if (_original != null)
             {
-
+                if (_count > 0)
+                {
+                    OnCountChange();
+                    Refresh();
+                }
             }
         }
 
 #if UNITY_EDITOR
         private GameObject _previousPrefab;
-        private int _previousCount;
 
-        private void OnEnable()
+        [ContextMenu("Refresh")]
+        private void EditorRefresh()
         {
-            if (_original != _previousPrefab)
-            {
-                _previousPrefab = _original;
-                OnPrefabChanged();
-            }
-
-            if (_previousCount != _count)
-            {
-                _previousCount = _count;
-                OnCountChange(_count);
-            }
-
             Refresh();
         }
+
+        private void OnValidate()
+        {
+            if (_original != null)
+            {
+                if (_original != _previousPrefab)
+                {
+                    _previousPrefab = _original;
+                    OnPrefabChanged(); // #DG: this won't work b/c of the destroy issue
+                    _isDirty = true;
+                }
+            }
+            
+            _count = Mathf.Max(_count, 0);
+            if (_count != Objects.Count)
+            {
+                _isDirty = true;
+            }
+        }
+
 #endif // UNITY_EDITOR
     }
 }

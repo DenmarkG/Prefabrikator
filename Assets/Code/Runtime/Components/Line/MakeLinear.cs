@@ -9,6 +9,9 @@ namespace Prefabrikator.Runtime
     [ExecuteInEditMode]
     public class MakeLinear : LinearComponent
     {
+        protected override List<Transform> Objects => _objects;
+        [SerializeField] private List<Transform> _objects = new();
+
         private void OnValidate()
         {
             Refresh();
@@ -18,7 +21,6 @@ namespace Prefabrikator.Runtime
         {
             if (Objects != null && Line.IsValid(Objects))
             {
-                // #DG: Throws error when any item is null. Need to only call when all objects are valid
                 Line.Refresh(Objects, LineInternal);
             }
         }
