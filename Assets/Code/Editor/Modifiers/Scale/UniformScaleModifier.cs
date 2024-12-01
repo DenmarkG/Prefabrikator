@@ -14,7 +14,7 @@ namespace Prefabrikator
             //
         }
 
-        protected override void RestoreDefault(GameObject obj)
+        protected override void RestoreDefault(Transform obj)
         {
             Vector3 defaultScale = Owner.GetDefaultScale();
             obj.transform.localScale = defaultScale;

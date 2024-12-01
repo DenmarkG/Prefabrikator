@@ -132,7 +132,7 @@ namespace Prefabrikator
                 clone.transform.SetParent(proxy.transform);
             }
 
-            Clones.Add(clone);
+            Clones.Add(clone.transform);
         }
 
         protected virtual void VerifyTargetCount()

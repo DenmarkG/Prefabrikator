@@ -10,7 +10,6 @@ namespace Prefabrikator.Runtime
     {
         private static readonly int DefaultCount = 3;
 
-        protected override List<Transform> Objects => _objects;
         [SerializeField][HideInInspector] private List<Transform> _objects = new();
         [SerializeField] private GameObject _original;
 
@@ -38,16 +37,7 @@ namespace Prefabrikator.Runtime
         public override void Refresh()
         {
             OnCountChange();
-            Line.Refresh(Objects, LineInternal);
-        }
-
-        /// <summary>
-        /// Ignored for this component
-        /// </summary>
-        /// <param name="xForm"></param>
-        public override void AddTransform(Transform xForm = null)
-        {
-            return;
+            LineInternal.Refresh();
         }
 
         public void SetCount(int count)

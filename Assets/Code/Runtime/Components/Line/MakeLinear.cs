@@ -9,8 +9,7 @@ namespace Prefabrikator.Runtime
     [ExecuteInEditMode]
     public class MakeLinear : LinearComponent
     {
-        protected override List<Transform> Objects => _objects;
-        [SerializeField] private List<Transform> _objects = new();
+        [SerializeField] protected List<Transform> _transforms;
 
         private void OnValidate()
         {
@@ -19,15 +18,14 @@ namespace Prefabrikator.Runtime
 
         public override void Refresh()
         {
-            if (Objects != null && Line.IsValid(Objects))
-            {
-                Line.Refresh(Objects, LineInternal);
-            }
+            LineInternal.SetTransforms(_transforms);
+            LineInternal.Refresh();
         }
 
-        public override void AddTransform(Transform xForm = null)
+        public void AddTransform(Transform xForm = null)
         {
-            AddTransform(xForm);
+            _transforms.Add(xForm);
+            LineInternal.AddTranform(xForm);
         }
     }
 }

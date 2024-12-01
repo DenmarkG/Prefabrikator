@@ -135,7 +135,7 @@ namespace Prefabrikator
                     clone.transform.rotation = Original.transform.rotation;
                 }
 
-                Clones.Add(clone);
+                Clones.Add(clone.transform);
             }
         }
 

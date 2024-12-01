@@ -204,7 +204,7 @@ namespace Prefabrikator
             if (Clones.Count > 0)
             {
                 int index = 0;
-                GameObject currentObj = null;
+                Transform currentObj = null;
                 if (_dimension != Dimension.XYZ)
                 {
                     Vector3 rowDirection = _dimension == Dimension.YZ ? Vector3.forward : Vector3.right;
@@ -380,7 +380,7 @@ namespace Prefabrikator
                 GameObject clone = GameObject.Instantiate(Original, Original.transform.position, Original.transform.rotation, Original.transform.parent);
                 clone.SetActive(true);
                 clone.transform.SetParent(proxy.transform);
-                Clones.Add(clone);
+                Clones.Add(clone.transform);
             }
         }   
 

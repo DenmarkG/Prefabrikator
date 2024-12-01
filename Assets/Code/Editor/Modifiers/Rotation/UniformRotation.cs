@@ -14,7 +14,7 @@ namespace Prefabrikator
             //
         }
 
-        protected override void RestoreDefault(GameObject obj)
+        protected override void RestoreDefault(Transform obj)
         {
             Quaternion defaultRotation = Owner.GetDefaultRotation();
             obj.transform.rotation = defaultRotation;

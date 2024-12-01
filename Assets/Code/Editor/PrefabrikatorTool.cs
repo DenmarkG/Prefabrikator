@@ -1,14 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEditor;
-using System.Collections.Generic;
-using Prefabrikator.Shapes;
-
-// #DG: Convert this to UI Elements
-//using UnityEngine.UIElements;
-//using UnityEditor.UIElements;
 
 namespace Prefabrikator
 {
+    using Runtime;
+    using Shapes;
+
     public class PrefabrikatorTool : EditorWindow
     {
         public enum OpenMode
@@ -42,12 +40,14 @@ namespace Prefabrikator
             Open();
         }
 
-        public static void Open(IShapeData shape = null)
+        public static void Open(PrefabrikatorComponent component = null)
         {
             _window = ScriptableObject.CreateInstance<PrefabrikatorTool>();
             _window.maxSize = new Vector2(Constants.MaxWidth, Constants.MaxHeght);
             _window.minSize = _window.maxSize;
             _window.titleContent = new GUIContent(WindowName);
+
+            IShapeData shape = component?.ShapeData;
             _window._openMode = shape == null ? OpenMode.Create : OpenMode.Edit;
 
             if (Selection.activeObject is GameObject targetObj)

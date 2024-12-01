@@ -69,7 +69,7 @@ namespace Prefabrikator
             Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_target, previous, current));
         }
 
-        protected abstract void RestoreDefault(GameObject obj);
+        protected abstract void RestoreDefault(Transform obj);
         protected abstract void ApplyModifier(TransformProxy[] proxies);
     }
 }

@@ -18,8 +18,8 @@ namespace Prefabrikator
         protected GameObject CloneParent => _cloneParent;
         private GameObject _cloneParent = null;
 
-        public List<GameObject> Clones => _clones;
-        private List<GameObject> _clones = null;
+        public List<Transform> Clones => _clones;
+        private List<Transform> _clones = null;
 
         public int TargetCount => _targetCount;
         protected Shared<int> _targetCount = new Shared<int>(1);
@@ -72,7 +72,7 @@ namespace Prefabrikator
 
             _modifierDisplay.onSelectCallback = OnModifierSelectionChange;
 
-            _clones = new List<GameObject>(_targetCount);
+            _clones = new List<Transform>(_targetCount);
             OnTargetCountChanged();
 
             SceneView.duringSceneGui += OnSceneGUI;
@@ -201,7 +201,7 @@ namespace Prefabrikator
             {
                 if (!string.IsNullOrEmpty(activeObject.scene.name))
                 {
-                    bool isChildSelection = (_clones.Count > 0 && _clones.Contains(activeObject));
+                    bool isChildSelection = (_clones.Count > 0 && _clones.Contains(activeObject.transform));
                     if (!isChildSelection)
                     {
                         _original = activeObject;
@@ -222,7 +222,7 @@ namespace Prefabrikator
         /// <returns>true if the clone was created successfully</returns>
         protected abstract void CreateClone(int index = 0);
 
-        protected void DestroyClone(GameObject clone)
+        protected void DestroyClone(Transform clone)
         {
             _clones.RemoveAt(_clones.IndexOf(clone));
             GameObject.DestroyImmediate(clone);

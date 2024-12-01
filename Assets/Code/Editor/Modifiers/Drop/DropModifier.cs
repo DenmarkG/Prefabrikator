@@ -212,7 +212,7 @@ namespace Prefabrikator
             if (_editMode.HasFlag(EditMode.Center))
             {
                 Handles.color = Color.cyan;
-                foreach (GameObject obj in Owner.Clones)
+                foreach (Transform obj in Owner.Clones)
                 {
                     Handles.DrawLine(obj.transform.position, obj.transform.position + (Vector3.up * _verticalOffset));
                 }
@@ -223,7 +223,7 @@ namespace Prefabrikator
                 int numObjs = Owner.Clones.Count;
                 for (int i = 0; i < numObjs; ++i)
                 {
-                    GameObject current = Owner.Clones[i];
+                    Transform current = Owner.Clones[i];
                     Vector3 start = current.transform.position;
                     Collider collider = current.GetComponent<Collider>();
                     float offset = _verticalOffset;

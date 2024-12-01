@@ -51,7 +51,7 @@ namespace Prefabrikator
                 clone.transform.SetParent(proxy.transform);
 
                 _positions.Add(position);
-                Clones.Add(clone);
+                Clones.Add(clone.transform);
             }
         }
 
@@ -202,7 +202,7 @@ namespace Prefabrikator
                 return null;
             }
 
-            foreach (GameObject activeObject in Clones)
+            foreach (Transform activeObject in Clones)
             {
                 initialSample ??= activeObject.transform.position;
                 Vector3[] samplePoints = GenerateSampleSet(initialSample.Value, _scatterRadius, 2f * _scatterRadius, GetDimension());
