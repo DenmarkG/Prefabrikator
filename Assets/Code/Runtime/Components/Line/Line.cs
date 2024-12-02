@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 namespace Prefabrikator.Runtime
 {
-    [System.Serializable]
+    [ExecuteInEditMode]
     public class Line : MonoBehaviour, IShape
     {
         public static readonly Vector3 DefaultOffset = new Vector3(2f, 0f, 0f);
@@ -90,5 +90,14 @@ namespace Prefabrikator.Runtime
         {
             throw new System.NotImplementedException();
         }
+
+#if UNITY_EDITOR
+
+        private void OnValidate()
+        {
+            Refresh();
+        }
+
+#endif // UNITY_EDITOR
     }
 }
