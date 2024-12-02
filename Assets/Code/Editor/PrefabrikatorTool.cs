@@ -40,14 +40,14 @@ namespace Prefabrikator
             Open();
         }
 
-        public static void Open(PrefabrikatorComponent component = null)
+        public static void Open(IShape component = null)
         {
             _window = ScriptableObject.CreateInstance<PrefabrikatorTool>();
             _window.maxSize = new Vector2(Constants.MaxWidth, Constants.MaxHeght);
             _window.minSize = _window.maxSize;
             _window.titleContent = new GUIContent(WindowName);
 
-            IShapeData shape = component?.ShapeData;
+            IShape shape = component;
             _window._openMode = shape == null ? OpenMode.Create : OpenMode.Edit;
 
             if (Selection.activeObject is GameObject targetObj)

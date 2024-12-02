@@ -1,10 +1,11 @@
 using Prefabrikator.Runtime;
+using Prefabrikator.Shapes;
 using UnityEditor;
 using UnityEngine;
 
 namespace Prefabrikator
 {
-    [CustomEditor(typeof(PrefabrikatorComponent), editorForChildClasses: true)]
+    [CustomEditor(typeof(IShape), editorForChildClasses: true)]
     public class PrefabrikatorComponentInspector : Editor
     {
         public override void OnInspectorGUI()

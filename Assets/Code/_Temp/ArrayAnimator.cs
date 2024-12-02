@@ -8,7 +8,7 @@ public class ArrayAnimator : MonoBehaviour
 {
     [SerializeField] private float _incrementAmount = 2f;
     [SerializeField] private Vector3 direction;
-    [SerializeField] private MakeLinear _lineArray;
+    [SerializeField] private Line _lineArray;
 
 
     void Update()
