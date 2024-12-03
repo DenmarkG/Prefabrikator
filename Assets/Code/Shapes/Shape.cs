@@ -1,13 +1,17 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Prefabrikator.Shapes
 {
-    public interface IShapeData { }
-
-    public abstract class Shape<T> where T : IShapeData 
+    public interface IShape
     {
-        // #DG: may want to include shape here: T shape { get; private set; }
-        public abstract Vector3 GetDefaultPositionAtIndex(int index, T data);
+        int MaxCount { get; }
+        int MinCount { get; }
+        List<Transform> Collection { get; }
+        List<Modifier> Modidfiers { get; }
+        
+        Vector3 GetDefaultPositionAtIndex(int index);
+        void Refresh();
     }
 }

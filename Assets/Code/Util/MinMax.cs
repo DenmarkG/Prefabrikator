@@ -2,6 +2,7 @@ using System;
 
 namespace Prefabrikator
 {
+    [System.Serializable]
     public struct MinMax
     {
         public MinMax(float min, float max)
