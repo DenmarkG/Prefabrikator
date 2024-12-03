@@ -128,8 +128,8 @@
     <Compile Include="Library\PackageCache\com.unity.ugui@2.0.0\Runtime\UGUI\UI\Core\Culling\Clipping.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@2.0.0\Runtime\UGUI\UI\Core\Layout\AspectRatioFitter.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@2.0.0\Runtime\UGUI\UI\Core\ScrollRect.cs" />
-    <Compile Include="Library\PackageCache\com.unity.ugui@2.0.0\Runtime\UGUI\UI\Core\FontUpdateTracker.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@2.0.0\Runtime\UGUI\EventSystem\InputModules\TouchInputModule.cs" />
+    <Compile Include="Library\PackageCache\com.unity.ugui@2.0.0\Runtime\UGUI\UI\Core\FontUpdateTracker.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@2.0.0\Runtime\UGUI\UI\Core\SpriteState.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@2.0.0\Runtime\UGUI\UI\Core\Layout\LayoutElement.cs" />
     <Compile Include="Library\PackageCache\com.unity.ugui@2.0.0\Runtime\UGUI\UI\Core\Layout\LayoutGroup.cs" />

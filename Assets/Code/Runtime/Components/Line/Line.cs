@@ -22,8 +22,8 @@ namespace Prefabrikator.Runtime
 
         public List<Modifier> Modidfiers => new List<Modifier>();
 
-        [SerializeField] private Shared<Vector3> _start;
-        [SerializeField] private Shared<Vector3> _offset;
+        [SerializeField] private Shared<Vector3> _start = new();
+        [SerializeField] private Shared<Vector3> _offset = new();
 
         public void SetOffset(Vector3 offset)
         {

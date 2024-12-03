@@ -214,8 +214,8 @@
     <Compile Include="Library\PackageCache\com.unity.timeline@1.8.6\Editor\Animation\CurveDataSource.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.8.6\Editor\CustomEditors\MarkerEditor.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.8.6\Editor\Items\ItemsUtils.cs" />
-    <Compile Include="Library\PackageCache\com.unity.timeline@1.8.6\Editor\inspectors\TimelinePreferences.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.8.6\Editor\Actions\TimelineAction.cs" />
+    <Compile Include="Library\PackageCache\com.unity.timeline@1.8.6\Editor\inspectors\TimelinePreferences.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.8.6\Editor\Window\TimelineWindow_TimeArea.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.8.6\Editor\treeview\ItemGui\TimelineMarkerGUI.cs" />
     <Compile Include="Library\PackageCache\com.unity.timeline@1.8.6\Editor\Actions\IAction.cs" />
