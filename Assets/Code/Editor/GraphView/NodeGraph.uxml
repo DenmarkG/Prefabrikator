@@ -8,7 +8,7 @@
             <Prefabrikator.Editor.NodeInspectorView style="flex-grow: 1;" />
         </ui:VisualElement>
         <ui:VisualElement name="RightPanel" style="flex-grow: 1;">
-            <Prefabrikator.Editor.NodeGraphView focusable="true" style="flex-grow: 1;" />
+            <Prefabrikator.Editor.NodeGraphView focusable="true" name="NodeGraphView" view-data-key="NodeGraphView" style="flex-grow: 1;" />
         </ui:VisualElement>
     </Prefabrikator.Editor.SplitView>
 </ui:UXML>

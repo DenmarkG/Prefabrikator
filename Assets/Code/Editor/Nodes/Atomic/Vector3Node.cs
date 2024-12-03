@@ -14,7 +14,8 @@ namespace Prefabrikator.Editor
         {
             SetPosition(new Rect(position, DefaultSize));
             _vectorField = new Vector3Field();
-            mainContainer.Add(_vectorField);
+            
+            RefreshExpandedState();
         }
 
         protected override void CreateInputs()
@@ -32,6 +33,10 @@ namespace Prefabrikator.Editor
             _outPuts[0] = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Multi, typeof(Vector3));
             _outPuts[0].portName = "Output";
             outputContainer.Add(_outPuts[0]);
+            outputContainer.contentContainer.Add(_vectorField);
+
+            RefreshExpandedState();
+            RefreshPorts();
         }
     }
 }

@@ -11,6 +11,8 @@ namespace Prefabrikator.Editor
     public class NodeGraphView : GraphView
     {
         public new class UxmlFactory : UxmlFactory<NodeGraphView, UxmlTraits> { }
+
+        private SearchView _searchView = null;
         public NodeGraphView()
         {
             Insert(0, new GridBackground());
@@ -20,6 +22,7 @@ namespace Prefabrikator.Editor
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
 
+            AddSearchWindow();
 
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Code/Editor/GraphView/NodeGraph.uss");
             styleSheets.Add(styleSheet);
@@ -112,6 +115,12 @@ namespace Prefabrikator.Editor
             var node = Activator.CreateInstance(type, new object[] { position }) as NodeView;
             //NodeView node = new("New node", position);
             AddElement(node);
+        }
+
+        private void AddSearchWindow()
+        {
+            _searchView = ScriptableObject.CreateInstance<SearchView>();
+            nodeCreationRequest = (context) => SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), _searchView);
         }
     }
 }
