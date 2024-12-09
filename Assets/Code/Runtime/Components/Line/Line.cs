@@ -14,16 +14,16 @@ namespace Prefabrikator.Runtime
 
         public int MaxCount => 50;
         public int MinCount => 0;
-
+        
         public Vector3 Start => _start;
+        [SerializeField] private Shared<Vector3> _start = new();
         public Vector3 Offset => _offset;
+        [SerializeField] private Shared<Vector3> _offset = new();
 
-        public List<Transform> Collection => new List<Transform>();
+        public List<Transform> Collection => _collection;
+        [SerializeField] private List<Transform> _collection = new List<Transform>();
 
         public List<Modifier> Modidfiers => new List<Modifier>();
-
-        [SerializeField] private Shared<Vector3> _start = new();
-        [SerializeField] private Shared<Vector3> _offset = new();
 
         public void SetOffset(Vector3 offset)
         {
@@ -33,6 +33,11 @@ namespace Prefabrikator.Runtime
         public void SetStart(Vector3 start)
         {
             _start.Set(start);
+        }
+
+        public void AddTransform(Transform xform)
+        {
+            _collection.Add(xform);
         }
 
         public static Vector3 GetPositionAtIndex(int i, Vector3 start, Vector3 offset)
@@ -63,9 +68,9 @@ namespace Prefabrikator.Runtime
         public static void Refresh(List<Transform> transforms, Vector3 start, Vector3 offset)
         {
             int numObjects = transforms.Count;
+
             Transform current = null;
 
-            Undo.RecordObjects(transforms.ToArray(), "Array Update");
             for (int i = 0; i < numObjects; ++i)
             {
                 if ((current = transforms[i]) != null)
@@ -92,6 +97,11 @@ namespace Prefabrikator.Runtime
         }
 
 #if UNITY_EDITOR
+
+        private void ResetStart()
+        {
+            _start = new Shared<Vector3>(this.transform.position);
+        }
 
         private void OnValidate()
         {

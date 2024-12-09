@@ -12,6 +12,7 @@ namespace Prefabrikator.Shapes
         List<Modifier> Modidfiers { get; }
         
         Vector3 GetDefaultPositionAtIndex(int index);
+        void AddTransform(Transform xform);
         void Refresh();
     }
 }
