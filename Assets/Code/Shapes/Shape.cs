@@ -14,5 +14,7 @@ namespace Prefabrikator.Shapes
         Vector3 GetDefaultPositionAtIndex(int index);
         void AddTransform(Transform xform);
         void Refresh();
+
+        //void AddCloneFromIndex(int index);
     }
 }

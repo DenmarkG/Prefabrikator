@@ -115,7 +115,7 @@ namespace Prefabrikator
             float t = angle * index;
             float x = Mathf.Cos(t) * _radius;
             float z = Mathf.Sin(t) * _radius;
-            
+
             return new Vector3(x, proxy.transform.position.y, z) + _center;
         }
 

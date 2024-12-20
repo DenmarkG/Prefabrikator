@@ -1,9 +1,6 @@
 using Prefabrikator.Shapes;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Prefabrikator.Runtime
 {
@@ -12,13 +9,16 @@ namespace Prefabrikator.Runtime
     {
         public static readonly Vector3 DefaultOffset = new Vector3(2f, 0f, 0f);
 
-        public int MaxCount => 50;
-        public int MinCount => 0;
-        
         public Vector3 Start => _start;
         [SerializeField] private Shared<Vector3> _start = new();
         public Vector3 Offset => _offset;
         [SerializeField] private Shared<Vector3> _offset = new();
+
+        public int MaxCount => _maxCount;
+        [SerializeField] private int _maxCount = ShapeHelpers.DefaultMaxCount;
+        
+        public int MinCount => 0;
+        [SerializeField] private int _minCount = 0;
 
         public List<Transform> Collection => _collection;
         [SerializeField] private List<Transform> _collection = new List<Transform>();
@@ -98,6 +98,7 @@ namespace Prefabrikator.Runtime
 
 #if UNITY_EDITOR
 
+        [ContextMenu("Reset Start")]
         private void ResetStart()
         {
             _start = new Shared<Vector3>(this.transform.position);

@@ -6,6 +6,8 @@ namespace Prefabrikator.Shapes
 {
     public static class ShapeHelpers
     {
+        public static readonly int DefaultMaxCount;
+
         public static void AddTranform(this IShape shape, Transform xform)
         {
             if (xform == null)
