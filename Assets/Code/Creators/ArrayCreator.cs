@@ -103,14 +103,14 @@ namespace Prefabrikator
 
         public abstract void DrawEditor();
         public abstract void UpdateEditor();
-        protected abstract void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false);
+        protected abstract void OnRefreshStart(bool hardRefresh = false);
         //public abstract Bounds CalculateBounds();
         public virtual Bounds CalculateBounds() { return new Bounds();  }
 
-        public void Refresh(bool hardRefresh = false, bool useDefaultData = false)
+        public void Refresh(bool hardRefresh = false)
         {
             ExecuteAllCommands();
-            OnRefreshStart(hardRefresh, useDefaultData);
+            OnRefreshStart(hardRefresh);
             TransformProxy[] proxies = ProcessModifiers();
             ApplyTransforms(proxies);
         }
@@ -249,7 +249,7 @@ namespace Prefabrikator
             return _cloneParent;
         }
 
-        protected void EstablishHelper(bool useDefaultData = false)
+        protected void EstablishHelper()
         {
             if (_cloneParent == null)
             {

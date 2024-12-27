@@ -111,9 +111,9 @@ namespace Prefabrikator
             return GetRandomPoisson() ?? Extensions.GetRandomPointInBounds(new Bounds(_center, _size));
         }
 
-        protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
+        protected override void OnRefreshStart(bool hardRefresh = false)
         {
-            base.OnRefreshStart(hardRefresh, useDefaultData);
+            base.OnRefreshStart(hardRefresh);
 
             if (_positions.Count != Clones.Count)
             {

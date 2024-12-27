@@ -8,15 +8,12 @@ namespace Prefabrikator.Runtime
     public class Circle : MonoBehaviour, IShape
     {
         // #DG: TODO: make these tunable
-        private static readonly int DefaultMaxCount = 100;
         private static readonly float DefaultRadius = 1f;
 
         [SerializeField] private Shared<float> _radius = new(DefaultRadius);
         [SerializeField] private Shared<Vector3> _center = new();
 
-        public int MaxCount => _maxCount;
-        [SerializeField] private int _maxCount = ShapeHelpers.DefaultMaxCount;
-        public int MinCount => 0;
+        public int Count => _collection?.Count ?? 0;
 
         public List<Transform> Collection => _collection;
         [SerializeField] private List<Transform> _collection = new();

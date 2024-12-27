@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace Prefabrikator
 {
-    [CustomEditor(typeof(IShape), editorForChildClasses: true)]
+    [CustomEditor(typeof(CustomShape), editorForChildClasses: true)]
     public class PrefabrikatorComponentInspector : Editor
     {
         public override void OnInspectorGUI()
         {
             if (GUILayout.Button("Edit"))
             {
-                PrefabrikatorTool.Open();
+                PrefabrikatorTool.Open(target as CustomShape);
             }
             base.OnInspectorGUI();
 

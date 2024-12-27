@@ -14,11 +14,7 @@ namespace Prefabrikator.Runtime
         public Vector3 Offset => _offset;
         [SerializeField] private Shared<Vector3> _offset = new();
 
-        public int MaxCount => _maxCount;
-        [SerializeField] private int _maxCount = ShapeHelpers.DefaultMaxCount;
-        
-        public int MinCount => 0;
-        [SerializeField] private int _minCount = 0;
+        public int Count => _collection?.Count ?? 0;
 
         public List<Transform> Collection => _collection;
         [SerializeField] private List<Transform> _collection = new List<Transform>();

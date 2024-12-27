@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using System;
+using UnityEngine;
 
 namespace Prefabrikator
 {
+    [Serializable]
     public struct TransformProxy
     {
         public Vector3 Position;

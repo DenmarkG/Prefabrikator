@@ -135,7 +135,7 @@ namespace Prefabrikator
         private bool ShouldShowY() => _dimension != Dimension.XZ;
         private bool ShouldShowZ() => _dimension != Dimension.XY;
 
-        protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
+        protected override void OnRefreshStart(bool hardRefresh = false)
         {
             if (hardRefresh)
             {

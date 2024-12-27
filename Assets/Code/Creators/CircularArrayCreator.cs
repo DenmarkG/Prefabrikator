@@ -70,7 +70,7 @@ namespace Prefabrikator
             }
         }
 
-        protected override void OnRefreshStart(bool hardRefresh = false, bool useDefaultData = false)
+        protected override void OnRefreshStart(bool hardRefresh = false)
         {
             if (hardRefresh)
             {

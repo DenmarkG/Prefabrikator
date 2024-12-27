@@ -19,10 +19,30 @@ namespace Prefabrikator
 
         private ArrayCreator _creator = null;
         private ShapeType _shapeType = ShapeType.Line;
+        private CustomShape _customShape;
 
-        private static PrefabrikatorTool _window = null;
+        private GameObject SelectedObject
+        {
+            get
+            {
+                return _customShape.Seletion ?? _selection;
+            }
 
-        private GameObject _selectedObject = null;
+            set
+            {
+                if (_customShape != null)
+                {
+                    _customShape.SetSelection(value);
+                }
+                else
+                {
+                    _selection = value;
+                }
+            }
+        }
+
+        private GameObject _selection;
+
         private bool IsInEditMode => _openMode == OpenMode.Edit;
         private OpenMode _openMode;
 
@@ -34,35 +54,41 @@ namespace Prefabrikator
 
         private bool _keepOriginal = false;
 
-        [MenuItem("Prefabrikator/Duplicator &a")]
+        [MenuItem("Prefabrikator/Editor Window &a")]
         private static void ArrayToolWindow()
         {
             Open();
         }
 
-        public static void Open(IShape component = null)
+        public static void Open(CustomShape shape = null)
         {
-            _window = ScriptableObject.CreateInstance<PrefabrikatorTool>();
-            _window.maxSize = new Vector2(Constants.MaxWidth, Constants.MaxHeght);
-            _window.minSize = _window.maxSize;
-            _window.titleContent = new GUIContent(WindowName);
+            PrefabrikatorTool window = ScriptableObject.CreateInstance<PrefabrikatorTool>();
+            window.maxSize = new Vector2(Constants.MaxWidth, Constants.MaxHeght);
+            window.minSize = window.maxSize;
+            window.titleContent = new GUIContent(WindowName);
 
-            IShape shape = component;
-            _window._openMode = shape == null ? OpenMode.Create : OpenMode.Edit;
+            window._customShape = shape;
+            window._openMode = shape == null ? OpenMode.Create : OpenMode.Edit;
 
-            if (Selection.activeObject is GameObject targetObj)
+            if (window._openMode == OpenMode.Edit)
             {
-                _window._selectedObject = targetObj;
-                _window._creator = _window.GetCreator(_window._shapeType, targetObj);
+                window._shapeType = shape.BaseShape;
+                window._keepOriginal = true;
+                window.SelectedObject = window._customShape.Seletion;
+            }
+            else if (Selection.activeObject is GameObject targetObj)
+            {
+                window.SelectedObject = targetObj;
+                window._creator = window.GetCreator(window._shapeType, targetObj);
 
-                if (IsPrefab(targetObj) == false || !_window._keepOriginal)
+                if (IsPrefab(targetObj) == false || !window._keepOriginal)
                 {
                     targetObj.SetActive(false);
                     Selection.activeObject = null;
                 }
             }
 
-            _window.Show();
+            window.Show();
         }
 
         private void Awake()
@@ -117,32 +143,31 @@ namespace Prefabrikator
             }
 
             // #DG: ensure this works each close
-            if (_selectedObject != null)
+            if (SelectedObject != null)
             {
                 if (_isSaving)
                 {
                     if (_keepOriginal)
                     {
-                        _selectedObject.SetActive(true);
+                        SelectedObject.SetActive(true);
                     }
                     else
                     {
-                        if (IsPrefab(_selectedObject) == false)
+                        if (IsPrefab(SelectedObject) == false)
                         {
-                            GameObject.DestroyImmediate(_selectedObject);
+                            GameObject.DestroyImmediate(SelectedObject);
                         }
                     }
-                    _selectedObject = null;
+                    SelectedObject = null;
                 }
                 else
                 {
-                    _selectedObject.SetActive(true);
+                    SelectedObject.SetActive(true);
                 }
             }
 
             _creator = null;
-            _selectedObject = null;
-            _window = null;
+            SelectedObject = null;
         }
 
         private void OnGUI()
@@ -150,46 +175,43 @@ namespace Prefabrikator
             ShowToolBar();
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
             {
-                if (!IsInEditMode)
+                EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
                 {
-                    EditorGUILayout.BeginHorizontal(Extensions.BoxedHeaderStyle);
+                    ShapeType type = (ShapeType)EditorGUILayout.EnumPopup("Shape", _shapeType);
+                    if (type != _shapeType)
                     {
-                        ShapeType type = (ShapeType)EditorGUILayout.EnumPopup("Shape", _shapeType);
-                        if (type != _shapeType)
+                        bool undoStackIsEmpty = (_undoStack.UndoOperationsAvailable == 0) && (_undoStack.RedoOperationsAvailable == 0);
+                        if (_creator == null || undoStackIsEmpty)
                         {
-                            bool undoStackIsEmpty = (_undoStack.UndoOperationsAvailable == 0) && (_undoStack.RedoOperationsAvailable == 0);
-                            if (_creator == null || undoStackIsEmpty)
+                            _shapeType = type;
+
+                            if (SelectedObject != null)
+                            {
+                                _creator = GetCreator(_shapeType, SelectedObject);
+                            }
+                        }
+                        else
+                        {
+                            if (ShowShapeChangeDialog())
                             {
                                 _shapeType = type;
 
-                                if (_selectedObject != null)
+                                if (SelectedObject != null)
                                 {
-                                    _creator = GetCreator(_shapeType, _selectedObject);
+                                    _creator.Teardown();
+                                    _creator = GetCreator(_shapeType, SelectedObject);
+                                    _undoStack.Clear();
                                 }
-                            }
-                            else
-                            {
-                                if (ShowShapeChangeDialog())
-                                {
-                                    _shapeType = type;
-
-                                    if (_selectedObject != null)
-                                    {
-                                        _creator.Teardown();
-                                        _creator = GetCreator(_shapeType, _selectedObject);
-                                        _undoStack.Clear();
-                                    }
-                                }
-                            }
-
-                            if (_creator != null)
-                            {
-                                _creator.Refresh(true);
                             }
                         }
+
+                        if (_creator != null)
+                        {
+                            _creator.Refresh(true);
+                        }
                     }
-                    EditorGUILayout.EndHorizontal();
                 }
+                EditorGUILayout.EndHorizontal();
 
                 // Selection Field
                 EditorGUILayout.BeginVertical(Extensions.BoxedHeaderStyle);
@@ -198,27 +220,32 @@ namespace Prefabrikator
                     {
                         EditorGUILayout.LabelField("Prefab", GUILayout.MaxWidth(100f));
                         GUILayout.FlexibleSpace();
-                        GameObject target = (GameObject)EditorGUILayout.ObjectField(_selectedObject, typeof(GameObject), true);
-                        if (target != null && target != _selectedObject)
+                        GameObject target = (GameObject)EditorGUILayout.ObjectField(SelectedObject, typeof(GameObject), true);
+                        if (target != null && target != SelectedObject)
                         {
-                            _selectedObject = target;
+                            SelectedObject = target;
+
+                            if (IsInEditMode)
+                            {
+                                _customShape.SetSelection(SelectedObject);
+                            }
 
                             if (_creator == null)
                             {
-                                _creator = GetCreator(_shapeType, _selectedObject);
+                                _creator = GetCreator(_shapeType, SelectedObject);
                             }
 
-                            _creator.SetOriginal(_selectedObject);
+                            _creator.SetOriginal(SelectedObject);
                         }
                     }
                     EditorGUILayout.EndHorizontal();
 
-                    if (_selectedObject != null && !IsPrefab(_selectedObject))
+                    if (SelectedObject != null && !IsPrefab(SelectedObject))
                     {
                         bool keepOriginal = EditorGUILayout.ToggleLeft("Keep Original", _keepOriginal);
                         if (_keepOriginal != keepOriginal)
                         {
-                            _selectedObject.SetActive(keepOriginal);
+                            SelectedObject.SetActive(keepOriginal);
                             _keepOriginal = keepOriginal;
                         }
                     }
@@ -261,9 +288,9 @@ namespace Prefabrikator
 
         private void ResizeWindow(ArrayCreator creator)
         {
-            float maxHeight = Mathf.Max(creator.MaxWindowHeight, _window.maxSize.y);
-            _window.maxSize = new Vector2(Constants.MaxWidth, maxHeight);
-            _window.minSize = _window.maxSize;
+            float maxHeight = Mathf.Max(creator.MaxWindowHeight, this.maxSize.y);
+            this.maxSize = new Vector2(Constants.MaxWidth, maxHeight);
+            this.minSize = this.maxSize;
         }
 
         // #DG: Make this Generic

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using UnityEngine;
 
 namespace Prefabrikator.Shapes
@@ -33,6 +32,14 @@ namespace Prefabrikator.Shapes
                 return;
 
             shape.Collection.AddRange(xforms);
+        }
+
+        public static void RemoveTransformAtIndex(this IShape shape, int index)
+        {
+            if (index < 0 || index > shape.Count)
+                return;
+
+            shape.Collection.RemoveAt(index);
         }
 
         public static void ApplyToAll(this IShape shape, ApplicatorDelegate applicator)
