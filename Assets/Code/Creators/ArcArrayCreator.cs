@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+using Prefabrikator.Runtime;
 
 namespace Prefabrikator
 {
@@ -19,8 +20,8 @@ namespace Prefabrikator
         private ArcHandle _arcHandle = new ArcHandle();
         private SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
 
-        public ArcArrayCreator(GameObject target)
-            : base(target)
+        public ArcArrayCreator(GameObject target, CustomShape shape)
+            : base(target, shape)
         {
             _arcHandle.SetColorWithoutRadiusHandle(Color.gray, .25f);
 

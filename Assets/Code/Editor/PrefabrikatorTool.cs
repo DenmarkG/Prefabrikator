@@ -23,25 +23,9 @@ namespace Prefabrikator
 
         private GameObject SelectedObject
         {
-            get
-            {
-                return _customShape.Seletion ?? _selection;
-            }
-
-            set
-            {
-                if (_customShape != null)
-                {
-                    _customShape.SetSelection(value);
-                }
-                else
-                {
-                    _selection = value;
-                }
-            }
+            get => _customShape.Seletion;
+            set => _customShape.SetSelection(value);
         }
-
-        private GameObject _selection;
 
         private bool IsInEditMode => _openMode == OpenMode.Edit;
         private OpenMode _openMode;
@@ -78,8 +62,11 @@ namespace Prefabrikator
             }
             else if (Selection.activeObject is GameObject targetObj)
             {
+                GameObject proxy = new GameObject("Custom Shape");
+                window._customShape = proxy.AddComponent<CustomShape>();
+
                 window.SelectedObject = targetObj;
-                window._creator = window.GetCreator(window._shapeType, targetObj);
+                window._creator = window.GetCreator(window._shapeType, targetObj, window._customShape);
 
                 if (IsPrefab(targetObj) == false || !window._keepOriginal)
                 {
@@ -187,7 +174,7 @@ namespace Prefabrikator
 
                             if (SelectedObject != null)
                             {
-                                _creator = GetCreator(_shapeType, SelectedObject);
+                                _creator = GetCreator(_shapeType, SelectedObject, _customShape);
                             }
                         }
                         else
@@ -199,7 +186,7 @@ namespace Prefabrikator
                                 if (SelectedObject != null)
                                 {
                                     _creator.Teardown();
-                                    _creator = GetCreator(_shapeType, SelectedObject);
+                                    _creator = GetCreator(_shapeType, SelectedObject, _customShape);
                                     _undoStack.Clear();
                                 }
                             }
@@ -232,7 +219,7 @@ namespace Prefabrikator
 
                             if (_creator == null)
                             {
-                                _creator = GetCreator(_shapeType, SelectedObject);
+                                _creator = GetCreator(_shapeType, SelectedObject, _customShape);
                             }
 
                             _creator.SetOriginal(SelectedObject);
@@ -293,9 +280,7 @@ namespace Prefabrikator
             this.minSize = this.maxSize;
         }
 
-        // #DG: Make this Generic
-        // then it can be used at runtime by passing params
-        private ArrayCreator GetCreator(ShapeType type, GameObject target)
+        public ArrayCreator GetCreator(ShapeType type, GameObject target, CustomShape shape)
         {
             if (_creator != null)
             {
@@ -307,37 +292,37 @@ namespace Prefabrikator
             switch (type)
             {
                 case ShapeType.Circle:
-                    creator = new CircularArrayCreator(target);
+                    creator = new CircularArrayCreator(target, shape);
                     break;
                 case ShapeType.Arc:
-                    creator = new ArcArrayCreator(target);
+                    creator = new ArcArrayCreator(target, shape);
                     break;
                 case ShapeType.Sphere:
-                    creator = new SphereArrayCreator(target);
+                    creator = new SphereArrayCreator(target, shape);
                     break;
                 case ShapeType.Ellipse:
-                    creator = new EllipseArrayCreator(target);
+                    creator = new EllipseArrayCreator(target, shape);
                     break;
                 case ShapeType.Grid:
-                    creator = new GridArrayCreator(target);
+                    creator = new GridArrayCreator(target, shape);
                     break;
 #if SPLINE_CREATOR
                 case ShapeType.Spline:
-                    creator = new BezierArrayCreator(target);
+                    creator = new BezierArrayCreator(target, shape);
                     break;
 #endif
                 case ShapeType.ScatterBox:
-                    creator = new ScatterBoxCreator(target);
+                    creator = new ScatterBoxCreator(target, shape);
                     break;
                 case ShapeType.ScatterSphere:
-                    creator = new ScatterSphereCreator(target);
+                    creator = new ScatterSphereCreator(target, shape);
                     break;
                 case ShapeType.ScatterPlane:
-                    creator = new ScatterPlaneCreator(target);
+                    creator = new ScatterPlaneCreator(target, shape);
                     break;
                 case ShapeType.Line:
                 default:
-                    creator = new LinearArrayCreator(target);
+                    creator = new LinearArrayCreator(target, shape);
                     break;
             }
 

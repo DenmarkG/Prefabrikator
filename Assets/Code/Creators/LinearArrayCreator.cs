@@ -21,8 +21,8 @@ namespace Prefabrikator
         private Shared<Vector3> _start = new Shared<Vector3>();
         private Vector3Property _startProperty = null;
 
-        public LinearArrayCreator(GameObject target)
-            : base(target, DefaultCount)
+        public LinearArrayCreator(GameObject target, CustomShape shape)
+            : base(target, DefaultCount, shape)
         {
             _start.Set(target.transform.position);
             SetupProperties();

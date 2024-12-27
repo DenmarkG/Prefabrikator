@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
+using Prefabrikator.Runtime;
 
 namespace Prefabrikator
 {
@@ -48,9 +49,10 @@ namespace Prefabrikator
 
         public abstract ShapeType Shape { get; }
 
-        public ArrayCreator(GameObject target, int defaultCount)
+        public ArrayCreator(GameObject target, int defaultCount, CustomShape shape)
         {
             _original = target;
+            _cloneParent = shape.gameObject; // #DG: TODO: Add option to not reparent
 
             _targetCount.Set(defaultCount);
             void OnCountChange(int current, int previous)

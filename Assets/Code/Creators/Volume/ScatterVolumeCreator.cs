@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Prefabrikator.Runtime;
 
 namespace Prefabrikator
 {
@@ -32,8 +33,8 @@ namespace Prefabrikator
         protected Shared<float> _scatterRadius = new Shared<float>(2f);
         protected FloatProperty _scatterRadiusProperty = null;
 
-        public ScatterVolumeCreator(GameObject target)
-            : base(target, DefaultCount)
+        public ScatterVolumeCreator(GameObject target, CustomShape shape)
+            : base(target, DefaultCount, shape)
         {
             //
         }

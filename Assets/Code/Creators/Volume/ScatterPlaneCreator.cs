@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 
 using Random = UnityEngine.Random;
+using Prefabrikator.Runtime;
 
 namespace Prefabrikator
 {
@@ -19,8 +20,8 @@ namespace Prefabrikator
         protected virtual Shared<Vector3> DefaultSize => new Shared<Vector3>(new Vector3(10f, 0f, 10f));
         private Vector3 _centerDefault = Vector3.zero;
 
-        public ScatterPlaneCreator(GameObject target) 
-            : base(target)
+        public ScatterPlaneCreator(GameObject target, CustomShape shape) 
+            : base(target, shape)
         {
             //_size.Set(new Vector3(10f, 0f, 10f));
             _size.Set(DefaultSize);

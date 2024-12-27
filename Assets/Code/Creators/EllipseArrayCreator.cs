@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+using Prefabrikator.Runtime;
 
 namespace Prefabrikator
 {
@@ -16,8 +17,8 @@ namespace Prefabrikator
         private SphereBoundsHandle _xRadiusHandle = new SphereBoundsHandle();
         private SphereBoundsHandle _zRadiusHandle = new SphereBoundsHandle();
 
-        public EllipseArrayCreator(GameObject target) 
-            : base(target)
+        public EllipseArrayCreator(GameObject target, CustomShape shape) 
+            : base(target, shape)
         {
             void OnZRadiusSet(float current, float previous)
             {

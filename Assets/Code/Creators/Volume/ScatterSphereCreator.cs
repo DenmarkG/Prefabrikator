@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+using Prefabrikator.Runtime;
 
 namespace Prefabrikator
 {
@@ -18,8 +19,8 @@ namespace Prefabrikator
 
         private float SqRadius => _radius * _radius;
 
-        public ScatterSphereCreator(GameObject target)
-            : base(target)
+        public ScatterSphereCreator(GameObject target, CustomShape shape)
+            : base(target, shape)
         {
             _center.Set(target.transform.position);
 
