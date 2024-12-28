@@ -13,8 +13,7 @@ namespace Prefabrikator
         public Queue<ICommand> CommandQueue => _commandQueue;
         private Queue<ICommand> _commandQueue = new Queue<ICommand>();
 
-        protected GameObject Original => _original;
-        private GameObject _original = null;
+        protected GameObject Original { get; private set; }
 
         protected GameObject CloneParent => _cloneParent;
         private GameObject _cloneParent = null;
@@ -54,7 +53,7 @@ namespace Prefabrikator
 
         public ArrayCreator(GameObject target, int defaultCount, CustomShape shape, OpenMode openMode)
         {
-            _original = target;
+            Original = shape.Seletion;
             ShapeData = shape.GetShapeData();
             _cloneParent = shape.gameObject; // #DG: TODO: Add option to not reparent
             Mode = openMode;
@@ -186,6 +185,12 @@ namespace Prefabrikator
 
         private void CancelAndClose()
         {
+            if (Mode == OpenMode.Edit)
+            {
+                _cloneParent = null;
+                _clones = null;
+            }
+
             Teardown();
         }
 
@@ -202,19 +207,19 @@ namespace Prefabrikator
 
         public virtual void OnSelectionChange()
         {
-            if ((Selection.activeObject is GameObject activeObject) && activeObject != _original && activeObject != _cloneParent)
+            if ((Selection.activeObject is GameObject activeObject) && activeObject != Original && activeObject != _cloneParent)
             {
                 if (!string.IsNullOrEmpty(activeObject.scene.name))
                 {
                     bool isChildSelection = (_clones.Count > 0 && _clones.Contains(activeObject.transform));
                     if (!isChildSelection)
                     {
-                        _original = activeObject;
+                        Original = activeObject;
                         Refresh(hardRefresh: true);
                     }
                     else
                     {
-                        Selection.activeGameObject = _original;
+                        Selection.activeGameObject = Original;
                     }
                 }
             }
@@ -237,7 +242,7 @@ namespace Prefabrikator
         {
             if (original != null)
             {
-                _original = original;
+                Original = original;
 
                 Refresh(true);
             }
@@ -287,26 +292,29 @@ namespace Prefabrikator
 
         protected void OnTargetCountChanged()
         {
-            if (TargetCount < _clones.Count)
+            if (Original != null)
             {
-                while (_clones.Count > TargetCount)
+                if (TargetCount < _clones.Count)
                 {
-                    int index = _clones.Count - 1;
-                    if (index >= 0)
+                    while (_clones.Count > TargetCount)
                     {
-                        DestroyClone(_clones[_clones.Count - 1]);
-                    }
-                    else
-                    {
-                        break;
+                        int index = _clones.Count - 1;
+                        if (index >= 0)
+                        {
+                            DestroyClone(_clones[_clones.Count - 1]);
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
-            }
-            else
-            {
-                while (TargetCount > _clones.Count)
+                else
                 {
-                    CreateClone();
+                    while (TargetCount > _clones.Count)
+                    {
+                        CreateClone();
+                    }
                 }
             }
         }
@@ -319,9 +327,9 @@ namespace Prefabrikator
 
         public Vector3 GetDefaultScale()
         {
-            if (_original != null)
+            if (Original != null)
             {
-                return _original.transform.localScale;
+                return Original.transform.localScale;
             }
 
             return new Vector3(1f, 1f, 1f);
@@ -329,9 +337,9 @@ namespace Prefabrikator
 
         public Quaternion GetDefaultRotation()
         {
-            if (_original != null)
+            if (Original != null)
             {
-                return _original.transform.rotation;
+                return Original.transform.rotation;
             }
 
             return Quaternion.identity;
