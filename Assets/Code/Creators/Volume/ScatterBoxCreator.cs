@@ -13,8 +13,8 @@ namespace Prefabrikator
         private Shared<Vector3> _size = new Shared<Vector3>(new Vector3(5f, 5f, 5f));
         protected override Shared<Vector3> DefaultSize => new Shared<Vector3>(new Vector3(5f, 5f, 5f));
 
-        public ScatterBoxCreator(GameObject target, CustomShape shape)
-            : base(target, shape)
+        public ScatterBoxCreator(GameObject target, CustomShape shape, OpenMode openMode)
+            : base(target, shape, openMode)
         {
             //
         }

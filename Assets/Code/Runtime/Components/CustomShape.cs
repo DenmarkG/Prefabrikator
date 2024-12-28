@@ -23,7 +23,7 @@ namespace Prefabrikator.Runtime
         [SerializeField][HideInInspector] private List<TransformProxy> _originalTransforms = new();
 
         public ShapeType BaseShape => _baseShape;
-        [SerializeField][HideInInspector] private ShapeType _baseShape = ShapeType.Line;
+        [SerializeField] private ShapeType _baseShape = ShapeType.Line;
 
         public void AddTransform(Transform xform)
         {

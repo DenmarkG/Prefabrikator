@@ -52,8 +52,8 @@ namespace Prefabrikator
 
         private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
 
-        public GridArrayCreator(GameObject target, CustomShape shape)
-            : base(target, DefaultCount * DefaultCount, shape)
+        public GridArrayCreator(GameObject target, CustomShape shape, OpenMode openMode)
+            : base(target, DefaultCount * DefaultCount, shape, openMode)
         {
             _center.Set(target.transform.position);
             SetupProperties();

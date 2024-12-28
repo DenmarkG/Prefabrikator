@@ -10,7 +10,7 @@ namespace Prefabrikator
 
         public event Action<T> OnValueChanged = null;
 
-        public Shared(T t = default(T))
+        public Shared(T t = default)
         {
             _value = t;
         }

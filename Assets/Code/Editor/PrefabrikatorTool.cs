@@ -9,12 +9,6 @@ namespace Prefabrikator
 
     public class PrefabrikatorTool : EditorWindow
     {
-        public enum OpenMode
-        {
-            Create,
-            Edit,
-        }
-
         private static readonly string WindowName = "Prefabrikator";
 
         private ArrayCreator _creator = null;
@@ -56,7 +50,7 @@ namespace Prefabrikator
             {
                 window._shapeType = shape.BaseShape;
                 window.SelectedObject = window._customShape.Seletion;
-                window._creator = window.GetCreator(window._shapeType, window.SelectedObject, window._customShape);
+                window._creator = window.GetCreator(window._shapeType, window.SelectedObject, window._customShape, window._openMode);
             }
             else if (Selection.activeObject is GameObject targetObj)
             {
@@ -64,7 +58,7 @@ namespace Prefabrikator
                 window._customShape = proxy.AddComponent<CustomShape>();
 
                 window.SelectedObject = targetObj;
-                window._creator = window.GetCreator(window._shapeType, targetObj, window._customShape);
+                window._creator = window.GetCreator(window._shapeType, targetObj, window._customShape, window._openMode);
 
                 if (targetObj.IsPrefab() == false)
                 {
@@ -152,7 +146,7 @@ namespace Prefabrikator
 
                             if (SelectedObject != null)
                             {
-                                _creator = GetCreator(_shapeType, SelectedObject, _customShape);
+                                _creator = GetCreator(_shapeType, SelectedObject, _customShape, _openMode);
                             }
                         }
                         else
@@ -164,7 +158,7 @@ namespace Prefabrikator
                                 if (SelectedObject != null)
                                 {
                                     _creator.Teardown();
-                                    _creator = GetCreator(_shapeType, SelectedObject, _customShape);
+                                    _creator = GetCreator(_shapeType, SelectedObject, _customShape, _openMode);
                                     _undoStack.Clear();
                                 }
                             }
@@ -197,7 +191,7 @@ namespace Prefabrikator
 
                             if (_creator == null)
                             {
-                                _creator = GetCreator(_shapeType, SelectedObject, _customShape);
+                                _creator = GetCreator(_shapeType, SelectedObject, _customShape, _openMode);
                             }
 
                             _creator.SetOriginal(SelectedObject);
@@ -248,7 +242,7 @@ namespace Prefabrikator
             this.minSize = this.maxSize;
         }
 
-        public ArrayCreator GetCreator(ShapeType type, GameObject target, CustomShape shape)
+        public ArrayCreator GetCreator(ShapeType type, GameObject target, CustomShape shape, OpenMode openMode)
         {
             if (_creator != null)
             {
@@ -260,19 +254,19 @@ namespace Prefabrikator
             switch (type)
             {
                 case ShapeType.Circle:
-                    creator = new CircularArrayCreator(target, shape);
+                    creator = new CircularArrayCreator(target, shape, openMode);
                     break;
                 case ShapeType.Arc:
-                    creator = new ArcArrayCreator(target, shape);
+                    creator = new ArcArrayCreator(target, shape, openMode);
                     break;
                 case ShapeType.Sphere:
-                    creator = new SphereArrayCreator(target, shape);
+                    creator = new SphereArrayCreator(target, shape, openMode);
                     break;
                 case ShapeType.Ellipse:
-                    creator = new EllipseArrayCreator(target, shape);
+                    creator = new EllipseArrayCreator(target, shape, openMode);
                     break;
                 case ShapeType.Grid:
-                    creator = new GridArrayCreator(target, shape);
+                    creator = new GridArrayCreator(target, shape, openMode);
                     break;
 #if SPLINE_CREATOR
                 case ShapeType.Spline:
@@ -280,17 +274,17 @@ namespace Prefabrikator
                     break;
 #endif
                 case ShapeType.ScatterBox:
-                    creator = new ScatterBoxCreator(target, shape);
+                    creator = new ScatterBoxCreator(target, shape, openMode);
                     break;
                 case ShapeType.ScatterSphere:
-                    creator = new ScatterSphereCreator(target, shape);
+                    creator = new ScatterSphereCreator(target, shape, openMode);
                     break;
                 case ShapeType.ScatterPlane:
-                    creator = new ScatterPlaneCreator(target, shape);
+                    creator = new ScatterPlaneCreator(target, shape, openMode);
                     break;
                 case ShapeType.Line:
                 default:
-                    creator = new LinearArrayCreator(target, shape);
+                    creator = new LinearArrayCreator(target, shape, openMode);
                     break;
             }
 

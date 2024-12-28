@@ -70,7 +70,7 @@ namespace Prefabrikator.Shapes
                 case ShapeType.Grid:
                     break;
                 case ShapeType.Circle:
-                    break;
+                    return CircleData.Default;
                 case ShapeType.Arc:
                     break;
                 case ShapeType.Sphere:

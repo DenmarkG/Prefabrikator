@@ -23,22 +23,22 @@ namespace Prefabrikator
 
         private LineData LineDataInternal => (LineData)ShapeData;
 
-        public LinearArrayCreator(GameObject target, CustomShape shape)
-            : base(target, DefaultCount, shape)
+        public LinearArrayCreator(GameObject target, CustomShape shape, OpenMode openMode)
+            : base(target, DefaultCount, shape, openMode)
         {
-            Start.Set(target.transform.position);
-            SetupProperties();
+            if (openMode == OpenMode.Create)
+            {
+                Start.Set(target.transform.position);
+            }
 
-            // #DG: add the correct component here
-            //var line = CloneParent.AddComponent<MakeLinear>();
-            //line.InitFromSharedData(_start, _offset);
+            SetupProperties();            
 
             Refresh();
         }
 
         public override void DrawEditor()
         {
-            EditorGUILayout.BeginVertical();
+            using (new EditorGUILayout.VerticalScope())
             {
                 using (new EditorGUI.IndentLevelScope())
                 {
@@ -51,7 +51,6 @@ namespace Prefabrikator
 
                 ShowCountField();
             }
-            EditorGUILayout.EndVertical();
 
             if (_sceneView != null)
             {
@@ -97,7 +96,7 @@ namespace Prefabrikator
             {
                 for (int i = 0; i < Clones.Count; ++i)
                 {
-                    Clones[i].transform.position = GetDefaultPositionAtIndex(i);
+                    Clones[i].transform.position = Line.GetPositionAtIndex(i, Start, Offset);
                 }
             }
         }

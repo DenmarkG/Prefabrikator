@@ -16,6 +16,7 @@ namespace Prefabrikator.Runtime
             Radius = radius;
         }
 
+        public static readonly CircleData Default = new CircleData(new Shared<Vector3>(), new Shared<float>());
     }
 
     public class Circle : MonoBehaviour, IShape

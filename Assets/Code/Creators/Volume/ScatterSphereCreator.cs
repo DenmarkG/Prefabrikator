@@ -19,8 +19,8 @@ namespace Prefabrikator
 
         private float SqRadius => _radius * _radius;
 
-        public ScatterSphereCreator(GameObject target, CustomShape shape)
-            : base(target, shape)
+        public ScatterSphereCreator(GameObject target, CustomShape shape, OpenMode openMode)
+            : base(target, shape, openMode)
         {
             _center.Set(target.transform.position);
 

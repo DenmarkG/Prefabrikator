@@ -38,8 +38,8 @@ namespace Prefabrikator
         private List<RotationInfo> _rotations = null;
 
 
-        public SphereArrayCreator(GameObject target, CustomShape shape)
-            : base(target, shape)
+        public SphereArrayCreator(GameObject target, CustomShape shape, OpenMode openMode)
+            : base(target, shape, openMode)
         {
             SetTargetCount(GetTargetCount());
             _radius.Set(10f);

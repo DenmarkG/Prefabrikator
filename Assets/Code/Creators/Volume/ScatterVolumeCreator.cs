@@ -33,8 +33,8 @@ namespace Prefabrikator
         protected Shared<float> _scatterRadius = new Shared<float>(2f);
         protected FloatProperty _scatterRadiusProperty = null;
 
-        public ScatterVolumeCreator(GameObject target, CustomShape shape)
-            : base(target, DefaultCount, shape)
+        public ScatterVolumeCreator(GameObject target, CustomShape shape, OpenMode openMode)
+            : base(target, DefaultCount, shape, openMode)
         {
             //
         }

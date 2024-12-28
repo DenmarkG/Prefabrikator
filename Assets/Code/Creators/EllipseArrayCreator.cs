@@ -17,8 +17,8 @@ namespace Prefabrikator
         private SphereBoundsHandle _xRadiusHandle = new SphereBoundsHandle();
         private SphereBoundsHandle _zRadiusHandle = new SphereBoundsHandle();
 
-        public EllipseArrayCreator(GameObject target, CustomShape shape) 
-            : base(target, shape)
+        public EllipseArrayCreator(GameObject target, CustomShape shape, OpenMode openMode) 
+            : base(target, shape, openMode)
         {
             void OnZRadiusSet(float current, float previous)
             {

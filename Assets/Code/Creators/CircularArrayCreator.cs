@@ -29,8 +29,8 @@ namespace Prefabrikator
 
         private SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
 
-        public CircularArrayCreator(GameObject target, CustomShape shape)
-            : base(target, DefaultCount, shape)
+        public CircularArrayCreator(GameObject target, CustomShape shape, OpenMode openMode)
+            : base(target, DefaultCount, shape, openMode)
         {
             _center.Set(Original.transform.position);
 

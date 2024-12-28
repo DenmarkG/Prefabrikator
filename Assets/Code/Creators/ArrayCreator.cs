@@ -49,14 +49,18 @@ namespace Prefabrikator
 
         public abstract ShapeType Shape { get; }
         public IShapeData ShapeData { get; }
+        public OpenMode Mode { get; }
 
-        public ArrayCreator(GameObject target, int defaultCount, CustomShape shape)
+
+        public ArrayCreator(GameObject target, int defaultCount, CustomShape shape, OpenMode openMode)
         {
             _original = target;
             ShapeData = shape.GetShapeData();
             _cloneParent = shape.gameObject; // #DG: TODO: Add option to not reparent
+            Mode = openMode;
 
-            _targetCount.Set(defaultCount);
+            _clones = shape.Collection;
+            _targetCount.Set(Mathf.Max(defaultCount, _clones.Count));
             void OnCountChange(int current, int previous)
             {
                 current = EnforceValidCount(current);
@@ -75,8 +79,7 @@ namespace Prefabrikator
             _modifierDisplay.onRemoveCallback = RemoveModifierFromList;
 
             _modifierDisplay.onSelectCallback = OnModifierSelectionChange;
-
-            _clones = new List<Transform>(_targetCount);
+            
             OnTargetCountChanged();
 
             SceneView.duringSceneGui += OnSceneGUI;
@@ -131,19 +134,22 @@ namespace Prefabrikator
 
         protected void DestroyAll()
         {
-            if (_clones.Count > 0)
+            if (_clones != null)
             {
-                int numObjectsCreated = _clones.Count;
-                if (numObjectsCreated > 0)
+                if (_clones.Count > 0)
                 {
-                    for (int i = 0; i < numObjectsCreated; ++i)
+                    int numObjectsCreated = _clones.Count;
+                    if (numObjectsCreated > 0)
                     {
-                        GameObject.DestroyImmediate(_clones[i].gameObject);
+                        for (int i = 0; i < numObjectsCreated; ++i)
+                        {
+                            GameObject.DestroyImmediate(_clones[i].gameObject);
+                        }
                     }
                 }
-            }
 
-            _clones.Clear();
+                _clones.Clear();
+            }
         }
 
         public void OnCloseWindow(ToolCloseMode closeMode)
@@ -167,14 +173,14 @@ namespace Prefabrikator
         private void SaveAndClose()
         {
             _cloneParent = null;
-            _clones.Clear();
+            _clones = null;
             Teardown();
         }
 
         private void SaveAndContinue()
         {
             _cloneParent = null;
-            _clones.Clear();
+            _clones = null;
             Refresh(true);
         }
 

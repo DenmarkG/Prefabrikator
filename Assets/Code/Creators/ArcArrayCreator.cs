@@ -20,8 +20,8 @@ namespace Prefabrikator
         private ArcHandle _arcHandle = new ArcHandle();
         private SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
 
-        public ArcArrayCreator(GameObject target, CustomShape shape)
-            : base(target, shape)
+        public ArcArrayCreator(GameObject target, CustomShape shape, OpenMode openMode)
+            : base(target, shape, openMode)
         {
             _arcHandle.SetColorWithoutRadiusHandle(Color.gray, .25f);
 
