@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Code\External\Editor\EditorIcons.cs" />
+    <Compile Include="Assets\Code\Runtime\Components\IShapeData.cs" />
     <Compile Include="Assets\Code\Runtime\Components\Line\Line.cs" />
     <Compile Include="Assets\Code\Shapes\Shape.cs" />
     <Compile Include="Assets\Code\Creators\Volume\ScatterPlaneCreator.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Assets\Code\Modifiers\Rotation\IncrementalRotationModifier.cs" />
     <Compile Include="Assets\Code\Util\Extensions.cs" />
     <Compile Include="Assets\Code\Util\SharedValue.cs" />
+    <Compile Include="Assets\Code\Util\ToolExtensions.cs" />
     <Compile Include="Assets\Code\Util\Constants.cs" />
     <Compile Include="Assets\Code\Util\Properties\PropertyExtensions.cs" />
     <Compile Include="Assets\Code\Util\GlobalEnums.cs" />

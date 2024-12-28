@@ -164,8 +164,6 @@ namespace Prefabrikator
             }
             UpdatePositions();
 
-            EstablishHelper();
-
             UpdateLocalRotations();
         }
 

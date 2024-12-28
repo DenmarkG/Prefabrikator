@@ -1,17 +1,16 @@
 ﻿using Prefabrikator.Shapes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Prefabrikator.Runtime
 {
+
     public class CustomShape : MonoBehaviour, IShape
     {
-        [SerializeField] private CustomShapeMode _mode = CustomShapeMode.Duplicate;
+        //[SerializeField] private CustomShapeMode _mode = CustomShapeMode.Duplicate;
 
+        [SerializeField] private IShapeData _shapeData; // #DG: this won't work. Need to rebulid from list of properties instead
 
         public GameObject Seletion => _selection;
         [SerializeField] private GameObject _selection;
@@ -47,6 +46,16 @@ namespace Prefabrikator.Runtime
         public void SetSelection(GameObject selection)
         {
             _selection = selection;
+        }
+
+        public IShapeData GetShapeData()
+        {
+            return _shapeData ??= ShapeHelpers.CreateDefaultData(_baseShape);
+        }
+
+        public void SetShapeData(IShapeData shapeData)
+        {
+            _shapeData = shapeData;
         }
     }
 }

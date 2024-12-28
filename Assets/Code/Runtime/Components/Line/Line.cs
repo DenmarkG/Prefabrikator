@@ -1,9 +1,25 @@
 using Prefabrikator.Shapes;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 namespace Prefabrikator.Runtime
 {
+    [System.Serializable]
+    public struct LineData : IShapeData
+    {
+        public Shared<Vector3> Start { get; }
+        public Shared<Vector3> Offset { get; }
+
+        public LineData(Shared<Vector3> start, Shared<Vector3> offset)
+        {
+            Start = start;
+            Offset = offset;
+        }
+
+        public static readonly LineData Default = new LineData(new Shared<Vector3>(), new Shared<Vector3>());
+    }
+
     [ExecuteInEditMode]
     public class Line : MonoBehaviour, IShape
     {
@@ -89,7 +105,21 @@ namespace Prefabrikator.Runtime
 
         public Vector3 GetDefaultPositionAtIndex(int index)
         {
-            throw new System.NotImplementedException();
+            return _start.Get() + (_offset.Get() * index);
+        }
+
+        public void SetShapeData(IShapeData ShapeData)
+        {
+            if (ShapeData is LineData lineData)
+            {
+                _start = lineData.Start;
+                _offset = lineData.Offset;
+            }
+        }
+
+        public IShapeData GetShapeData()
+        {
+            return new LineData(_start, _offset);
         }
 
 #if UNITY_EDITOR

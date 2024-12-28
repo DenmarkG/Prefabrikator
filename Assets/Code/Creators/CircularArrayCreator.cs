@@ -78,8 +78,6 @@ namespace Prefabrikator
                 DestroyAll();
             }
 
-            EstablishHelper();
-
             VerifyTargetCount();
 
             UpdatePositions();

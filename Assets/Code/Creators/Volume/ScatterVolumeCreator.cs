@@ -109,8 +109,6 @@ namespace Prefabrikator
                 _positions.Clear();
             }
 
-            EstablishHelper();
-
             if (TargetCount != Clones.Count)
             {
                 OnTargetCountChanged();

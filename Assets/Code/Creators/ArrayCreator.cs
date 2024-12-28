@@ -48,10 +48,12 @@ namespace Prefabrikator
         protected bool _refreshOnCountChange = false;
 
         public abstract ShapeType Shape { get; }
+        public IShapeData ShapeData { get; }
 
         public ArrayCreator(GameObject target, int defaultCount, CustomShape shape)
         {
             _original = target;
+            ShapeData = shape.GetShapeData();
             _cloneParent = shape.gameObject; // #DG: TODO: Add option to not reparent
 
             _targetCount.Set(defaultCount);
@@ -129,11 +131,6 @@ namespace Prefabrikator
 
         protected void DestroyAll()
         {
-            if (_cloneParent != null)
-            {
-                GameObject.DestroyImmediate(_cloneParent);
-            }
-
             if (_clones.Count > 0)
             {
                 int numObjectsCreated = _clones.Count;
@@ -141,7 +138,7 @@ namespace Prefabrikator
                 {
                     for (int i = 0; i < numObjectsCreated; ++i)
                     {
-                        GameObject.DestroyImmediate(_clones[i]);
+                        GameObject.DestroyImmediate(_clones[i].gameObject);
                     }
                 }
             }
@@ -235,7 +232,6 @@ namespace Prefabrikator
             if (original != null)
             {
                 _original = original;
-                EstablishHelper();
 
                 Refresh(true);
             }
@@ -243,20 +239,7 @@ namespace Prefabrikator
 
         protected GameObject GetProxy()
         {
-            if (_cloneParent == null)
-            {
-                EstablishHelper();
-            }
-
             return _cloneParent;
-        }
-
-        protected void EstablishHelper()
-        {
-            if (_cloneParent == null)
-            {
-                _cloneParent = new GameObject($"{_original.name} {Name}");
-            }
         }
 
         protected virtual void UpdateLocalRotations()

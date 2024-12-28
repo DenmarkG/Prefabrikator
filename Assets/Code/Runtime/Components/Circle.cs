@@ -5,6 +5,19 @@ using UnityEngine;
 
 namespace Prefabrikator.Runtime
 {
+    public struct CircleData : IShapeData
+    {
+        public Shared<Vector3> Center { get; }
+        public Shared<float> Radius { get; }
+
+        public CircleData(Shared<Vector3> center, Shared<float> radius)
+        {
+            Center = center;
+            Radius = radius;
+        }
+
+    }
+
     public class Circle : MonoBehaviour, IShape
     {
         // #DG: TODO: make these tunable
@@ -58,6 +71,20 @@ namespace Prefabrikator.Runtime
             }
         }
 
+        public IShapeData GetShapeData()
+        {
+            return new CircleData(_center, _radius);
+        }
+
+        public void SetShapeData(IShapeData shapeData)
+        {
+            if (shapeData is CircleData circle)
+            {
+                _center = circle.Center;
+                _radius = circle.Radius;
+            }
+        }
+
 #if UNITY_EDITOR
 
         [ContextMenu("Reset Center")]
@@ -71,6 +98,7 @@ namespace Prefabrikator.Runtime
             _collection ??= new();
             Refresh();
         }
+
 #endif // UNITY_EDITOR
     }
 }

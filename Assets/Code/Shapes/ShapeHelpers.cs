@@ -1,3 +1,4 @@
+using Prefabrikator.Runtime;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -58,6 +59,35 @@ namespace Prefabrikator.Shapes
             {
                 applicator(shape.Collection[i], i);
             }
+        }
+
+        public static IShapeData CreateDefaultData(ShapeType shapeType)
+        {
+            switch (shapeType)
+            {
+                case ShapeType.Line:
+                    return LineData.Default;
+                case ShapeType.Grid:
+                    break;
+                case ShapeType.Circle:
+                    break;
+                case ShapeType.Arc:
+                    break;
+                case ShapeType.Sphere:
+                    break;
+                case ShapeType.ScatterSphere:
+                    break;
+                case ShapeType.ScatterBox:
+                    break;
+                case ShapeType.ScatterPlane:
+                    break;
+                case ShapeType.Ellipse:
+                    break;
+                default:
+                    break;
+            }
+
+            return null;
         }
     }
 }

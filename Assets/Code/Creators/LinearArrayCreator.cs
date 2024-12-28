@@ -15,16 +15,18 @@ namespace Prefabrikator
         public override float MaxWindowHeight => 300f;
         public override string Name => "Line";
 
-        private Shared<Vector3> _offset = new Shared<Vector3>(new Vector3(2f, 0f, 0f));
+        private Shared<Vector3> Offset => LineDataInternal.Offset;
         private Vector3Property _offsetProperty = null;
 
-        private Shared<Vector3> _start = new Shared<Vector3>();
+        private Shared<Vector3> Start => LineDataInternal.Start;
         private Vector3Property _startProperty = null;
+
+        private LineData LineDataInternal => (LineData)ShapeData;
 
         public LinearArrayCreator(GameObject target, CustomShape shape)
             : base(target, DefaultCount, shape)
         {
-            _start.Set(target.transform.position);
+            Start.Set(target.transform.position);
             SetupProperties();
 
             // #DG: add the correct component here
@@ -40,11 +42,11 @@ namespace Prefabrikator
             {
                 using (new EditorGUI.IndentLevelScope())
                 {
-                    _start.Set(_startProperty.Update());
+                    Start.Set(_startProperty.Update());
                     GameObject proxy = GetProxy();
-                    proxy.transform.position = _start;
+                    proxy.transform.position = Start;
 
-                    _offset.Set(_offsetProperty.Update());
+                    Offset.Set(_offsetProperty.Update());
                 }
 
                 ShowCountField();
@@ -78,8 +80,6 @@ namespace Prefabrikator
                 DestroyAll();
             }
 
-            EstablishHelper();
-
             if (TargetCount != Clones.Count)
             {
                 OnTargetCountChanged();
@@ -104,7 +104,7 @@ namespace Prefabrikator
 
         public override Vector3 GetDefaultPositionAtIndex(int index)
         {
-            return Line.GetPositionAtIndex(index, _start, _offset);
+            return Line.GetPositionAtIndex(index, Start, Offset);
         }
 
         private void OnOffsetChange()
@@ -126,12 +126,12 @@ namespace Prefabrikator
 
                 if (Clones.Count > 0)
                 {
-                    clone.transform.position = Clones[lastIndex].transform.position + _offset;
+                    clone.transform.position = Clones[lastIndex].transform.position + Offset;
                     clone.transform.rotation = Clones[lastIndex].transform.rotation;
                 }
                 else
                 {
-                    clone.transform.position = Original.transform.position + _offset;
+                    clone.transform.position = Original.transform.position + Offset;
                     clone.transform.rotation = Original.transform.rotation;
                 }
 
@@ -154,7 +154,7 @@ namespace Prefabrikator
                 {
                     Handles.color = Color.green;
                     Vector3 start = proxy.transform.position;
-                    Vector3 end = start + (_offset.Get() * (Clones.Count - 1));
+                    Vector3 end = start + (Offset.Get() * (Clones.Count - 1));
 
                     Handles.DrawLine(start, end);
 
@@ -163,7 +163,7 @@ namespace Prefabrikator
 
                     if (end2 != end)
                     {
-                        _offset.Set((end2 - start) / (Clones.Count - 1));
+                        Offset.Set((end2 - start) / (Clones.Count - 1));
                     }
                 }
 
@@ -172,9 +172,9 @@ namespace Prefabrikator
                     Handles.color = Color.cyan;
                     Vector3 start = Handles.PositionHandle(proxy.transform.position, Quaternion.identity);
 
-                    if (start != _start)
+                    if (start != Start)
                     {
-                        _start.Set(start);
+                        Start.Set(start);
                         proxy.transform.position = start;
                     }
                 }
@@ -183,11 +183,11 @@ namespace Prefabrikator
 
         public void SetupProperties()
         {
-            _startProperty = Vector3Property.Create("Start", _start, CommandQueue);
+            _startProperty = Vector3Property.Create("Start", Start, CommandQueue);
             _startProperty.OnEditModeEnter += () => { _editMode |= EditMode.Center; };
             _startProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Center; };
 
-            _offsetProperty = Vector3Property.Create("Offset", _offset, CommandQueue);
+            _offsetProperty = Vector3Property.Create("Offset", Offset, CommandQueue);
             _offsetProperty.OnEditModeEnter += () => { _editMode |= EditMode.Position; };
             _offsetProperty.OnEditModeExit += (_) => { _editMode &= ~EditMode.Position; };
         }
