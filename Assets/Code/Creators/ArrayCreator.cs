@@ -321,7 +321,7 @@ namespace Prefabrikator
 
         protected void ExecuteCommand(ICommand command)
         {
-            command.Execute();
+            command.Execute(GetProxy());
             OnCommandExecuted(command);
         }
 

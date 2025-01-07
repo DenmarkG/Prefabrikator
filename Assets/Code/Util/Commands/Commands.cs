@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 
 namespace Prefabrikator
 {
@@ -7,14 +8,15 @@ namespace Prefabrikator
     {
         protected ArrayCreator Creator => _creator;
         private ArrayCreator _creator = null;
+        public abstract string Name { get; }
 
         public CreatorCommand(ArrayCreator creator)
         {
             _creator = creator;
         }
 
-        public abstract void Execute();
-        public abstract void Revert();
+        public abstract void Execute(Object obj);
+        public abstract void Revert(Object obj);
     }
 
     internal class GenericCommand<T> : ICommand where T : struct
@@ -22,6 +24,7 @@ namespace Prefabrikator
         private Shared<T> _watchedValue = new Shared<T>();
         private T _previousValue = default(T);
         private T _nextValue = default(T);
+        public string Name => "Array value changed";
 
         public GenericCommand(Shared<T> watchedValue, T previous, T next)
         {
@@ -30,15 +33,16 @@ namespace Prefabrikator
             _nextValue = next;
         }
 
-        public void Execute()
+        public void Execute(Object obj)
         {
             if (_watchedValue != null)
             {
+                Undo.RecordObject(obj, Name);
                 _watchedValue.Set(_nextValue);
             }
         }
 
-        public void Revert()
+        public void Revert(Object obj)
         {
             if (_watchedValue != null)
             {
@@ -49,21 +53,24 @@ namespace Prefabrikator
 
     internal abstract class ModifierCommand : ICommand
     {
-        protected Modifier TargetModifier { get; private set; }   
+        public string Name => "Modifier changed command";
+        protected Modifier TargetModifier { get; private set; }
 
         public ModifierCommand(Modifier modifier)
         {
             TargetModifier = modifier;
         }
 
-        public abstract void Execute();
-        public abstract void Revert();
+        public abstract void Execute(Object obj);
+        public abstract void Revert(Object obj);
     }
 
     internal class CountChangeCommand : CreatorCommand
     {
         private int _previousCount;
         private int _nextCount;
+        public override string Name => "Array count changed";
+
 
         public CountChangeCommand(ArrayCreator creator, int previousCount, int nextCount)
             : base(creator)
@@ -72,13 +79,13 @@ namespace Prefabrikator
             _nextCount = nextCount;
         }
 
-        public override void Execute()
+        public override void Execute(Object obj)
         {
             Creator.SetTargetCount(_nextCount);
             Creator.Refresh();
         }
 
-        public override void Revert()
+        public override void Revert(Object obj)
         {
             Creator.SetTargetCount(_previousCount);
             Creator.Refresh();
@@ -89,6 +96,7 @@ namespace Prefabrikator
     {
         private Modifier _modifier = null;
         private ArrayCreator _creator = null;
+        public string Name => "Add {0} modifier";
 
         public ModifierAddCommand(Modifier modifier, ArrayCreator creator)
         {
@@ -96,12 +104,13 @@ namespace Prefabrikator
             _modifier = modifier;
         }
 
-        public void Execute()
+        public void Execute(Object obj)
         {
+            Undo.RecordObject(obj, string.Format(Name, _modifier.GetType().Name));
             _creator.AddModifier(_modifier);
         }
 
-        public void Revert()
+        public void Revert(Object obj)
         {
             _creator.RemoveModifier(_modifier);
         }
@@ -111,6 +120,7 @@ namespace Prefabrikator
     {
         private Modifier _modifier = null;
         private ArrayCreator _creator = null;
+        public string Name => "Modifier {0} removed";
 
         public ModifierRemoveCommand(Modifier modifier, ArrayCreator creator)
         {
@@ -118,12 +128,13 @@ namespace Prefabrikator
             _modifier = modifier;
         }
 
-        public void Execute()
+        public void Execute(Object obj)
         {
+            Undo.RecordObject(obj, string.Format(Name, _modifier.GetType().Name));
             _creator.RemoveModifier(_modifier);
         }
 
-        public void Revert()
+        public void Revert(Object obj)
         {
             _creator.AddModifier(_modifier);
         }
@@ -131,10 +142,11 @@ namespace Prefabrikator
 
     internal class ValueChangedCommand<T> : ICommand
     {
+        private System.Action<T> OnValueChanged = null;
+
         private T _previous = default(T);
         private T _next = default(T);
-
-        private System.Action<T> OnValueChanged = null;
+        public string Name => "Array value change";
 
         public ValueChangedCommand(T previous, T next, System.Action<T> onValueChanged)
         {
@@ -144,12 +156,14 @@ namespace Prefabrikator
             OnValueChanged = onValueChanged;
         }
 
-        public void Execute()
+
+        public void Execute(Object obj)
         {
+            Undo.RecordObject(obj, Name);
             OnValueChanged(_next);
         }
 
-        public void Revert()
+        public void Revert(Object obj)
         {
             OnValueChanged(_previous);
         }

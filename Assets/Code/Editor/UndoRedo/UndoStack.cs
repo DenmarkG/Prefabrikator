@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
+// https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Undo-undoRedoEvent.html
 namespace Prefabrikator
 {
+    using Object = UnityEngine.Object;
     class UndoStack
     {
         public int UndoOperationsAvailable => _undoStack.Count;
@@ -17,23 +20,23 @@ namespace Prefabrikator
             _redoStack = new Stack<ICommand>(maxStackSize);
         }
 
-        public void Undo()
+        public void Undo(Object obj)
         {
             if (_undoStack.Count > 0)
             {
                 ICommand command = _undoStack.Pop();
-                command.Revert();
+                command.Revert(obj);
 
                 _redoStack.Push(command);
             }
         }
 
-        public void Redo()
+        public void Redo(Object obj)
         {
             if (_redoStack.Count > 0)
             {
                 ICommand command = _redoStack.Pop();
-                command.Execute();
+                command.Execute(obj);
 
                 _undoStack.Push(command);
             }

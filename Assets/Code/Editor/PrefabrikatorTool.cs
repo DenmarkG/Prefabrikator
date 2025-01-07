@@ -298,15 +298,15 @@ namespace Prefabrikator
             _undoStack.OnCommandExecuted(command);
         }
 
-        private void Undo()
+        private void Undo(Object obj)
         {
-            _undoStack.Undo();
+            _undoStack.Undo(obj);
             RefreshArray();
         }
 
-        private void Redo()
+        private void Redo(Object obj)
         {
-            _undoStack.Redo();
+            _undoStack.Redo(obj);
             RefreshArray();
         }
 
@@ -339,13 +339,13 @@ namespace Prefabrikator
 
                 if (GUILayout.Button(undoButton, EditorStyles.toolbarButton, GUILayout.Width(Constants.SmallButtonWidth)))
                 {
-                    Undo();
+                    Undo(_customShape);
                 }
 
                 GUIContent redoButton = (_undoStack.RedoOperationsAvailable > 0) ? Constants.RedoButton : Constants.RedoDisabledButton;
                 if (GUILayout.Button(redoButton, EditorStyles.toolbarButton, GUILayout.Width(Constants.SmallButtonWidth)))
                 {
-                    Redo();
+                    Redo(_customShape);
                 }
             }
             EditorGUILayout.EndHorizontal();
@@ -376,8 +376,8 @@ namespace Prefabrikator
 
             GenericMenu editMenu = new GenericMenu();
 
-            editMenu.Add("Undo", Undo, _undoStack.UndoOperationsAvailable == 0);
-            editMenu.Add("Redo", Redo, _undoStack.RedoOperationsAvailable == 0);
+            editMenu.Add("Undo", () => Undo(_customShape), _undoStack.UndoOperationsAvailable == 0);
+            editMenu.Add("Redo", () => Redo(_customShape), _undoStack.RedoOperationsAvailable == 0);
 
             //editMenu.ShowAsContext();
             Rect pos = new Rect();
