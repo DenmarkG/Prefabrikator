@@ -32,11 +32,6 @@ namespace Prefabrikator.Runtime
             _line.SetStart(this.transform.position);
         }
 
-        private void OnValidate()
-        {
-            _line?.Refresh();
-        }
-
 #endif // UNITY_EDITOR
     }
 }

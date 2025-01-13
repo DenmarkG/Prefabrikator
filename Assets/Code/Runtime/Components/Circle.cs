@@ -78,12 +78,15 @@ namespace Prefabrikator.Runtime
 
         public void Refresh()
         {
-            for (int i = 0; i < _collection.Count; ++i)
+            if (_collection != null)
             {
-                var xform = _collection[i].transform;
-                if (xform != null)
+                for (int i = 0; i < _collection.Count; ++i)
                 {
-                    xform.localPosition = GetDefaultPositionAtIndex(i);
+                    var xform = _collection[i].transform;
+                    if (xform != null)
+                    {
+                        xform.localPosition = GetDefaultPositionAtIndex(i);
+                    }
                 }
             }
         }

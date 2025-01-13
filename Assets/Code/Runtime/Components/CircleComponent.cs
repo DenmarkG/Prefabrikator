@@ -16,10 +16,7 @@ namespace Prefabrikator.Runtime
             _circle.Center = this.transform.position;
         }
 
-        private void OnValidate()
-        {
-            _circle.Refresh();
-        }
+
 
 #endif // UNITY_EDITOR
     }
