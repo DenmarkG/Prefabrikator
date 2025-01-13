@@ -5,34 +5,50 @@ using UnityEngine;
 
 namespace Prefabrikator.Runtime
 {
+    [System.Serializable]
     public struct CircleData : IShapeData
     {
-        public Shared<Vector3> Center { get; }
-        public Shared<float> Radius { get; }
+        public Shared<Vector3> Center => _center;
+        [SerializeField] private Shared<Vector3> _center;
+
+        public Shared<float> Radius => _radius;
+        [SerializeField] private Shared<float> _radius;
 
         public CircleData(Shared<Vector3> center, Shared<float> radius)
         {
-            Center = center;
-            Radius = radius;
+            _center = center;
+            _radius = radius;
         }
 
         public static readonly CircleData Default = new CircleData(new Shared<Vector3>(), new Shared<float>());
     }
 
-    public class Circle : MonoBehaviour, IShape
+    [System.Serializable]
+    public class Circle : IShape
     {
-        // #DG: TODO: make these tunable
         private static readonly float DefaultRadius = 1f;
 
-        [SerializeField] private Shared<float> _radius = new(DefaultRadius);
-        [SerializeField] private Shared<Vector3> _center = new();
+        public float Radius
+        {
+            get { return _circleData.Radius; }
+            set { _circleData.Radius.Set(value); }
+        }
+        
+        public Vector3 Center
+        {
+            get { return _circleData.Center; }
+            set { _circleData.Center.Set(value); }
+        }
 
         public int Count => _collection?.Count ?? 0;
 
         public List<Transform> Collection => _collection;
         [SerializeField] private List<Transform> _collection = new();
 
-        public List<Modifier> Modidfiers => throw new System.NotImplementedException();
+        //public List<Modifier> Modidfiers => throw new System.NotImplementedException();
+
+        public IShapeData ShapeData => _circleData;
+        [SerializeField] private CircleData _circleData = new();
 
         public void AddTransform(Transform xform)
         {
@@ -42,7 +58,7 @@ namespace Prefabrikator.Runtime
 
         public Vector3 GetDefaultPositionAtIndex(int index)
         {
-            return GetDefaultPositionAtIndex(index, _collection.Count, _radius, _center);
+            return GetDefaultPositionAtIndex(index, _collection.Count, Radius, Center);
         }
 
         public static Vector3 GetDefaultPositionAtIndex(int index, int count, float radius, Vector3 center)
@@ -74,32 +90,16 @@ namespace Prefabrikator.Runtime
 
         public IShapeData GetShapeData()
         {
-            return new CircleData(_center, _radius);
+            return _circleData;
         }
 
         public void SetShapeData(IShapeData shapeData)
         {
             if (shapeData is CircleData circle)
             {
-                _center = circle.Center;
-                _radius = circle.Radius;
+                Center = circle.Center;
+                Radius = circle.Radius;
             }
         }
-
-#if UNITY_EDITOR
-
-        [ContextMenu("Reset Center")]
-        private void ResetStart()
-        {
-            _center = new Shared<Vector3>(this.transform.position);
-        }
-
-        private void OnValidate()
-        {
-            _collection ??= new();
-            Refresh();
-        }
-
-#endif // UNITY_EDITOR
     }
 }

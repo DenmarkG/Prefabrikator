@@ -1,6 +1,7 @@
+using Codice.Client.BaseCommands;
+using JetBrains.Annotations;
 using Prefabrikator.Shapes;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 
 namespace Prefabrikator.Runtime
@@ -8,72 +9,54 @@ namespace Prefabrikator.Runtime
     [System.Serializable]
     public struct LineData : IShapeData
     {
-        public Shared<Vector3> Start { get; }
-        public Shared<Vector3> Offset { get; }
+        public Shared<Vector3> Start => _start;
+        [SerializeField] private Shared<Vector3> _start; 
+        
+        public Shared<Vector3> Offset => _offset;
+        [SerializeField] private Shared<Vector3> _offset;
 
         public LineData(Shared<Vector3> start, Shared<Vector3> offset)
         {
-            Start = start;
-            Offset = offset;
+            _start = start;
+            _offset = offset;
         }
 
         public static readonly LineData Default = new LineData(new Shared<Vector3>(), new Shared<Vector3>());
     }
 
-    [ExecuteInEditMode]
-    public class Line : MonoBehaviour, IShape
+    [System.Serializable]
+    public class Line : IShape
     {
-        public static readonly Vector3 DefaultOffset = new Vector3(2f, 0f, 0f);
-
-        public Vector3 Start => _start;
-        [SerializeField] private Shared<Vector3> _start = new();
-        public Vector3 Offset => _offset;
-        [SerializeField] private Shared<Vector3> _offset = new();
-
         public int Count => _collection?.Count ?? 0;
 
         public List<Transform> Collection => _collection;
         [SerializeField] private List<Transform> _collection = new List<Transform>();
 
-        public List<Modifier> Modidfiers => new List<Modifier>();
+        public Vector3 Start => _lineData.Start;
+        public Vector3 Offset => _lineData.Offset;
 
-        public void SetOffset(Vector3 offset)
+        public IShapeData ShapeData => _lineData;
+
+        [SerializeField] private LineData _lineData;
+
+        public Line()
         {
-            _offset.Set(offset);
+            _lineData = new();
         }
 
-        public void SetStart(Vector3 start)
+        public Line(Vector3 offset)
         {
-            _start.Set(start);
+            _lineData = new(new Shared<Vector3>(), new Shared<Vector3>(offset));
+        }
+
+        public Line(Vector3 start, Vector3 offset)
+        {
+            _lineData = new LineData(new Shared<Vector3>(start), new Shared<Vector3>(offset));
         }
 
         public void AddTransform(Transform xform)
         {
             _collection.Add(xform);
-        }
-
-        public static Vector3 GetPositionAtIndex(int i, Vector3 start, Vector3 offset)
-        {
-            return start + (offset * i);
-        }
-
-        public Vector3 GetDefaultPositionAtIndex(int index, Line line)
-        {
-            var (start, offset) = line;
-            return start + (offset * index);
-        }
-
-        public static bool IsValid(List<Transform> transforms)
-        {
-            foreach (Transform obj in transforms)
-            {
-                if (obj == null)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         // Validate the line before calling this. 
@@ -94,7 +77,18 @@ namespace Prefabrikator.Runtime
 
         public void Refresh()
         {
-            Refresh(Collection, _start, _offset);
+            Refresh(Collection, Start, Offset);
+        }
+
+        public static Vector3 GetPositionAtIndex(int i, Vector3 start, Vector3 offset)
+        {
+            return start + (offset * i);
+        }
+
+        public Vector3 GetDefaultPositionAtIndex(int index, Line line)
+        {
+            var (start, offset) = line;
+            return start + (offset * index);
         }
 
         public void Deconstruct(out Vector3 start, out Vector3 offset)
@@ -105,36 +99,24 @@ namespace Prefabrikator.Runtime
 
         public Vector3 GetDefaultPositionAtIndex(int index)
         {
-            return _start.Get() + (_offset.Get() * index);
+            return Start + (Offset * index);
         }
 
-        public void SetShapeData(IShapeData ShapeData)
+        public void SetShapeData(IShapeData shapeData)
         {
-            if (ShapeData is LineData lineData)
-            {
-                _start = lineData.Start;
-                _offset = lineData.Offset;
-            }
+            _lineData = (LineData)shapeData;
         }
 
-        public IShapeData GetShapeData()
+        public void SetOffset(Vector3 offset)
         {
-            return new LineData(_start, _offset);
+            _lineData.Offset.Set(offset);
         }
 
-#if UNITY_EDITOR
-
-        [ContextMenu("Reset Start")]
-        private void ResetStart()
+        public void SetStart(Vector3 start)
         {
-            _start = new Shared<Vector3>(this.transform.position);
+            _lineData.Start.Set(start);
         }
 
-        private void OnValidate()
-        {
-            Refresh();
-        }
-
-#endif // UNITY_EDITOR
+        public IShapeData GetShapeData() => _lineData;
     }
 }

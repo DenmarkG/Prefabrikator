@@ -2,9 +2,14 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Prefabrikator.Runtime
 {
+
+
+
+
 
     public class CustomShape : MonoBehaviour, IShape
     {
@@ -19,11 +24,15 @@ namespace Prefabrikator.Runtime
         
         public List<Transform> Collection => _collection;
         [SerializeField][HideInInspector] private List<Transform> _collection = new();
-
         [SerializeField][HideInInspector] private List<TransformProxy> _originalTransforms = new();
 
         public ShapeType BaseShape => _baseShape;
+
+        public IShapeData ShapeData => throw new NotImplementedException();
+
         [SerializeField] private ShapeType _baseShape = ShapeType.Line;
+
+        [SerializeField][HideInInspector] private UnityEvent<int> _getPositionAtIndex = new();
 
         public void AddTransform(Transform xform)
         {

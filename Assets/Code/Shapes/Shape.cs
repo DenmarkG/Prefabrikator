@@ -14,5 +14,12 @@ namespace Prefabrikator.Shapes
         Vector3 GetDefaultPositionAtIndex(int index);
         void AddTransform(Transform xform);
         void Refresh();
+
+        IShapeData ShapeData { get; }
+    }
+
+    public abstract class ShapeComponent : MonoBehaviour
+    {
+        public abstract IShape Shape { get; }
     }
 }
