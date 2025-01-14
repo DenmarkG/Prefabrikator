@@ -6,33 +6,25 @@ using UnityEngine.Events;
 
 namespace Prefabrikator.Runtime
 {
-
-
-
-
-
-    public class CustomShape : MonoBehaviour, IShape
+    public class CustomShape : ShapeComponent
     {
         //[SerializeField] private CustomShapeMode _mode = CustomShapeMode.Duplicate;
 
-        [SerializeField] private IShapeData _shapeData; // #DG: this won't work. Need to rebulid from list of properties instead
-
         public GameObject Seletion => _selection;
         [SerializeField] private GameObject _selection;
+
+        public override BaseShape Shape => _shape;
+        [SerializeReference] private BaseShape _shape = new Line(LineData.Default);
+
+        [SerializeField] private string _serialized = string.Empty;
 
         public int Count => _collection?.Count ?? 0;
         
         public List<Transform> Collection => _collection;
         [SerializeField][HideInInspector] private List<Transform> _collection = new();
-        [SerializeField][HideInInspector] private List<TransformProxy> _originalTransforms = new();
 
-        public ShapeType BaseShape => _baseShape;
-
-        public IShapeData ShapeData => throw new NotImplementedException();
-
-        [SerializeField] private ShapeType _baseShape = ShapeType.Line;
-
-        [SerializeField][HideInInspector] private UnityEvent<int> _getPositionAtIndex = new();
+        public ShapeType BaseShapeType => _shapeType;
+        [SerializeField] private ShapeType _shapeType = ShapeType.Line;
 
         public void AddTransform(Transform xform)
         {
@@ -41,15 +33,10 @@ namespace Prefabrikator.Runtime
 
         public Vector3 GetDefaultPositionAtIndex(int index)
         {
-            if (index < 0 || index > _originalTransforms.Count)
-                throw new ShapeException("Attempting to get the position of a shape with an invalid index");
+            if (index < 0 || index > _collection.Count)
+                throw new IndexOutOfRangeException();
 
-            return _originalTransforms[index].Position;
-        }
-
-        public void Refresh()
-        {
-            throw new NotImplementedException();
+            return _shape.GetDefaultPositionAtIndex(index);
         }
 
         public void SetSelection(GameObject selection)
@@ -59,12 +46,22 @@ namespace Prefabrikator.Runtime
 
         public IShapeData GetShapeData()
         {
-            return _shapeData ??= ShapeHelpers.CreateDefaultData(_baseShape);
+            return Shape?.ShapeData;
         }
 
-        public void SetShapeData(IShapeData shapeData)
+#if UNITY_EDITOR
+
+        private ShapeType _cachedShape;
+        private void OnValidate()
         {
-            _shapeData = shapeData;
+            if (_cachedShape != _shapeType)
+            {
+                _shape = ShapeFactory.CreateShape(_shapeType);
+                _cachedShape = _shapeType;
+            }
+
+            Refresh();
         }
+#endif // UNITY_EDITOR
     }
 }

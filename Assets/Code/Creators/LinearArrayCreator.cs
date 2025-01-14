@@ -31,6 +31,8 @@ namespace Prefabrikator
                 Start.Set(target.transform.position);
             }
 
+            Debug.Log($"Offset = {Offset.Get()}");
+
             SetupProperties();            
 
             Refresh();

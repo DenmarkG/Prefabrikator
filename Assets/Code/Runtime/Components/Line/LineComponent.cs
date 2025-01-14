@@ -9,7 +9,7 @@ namespace Prefabrikator.Runtime
     {
         public static readonly Vector3 DefaultOffset = new Vector3(2f, 0f, 0f);
 
-        public sealed override IShape Shape => _line;
+        public sealed override BaseShape Shape => _line;
         [SerializeField] private Line _line = new Line(DefaultOffset);
 
         //public List<Modifier> Modidfiers => new List<Modifier>();

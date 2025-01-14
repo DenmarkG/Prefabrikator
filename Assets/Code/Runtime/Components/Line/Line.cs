@@ -9,11 +9,19 @@ namespace Prefabrikator.Runtime
     [System.Serializable]
     public struct LineData : IShapeData
     {
+        public static readonly Vector3 DefaultOffset = new Vector3(2f, 0f, 0f);
+
         public Shared<Vector3> Start => _start;
         [SerializeField] private Shared<Vector3> _start; 
         
         public Shared<Vector3> Offset => _offset;
         [SerializeField] private Shared<Vector3> _offset;
+
+        public LineData(Shared<Vector3> offset)
+        {
+            _start = new Shared<Vector3>();
+            _offset = offset;
+        }
 
         public LineData(Shared<Vector3> start, Shared<Vector3> offset)
         {
@@ -21,21 +29,21 @@ namespace Prefabrikator.Runtime
             _offset = offset;
         }
 
-        public static readonly LineData Default = new LineData(new Shared<Vector3>(), new Shared<Vector3>());
+        public static readonly LineData Default = new LineData(new Shared<Vector3>(), new Shared<Vector3>(DefaultOffset));
     }
 
     [System.Serializable]
-    public class Line : IShape
+    public class Line : BaseShape
     {
-        public int Count => _collection?.Count ?? 0;
+        public override int Count => _collection?.Count ?? 0;
 
-        public List<Transform> Collection => _collection;
+        public override List<Transform> Collection => _collection;
         [SerializeField] private List<Transform> _collection = new List<Transform>();
 
         public Vector3 Start => _lineData.Start;
         public Vector3 Offset => _lineData.Offset;
 
-        public IShapeData ShapeData => _lineData;
+        public override IShapeData ShapeData => _lineData;
 
         [SerializeField] private LineData _lineData;
 
@@ -54,7 +62,12 @@ namespace Prefabrikator.Runtime
             _lineData = new LineData(new Shared<Vector3>(start), new Shared<Vector3>(offset));
         }
 
-        public void AddTransform(Transform xform)
+        public Line(LineData data)
+        {
+            _lineData = data;
+        }
+
+        public override void AddTransform(Transform xform)
         {
             _collection.Add(xform);
         }
@@ -75,7 +88,7 @@ namespace Prefabrikator.Runtime
             }
         }
 
-        public void Refresh()
+        public override void Refresh()
         {
             Refresh(Collection, Start, Offset);
         }
@@ -97,12 +110,12 @@ namespace Prefabrikator.Runtime
             offset = Offset;
         }
 
-        public Vector3 GetDefaultPositionAtIndex(int index)
+        public override Vector3 GetDefaultPositionAtIndex(int index)
         {
             return Start + (Offset * index);
         }
 
-        public void SetShapeData(IShapeData shapeData)
+        public override void SetShapeData(IShapeData shapeData)
         {
             _lineData = (LineData)shapeData;
         }
@@ -117,6 +130,6 @@ namespace Prefabrikator.Runtime
             _lineData.Start.Set(start);
         }
 
-        public IShapeData GetShapeData() => _lineData;
+        public override IShapeData GetShapeData() => _lineData;
     }
 }

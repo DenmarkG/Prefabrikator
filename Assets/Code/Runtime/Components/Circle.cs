@@ -14,6 +14,12 @@ namespace Prefabrikator.Runtime
         public Shared<float> Radius => _radius;
         [SerializeField] private Shared<float> _radius;
 
+        public CircleData(Shared<float> radius)
+        {
+            _center = new Shared<Vector3>();
+            _radius = radius;
+        }
+
         public CircleData(Shared<Vector3> center, Shared<float> radius)
         {
             _center = center;
@@ -24,7 +30,7 @@ namespace Prefabrikator.Runtime
     }
 
     [System.Serializable]
-    public class Circle : IShape
+    public class Circle : BaseShape
     {
         private static readonly float DefaultRadius = 1f;
 
@@ -40,23 +46,23 @@ namespace Prefabrikator.Runtime
             set { _circleData.Center.Set(value); }
         }
 
-        public int Count => _collection?.Count ?? 0;
+        public override int Count => _collection?.Count ?? 0;
 
-        public List<Transform> Collection => _collection;
+        public override List<Transform> Collection => _collection;
         [SerializeField] private List<Transform> _collection = new();
 
         //public List<Modifier> Modidfiers => throw new System.NotImplementedException();
 
-        public IShapeData ShapeData => _circleData;
-        [SerializeField] private CircleData _circleData = new();
+        public override IShapeData ShapeData => _circleData;
+        [SerializeField] private CircleData _circleData = new(new Shared<float>(DefaultRadius));
 
-        public void AddTransform(Transform xform)
+        public override void AddTransform(Transform xform)
         {
             _collection.Add(xform);
             Refresh();
         }
 
-        public Vector3 GetDefaultPositionAtIndex(int index)
+        public override Vector3 GetDefaultPositionAtIndex(int index)
         {
             return GetDefaultPositionAtIndex(index, _collection.Count, Radius, Center);
         }
@@ -76,13 +82,13 @@ namespace Prefabrikator.Runtime
             return new Vector3(x, 0f, z) + center;
         }
 
-        public void Refresh()
+        public override void Refresh()
         {
             if (_collection != null)
             {
                 for (int i = 0; i < _collection.Count; ++i)
                 {
-                    var xform = _collection[i].transform;
+                    var xform = _collection[i]?.transform;
                     if (xform != null)
                     {
                         xform.localPosition = GetDefaultPositionAtIndex(i);
@@ -91,12 +97,12 @@ namespace Prefabrikator.Runtime
             }
         }
 
-        public IShapeData GetShapeData()
+        public override IShapeData GetShapeData()
         {
             return _circleData;
         }
 
-        public void SetShapeData(IShapeData shapeData)
+        public override void SetShapeData(IShapeData shapeData)
         {
             if (shapeData is CircleData circle)
             {

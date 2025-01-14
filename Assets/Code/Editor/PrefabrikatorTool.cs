@@ -48,7 +48,7 @@ namespace Prefabrikator
 
             if (window._openMode == OpenMode.Edit)
             {
-                window._shapeType = shape.BaseShape;
+                window._shapeType = shape.BaseShapeType;
                 window.SelectedObject = window._customShape.Seletion;
                 window._creator = window.GetCreator(window._shapeType, window.SelectedObject, window._customShape, window._openMode);
             }

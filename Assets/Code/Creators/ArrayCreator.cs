@@ -235,7 +235,7 @@ namespace Prefabrikator
         protected void DestroyClone(Transform clone)
         {
             _clones.RemoveAt(_clones.IndexOf(clone));
-            GameObject.DestroyImmediate(clone);
+            GameObject.DestroyImmediate(clone.gameObject);
         }
 
         public void SetOriginal(GameObject original)

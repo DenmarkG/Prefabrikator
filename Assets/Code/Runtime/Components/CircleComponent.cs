@@ -5,7 +5,7 @@ namespace Prefabrikator.Runtime
 {
     public class CircleComponent : ShapeComponent
     {
-        public sealed override IShape Shape => _circle;
+        public sealed override BaseShape Shape => _circle;
         [SerializeField] private Circle _circle = new();
 
 #if UNITY_EDITOR
@@ -15,8 +15,6 @@ namespace Prefabrikator.Runtime
         {
             _circle.Center = this.transform.position;
         }
-
-
 
 #endif // UNITY_EDITOR
     }
