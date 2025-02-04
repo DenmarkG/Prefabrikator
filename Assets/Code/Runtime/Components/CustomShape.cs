@@ -1,4 +1,6 @@
-﻿using Prefabrikator.Shapes;
+﻿using Codice.Client.Common.GameUI;
+using Codice.CM.Common.Merge;
+using Prefabrikator.Shapes;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,24 +18,23 @@ namespace Prefabrikator.Runtime
         public override BaseShape Shape => _shape;
         [SerializeReference] private BaseShape _shape = new Line(LineData.Default);
 
-        [SerializeField] private string _serialized = string.Empty;
+        //[SerializeField] private string _serialized = string.Empty;
 
-        public int Count => _collection?.Count ?? 0;
+        public int Count => Shape?.Collection?.Count ?? 0;
         
-        public List<Transform> Collection => _collection;
-        [SerializeField][HideInInspector] private List<Transform> _collection = new();
+        public List<Transform> Collection => Shape?.Collection;
 
         public ShapeType BaseShapeType => _shapeType;
         [SerializeField] private ShapeType _shapeType = ShapeType.Line;
 
         public void AddTransform(Transform xform)
         {
-            _collection.Add(xform);
+            Shape.Collection.Add(xform);
         }
 
         public Vector3 GetDefaultPositionAtIndex(int index)
         {
-            if (index < 0 || index > _collection.Count)
+            if (index < 0 || index > Count)
                 throw new IndexOutOfRangeException();
 
             return _shape.GetDefaultPositionAtIndex(index);
@@ -49,9 +50,17 @@ namespace Prefabrikator.Runtime
             return Shape?.ShapeData;
         }
 
+        [ContextMenu("RefreshCollection")]
+        private void RefreshCollection()
+        {
+            Shape.Refresh();
+        }
+
 #if UNITY_EDITOR
 
         private ShapeType _cachedShape;
+        private GameObject _cachedGameObject;
+
         private void OnValidate()
         {
             if (_cachedShape != _shapeType)
@@ -60,8 +69,16 @@ namespace Prefabrikator.Runtime
                 _cachedShape = _shapeType;
             }
 
+            if (_cachedGameObject != _selection)
+            {
+                Debug.Log("shape changed");
+                _cachedGameObject = _selection;
+                RefreshCollection();
+            }
+
             Refresh();
         }
+
 #endif // UNITY_EDITOR
     }
 }

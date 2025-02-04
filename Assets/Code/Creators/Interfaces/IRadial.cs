@@ -2,6 +2,7 @@
 
 namespace Prefabrikator
 {
+    [SerializeField]
     public interface IRadial
     {
         float Radius { get; }

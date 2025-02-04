@@ -8,14 +8,14 @@ namespace Prefabrikator
     {
         protected override string DisplayName => ModifierType.RadialNoise;
 
-        private IRadial _radialShape = null;
-        private float[] _radialDelta = null;
+        [SerializeField] private IRadial _radialShape = null;
+        [SerializeField] private float[] _radialDelta = null;
 
-        private static readonly float DefaultMin = -1.5f;
-        private static readonly float DefaultMax = 1.5f;
+        [SerializeField] private static readonly float DefaultMin = -1.5f;
+        [SerializeField] private static readonly float DefaultMax = 1.5f;
 
-        private FloatProperty _minProperty = null;
-        private FloatProperty _maxProperty = null;
+        [SerializeField] private FloatProperty _minProperty = null;
+        [SerializeField] private FloatProperty _maxProperty = null;
 
         public RadialNoise(ArrayCreator owner)
             : base(owner) 

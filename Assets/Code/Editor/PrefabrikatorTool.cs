@@ -17,8 +17,8 @@ namespace Prefabrikator
 
         private GameObject SelectedObject
         {
-            get => _customShape.Seletion;
-            set => _customShape.SetSelection(value);
+            get => _customShape?.Seletion;
+            set => _customShape?.SetSelection(value);
         }
 
         private bool IsInEditMode => _openMode == OpenMode.Edit;
@@ -52,18 +52,23 @@ namespace Prefabrikator
                 window.SelectedObject = window._customShape.Seletion;
                 window._creator = window.GetCreator(window._shapeType, window.SelectedObject, window._customShape, window._openMode);
             }
-            else if (Selection.activeObject is GameObject targetObj)
+            else if (Selection.activeObject is GameObject selectedObj)
             {
                 GameObject proxy = new GameObject("Custom Shape");
                 window._customShape = proxy.AddComponent<CustomShape>();
 
-                window.SelectedObject = targetObj;
-                window._creator = window.GetCreator(window._shapeType, targetObj, window._customShape, window._openMode);
+                window.SelectedObject = selectedObj;
+                window._creator = window.GetCreator(window._shapeType, selectedObj, window._customShape, window._openMode);
 
-                if (targetObj.IsPrefab() == false)
+                if (selectedObj.IsPrefab() == false)
                 {
                     Selection.activeObject = null;
                 }
+            }
+            else
+            {
+                GameObject proxy = new GameObject("Custom Shape");
+                window._customShape = proxy.AddComponent<CustomShape>();
             }
 
             window.Show();

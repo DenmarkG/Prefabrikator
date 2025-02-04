@@ -7,7 +7,7 @@ namespace Prefabrikator
     public abstract class IncrementalModifier : Modifier
     {
         protected Shared<Vector3> Target { get; private set; }
-        private Vector3Property _targetProperty = null;
+        [SerializeField] private Vector3Property _targetProperty = null;
 
         //private bool _reverseDirection = false;
 

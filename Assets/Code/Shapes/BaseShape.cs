@@ -17,5 +17,6 @@ namespace Prefabrikator.Shapes
         public abstract void Refresh();
 
         public abstract IShapeData ShapeData { get; }
+        public abstract List<Modifier> Modifiers { get; }
     }
 }

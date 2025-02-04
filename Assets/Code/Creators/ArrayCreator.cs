@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 using Prefabrikator.Runtime;
+using Prefabrikator.Shapes;
 
 namespace Prefabrikator
 {
@@ -32,7 +33,7 @@ namespace Prefabrikator
 
         protected Quaternion _targetRotation = Quaternion.identity;
 
-        private List<Modifier> _modifierStack = new List<Modifier>();
+        private List<Modifier> _modifierStack;
         int _indexOfModifierToAdd = 0;
         private Modifier _activeModifierSelection= null;
 
@@ -45,6 +46,8 @@ namespace Prefabrikator
         protected SceneView _sceneView = null;
 
         protected bool _refreshOnCountChange = false;
+
+        private BaseShape _baseShape;
 
         public abstract ShapeType Shape { get; }
         public IShapeData ShapeData { get; }
@@ -59,6 +62,9 @@ namespace Prefabrikator
             Mode = openMode;
 
             _clones = shape.Collection;
+            _baseShape = shape.Shape;
+            _modifierStack = _baseShape.Modifiers;
+
             _targetCount.Set(Mathf.Max(defaultCount, _clones.Count));
             void OnCountChange(int current, int previous)
             {
@@ -347,10 +353,13 @@ namespace Prefabrikator
 
         public void ApplyToAll(ApplicatorDelegate applicator)
         {
-            int numObjs = _clones.Count;
-            for (int i = 0; i < numObjs; ++i)
+            if (_clones != null)
             {
-                applicator(_clones[i]);
+                int numObjs = _clones.Count;
+                for (int i = 0; i < numObjs; ++i)
+                {
+                    applicator(_clones[i]);
+                }
             }
         }
 
