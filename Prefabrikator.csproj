@@ -9,7 +9,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{99740196-EDD2-16E9-9C24-7BE20EC36D31}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -112,6 +113,7 @@
     <Compile Include="Assets\Code\Creators\GridArrayCreator.cs" />
     <Compile Include="Assets\Code\Bezier\ControlPoint.cs" />
     <Compile Include="Assets\Code\Shapes\ShapeComponent.cs" />
+    <Compile Include="Assets\Code\Runtime\Graph\ShapeGraph.cs" />
     <Compile Include="Assets\Code\Creators\EllipseArrayCreator.cs" />
     <Compile Include="Assets\Code\Modifiers\ModifierFactory.cs" />
     <Compile Include="Assets\Code\Shapes\ShapeException.cs" />
