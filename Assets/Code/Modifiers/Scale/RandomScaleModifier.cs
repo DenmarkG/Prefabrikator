@@ -9,21 +9,21 @@ namespace Prefabrikator
     {
         protected override string DisplayName => ModifierType.ScaleRandom;
 
-        private Vector3[] _scales = null;
+        [SerializeField] private Vector3[] _scales = null;
 
         private static readonly float DefaultMin = .5f;
         private static readonly float DefaultMax = 3f;
 
-        private Shared<float> _minFloat = new Shared<float>(DefaultMin);
-        private Shared<float> _maxFloat = new Shared<float>(DefaultMax);
+        [SerializeField] private Shared<float> _maxFloat = new Shared<float>(DefaultMax);
+        [SerializeField] private Shared<float> _minFloat = new Shared<float>(DefaultMin);
 
-        private FloatProperty _minFloatProperty = null;
-        private FloatProperty _maxFloatProperty = null;
+        [SerializeField] private FloatProperty _minFloatProperty = null;
+        [SerializeField] private FloatProperty _maxFloatProperty = null;
 
-        private Vector3Property _minProperty = null;
-        private Vector3Property _maxProperty = null;
+        [SerializeField] private Vector3Property _minProperty = null;
+        [SerializeField] private Vector3Property _maxProperty = null;
 
-        private Shared<bool> _keepAspectRatio = new Shared<bool>(false);
+        [SerializeField] private Shared<bool> _keepAspectRatio = new Shared<bool>(false);
 
         public RandomScaleModifier(ArrayCreator owner)
             : base(owner)

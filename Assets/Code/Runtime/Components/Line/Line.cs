@@ -47,6 +47,9 @@ namespace Prefabrikator.Runtime
 
         [SerializeField] private LineData _lineData;
 
+        public override List<Modifier> Modifiers => _modifiers;
+        [SerializeReference] private List<Modifier> _modifiers = new();
+
         public Line()
         {
             _lineData = new();

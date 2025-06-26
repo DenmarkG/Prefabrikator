@@ -51,7 +51,8 @@ namespace Prefabrikator.Runtime
         public override List<Transform> Collection => _collection;
         [SerializeField] private List<Transform> _collection = new();
 
-        //public List<Modifier> Modidfiers => throw new System.NotImplementedException();
+        public override List<Modifier> Modifiers => _modifiers;
+        [SerializeField] private List<Modifier> _modifiers = new();
 
         public override IShapeData ShapeData => _circleData;
         [SerializeField] private CircleData _circleData = new(new Shared<float>(DefaultRadius));

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -18,6 +17,7 @@ namespace Prefabrikator
         public static readonly string DropToFloor = "Drop to Floor";
     }
 
+    [System.Serializable]
     public abstract class Modifier
     {
         protected ArrayCreator Owner => _owner;

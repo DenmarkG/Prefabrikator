@@ -8,16 +8,16 @@ namespace Prefabrikator
     {
         protected override string DisplayName => "Position Noise";
 
-        private Vector3[] _positions = null;
+        [SerializeField] private Vector3[] _positions = null;
 
-        private static readonly float DefaultMin = -.5f;
-        private static readonly float DefaultMax = .5f;
+        [SerializeField] private static readonly float DefaultMin = -.5f;
+        [SerializeField] private static readonly float DefaultMax = .5f;
 
-        private Shared<Vector3> _minVector = new Shared<Vector3>(new Vector3(DefaultMin, DefaultMin, DefaultMin));
-        private Shared<Vector3> _maxVector = new Shared<Vector3>(new Vector3(DefaultMax, DefaultMax, DefaultMax));
+        [SerializeField] private Shared<Vector3> _minVector = new Shared<Vector3>(new Vector3(DefaultMin, DefaultMin, DefaultMin));
+        [SerializeField] private Shared<Vector3> _maxVector = new Shared<Vector3>(new Vector3(DefaultMax, DefaultMax, DefaultMax));
 
-        private Vector3Property _minProperty = null;
-        private Vector3Property _maxProperty = null;
+        [SerializeField] private Vector3Property _minProperty = null;
+        [SerializeField] private Vector3Property _maxProperty = null;
 
         public PositionNoiseModifier(ArrayCreator owner)
             : base(owner)

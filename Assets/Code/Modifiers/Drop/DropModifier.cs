@@ -23,28 +23,28 @@ namespace Prefabrikator
 
         protected override string DisplayName => ModifierType.DropToFloor;
 
-        private Shared<LayerMask> _layer = new Shared<LayerMask>(LayerMask.NameToLayer("Default"));
-        private LayerMaskProperty _layerProperty = null;
+        [SerializeField] private Shared<LayerMask> _layer = new Shared<LayerMask>(LayerMask.NameToLayer("Default"));
+        [SerializeField] private LayerMaskProperty _layerProperty = null;
 
-        private Shared<float> _dropDistance = new Shared<float>(10f);
-        private FloatProperty _dropDistanceProperty = null;
+        [SerializeField] private Shared<float> _dropDistance = new Shared<float>(10f);
+        [SerializeField] private FloatProperty _dropDistanceProperty = null;
 
-        private Shared<bool> _useCollider = new Shared<bool>(true);
-        private ToggleProperty _colliderProperty = null;
+        [SerializeField] private Shared<bool> _useCollider = new Shared<bool>(true);
+        [SerializeField] private ToggleProperty _colliderProperty = null;
 
-        private Shared<float> _verticalOffset = new Shared<float>();
-        private FloatProperty _offsetProperty = null;
+        [SerializeField] private Shared<float> _verticalOffset = new Shared<float>();
+        [SerializeField] private FloatProperty _offsetProperty = null;
 
-        protected SceneView _sceneView = null;
-        protected EditMode _editMode = EditMode.None;
+        [SerializeField] protected SceneView _sceneView = null;
+        [SerializeField] protected EditMode _editMode = EditMode.None;
 
-        private CollisionType _collisionType = CollisionType.CollisionGeometry;
-        private MeshFilter _targetMesh = null;
+        [SerializeField] private CollisionType _collisionType = CollisionType.CollisionGeometry;
+        [SerializeField] private MeshFilter _targetMesh = null;
 
         // Generated Collision
-        private GameObject _dropTarget = null;
+        [SerializeField] private GameObject _dropTarget = null;
 
-        private bool _dropped = false;
+        [SerializeField] private bool _dropped = false;
 
         public DropModifier(ArrayCreator creator)
             : base(creator)

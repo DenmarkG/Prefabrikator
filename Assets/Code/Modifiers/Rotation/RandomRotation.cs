@@ -7,10 +7,10 @@ namespace Prefabrikator
     public class RandomRotation : RandomModifier<Vector3>
     {
         protected override string DisplayName => "Random Rotation";        
-        private Vector3[] _rotations = null;
+        [SerializeField] private Vector3[] _rotations = null;
 
-        private Vector3Property _minProperty = null;
-        private Vector3Property _maxProperty = null;
+        [SerializeField] private Vector3Property _minProperty = null;
+        [SerializeField] private Vector3Property _maxProperty = null;
 
         public RandomRotation(ArrayCreator owner)
             : base(owner)

@@ -61,6 +61,15 @@ namespace Prefabrikator.Shapes
             }
         }
 
+        public static void SetTransformFromProxy(this GameObject obj, TransformProxy proxy)
+        {
+            if (obj != null)
+            {
+                obj.transform.SetPositionAndRotation(proxy.Position, proxy.Rotation);
+                obj.transform.localScale = proxy.Scale;
+            }
+        }
+
         public static IShapeData CreateDefaultData(ShapeType shapeType)
         {
             switch (shapeType)

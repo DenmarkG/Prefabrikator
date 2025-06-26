@@ -13,13 +13,13 @@ namespace Prefabrikator
         }
 
         protected override string DisplayName => ModifierType.FollowCurve;
-        private CurveMode _curveMode = CurveMode.Circle;
+        [SerializeField] private CurveMode _curveMode = CurveMode.Circle;
 
-        private Shared<Axis> _axis = new(Axis.Z);
-        private Shared<bool> _negateAxis = new(false);
-        private BoolProperty _negateProperty = null;
+        [SerializeField] private Shared<Axis> _axis = new(Axis.Z);
+        [SerializeField] private Shared<bool> _negateAxis = new(false);
+        [SerializeField] private BoolProperty _negateProperty = null;
 
-        private Quaternion[] _rotations = null;
+        [SerializeField] private Quaternion[] _rotations = null;
 
         public FollowCurveModifier(ArrayCreator owner)
             : base(owner)

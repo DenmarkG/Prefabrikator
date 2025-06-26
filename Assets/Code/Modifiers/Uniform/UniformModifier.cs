@@ -6,15 +6,14 @@ namespace Prefabrikator
 {
     public abstract class UniformModifier : Modifier
     {
-        protected TransformProxy[] _targets = null;
-        protected Shared<Vector3> _target = null;
-        protected Vector3Property _targetProperty = null;
+        [SerializeField] protected Shared<Vector3> _target = null;
+        [SerializeField] protected Vector3Property _targetProperty = null;
 
-        protected Shared<float> _constrainedValue = null;
-        protected FloatProperty _constrainedProperty = null;
+        [SerializeField] protected Shared<float> _constrainedValue = null;
+        [SerializeField] protected FloatProperty _constrainedProperty = null;
 
-        protected Shared<bool> _constrainProportions = new();
-        protected ToggleProperty _constrainProperty = null;
+        [SerializeField] protected Shared<bool> _constrainProportions = new();
+        [SerializeField] protected ToggleProperty _constrainProperty = null;
 
         public UniformModifier(ArrayCreator owner, string label, float defaultConstainedValue)
             : base(owner)
@@ -29,11 +28,6 @@ namespace Prefabrikator
 
         public override sealed TransformProxy[] Process(TransformProxy[] proxies)
         {
-            if (_targets == null || proxies.Length != _targets.Length)
-            {
-                _targets = proxies;
-            }
-
             ApplyModifier(proxies);
 
             return proxies;
