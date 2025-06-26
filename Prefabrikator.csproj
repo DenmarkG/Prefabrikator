@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Code\External\Editor\EditorIcons.cs" />
+    <Compile Include="Assets\Code\Graph\ArrayContainer.cs" />
     <Compile Include="Assets\Code\Util\OpenMode.cs" />
     <Compile Include="Assets\Code\Util\ToolExtensions.cs" />
     <Compile Include="Assets\Code\Runtime\Components\IShapeData.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Assets\Code\Modifiers\Scale\RandomScaleModifier.cs" />
     <Compile Include="Assets\Code\Modifiers\Rotation\IncrementalRotationModifier.cs" />
     <Compile Include="Assets\Code\Util\Properties\MinMaxProperty.cs" />
+    <Compile Include="Assets\Code\Graph\NodeGraph.cs" />
     <Compile Include="Assets\Code\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Util\Commands\Command.cs" />
     <Compile Include="Assets\Code\Util\Extensions.cs" />
