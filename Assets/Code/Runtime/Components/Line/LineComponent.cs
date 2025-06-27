@@ -1,6 +1,7 @@
 ﻿using Prefabrikator.Shapes;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Prefabrikator.Runtime
 {
@@ -9,27 +10,39 @@ namespace Prefabrikator.Runtime
     {
         public static readonly Vector3 DefaultOffset = new Vector3(2f, 0f, 0f);
 
-        public sealed override BaseShape Shape => _line;
-        [SerializeField] private Line _line = new Line(DefaultOffset);
+        public Vector3 Start => _line.Start;
+        public Vector3 Offset => _line.Offset;
+        [SerializeField] private Line _line = new Line();
+        
+        public override List<Transform> Collection => _collection;
+        [SerializeField] private List<Transform> _collection = new List<Transform>();
 
-        //public List<Modifier> Modidfiers => new List<Modifier>();
+        public override List<Modifier> Modifiers => _modifiers;
+        [SerializeReference] private List<Modifier> _modifiers = new();
+
 
         public void SetOffset(Vector3 offset)
         {
-            _line.SetOffset(offset);
+            _line.Offset = offset;
         }
 
         public void SetStart(Vector3 start)
         {
-            _line.SetStart(start);
-        }        
+            _line.Start = start;
+        }
+
+        public override void OnRefresh()
+        {
+            _line.Refresh(Collection);
+        }
+
 
 #if UNITY_EDITOR
 
         [ContextMenu("Reset Start")]
         private void ResetStart()
         {
-            _line.SetStart(this.transform.position);
+            _line.Start = this.transform.position;
         }
 
 #endif // UNITY_EDITOR

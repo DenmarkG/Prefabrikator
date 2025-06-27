@@ -21,7 +21,7 @@ namespace Prefabrikator
         private Shared<Vector3> Start => LineDataInternal.Start;
         private Vector3Property _startProperty = null;
 
-        private LineData LineDataInternal => (LineData)ShapeData;
+        private Line LineDataInternal => (Line)ShapeData;
 
         public LinearArrayCreator(GameObject target, CustomShape shape, OpenMode openMode)
             : base(target, DefaultCount, shape, openMode)

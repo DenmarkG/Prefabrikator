@@ -6,72 +6,24 @@ using UnityEngine;
 namespace Prefabrikator.Runtime
 {
     [System.Serializable]
-    public struct CircleData : IShapeData
+    public class Circle : IShape
     {
-        public Shared<Vector3> Center => _center;
-        [SerializeField] private Shared<Vector3> _center;
+        public float Radius;
+        public Vector3 Center;
 
-        public Shared<float> Radius => _radius;
-        [SerializeField] private Shared<float> _radius;
-
-        public CircleData(Shared<float> radius)
+        public void Deconstruct(out float radius, out Vector3 center)
         {
-            _center = new Shared<Vector3>();
-            _radius = radius;
+            radius = Radius;
+            center = Center;
         }
-
-        public CircleData(Shared<Vector3> center, Shared<float> radius)
-        {
-            _center = center;
-            _radius = radius;
-        }
-
-        public static readonly CircleData Default = new CircleData(new Shared<Vector3>(), new Shared<float>());
     }
 
-    [System.Serializable]
-    public class Circle : BaseShape
+    public static class CirlceExtensions
     {
-        private static readonly float DefaultRadius = 1f;
-
-        public float Radius
-        {
-            get { return _circleData.Radius; }
-            set { _circleData.Radius.Set(value); }
-        }
-        
-        public Vector3 Center
-        {
-            get { return _circleData.Center; }
-            set { _circleData.Center.Set(value); }
-        }
-
-        public override int Count => _collection?.Count ?? 0;
-
-        public override List<Transform> Collection => _collection;
-        [SerializeField] private List<Transform> _collection = new();
-
-        public override List<Modifier> Modifiers => _modifiers;
-        [SerializeField] private List<Modifier> _modifiers = new();
-
-        public override IShapeData ShapeData => _circleData;
-        [SerializeField] private CircleData _circleData = new(new Shared<float>(DefaultRadius));
-
-        public override void AddTransform(Transform xform)
-        {
-            _collection.Add(xform);
-            Refresh();
-        }
-
-        public override Vector3 GetDefaultPositionAtIndex(int index)
-        {
-            return GetDefaultPositionAtIndex(index, _collection.Count, Radius, Center);
-        }
-
         public static Vector3 GetDefaultPositionAtIndex(int index, int count, float radius, Vector3 center)
         {
             if (count <= 0)
-                return center; // #DG: make this count = 1 instead? 
+                return center;
 
             const float degrees = Mathf.PI * 2;
             float angle = (degrees / count);
@@ -80,35 +32,30 @@ namespace Prefabrikator.Runtime
             float x = Mathf.Cos(t) * radius;
             float z = Mathf.Sin(t) * radius;
 
+            // #DG: TODO: Account for additional rotation
             return new Vector3(x, 0f, z) + center;
         }
 
-        public override void Refresh()
+        public static Vector3 GetDefaultPositionAtIndex(this Circle circle, int index, int count)
         {
-            if (_collection != null)
+            return GetDefaultPositionAtIndex(index, count, circle.Radius, circle.Center);
+        }
+
+
+        // #DG: TODO: replicate this for proxies
+        public static void Refresh(this Circle circle, List<Transform> transforms)
+        {
+            if (transforms == null)
+                return;
+
+            int count = transforms.Count;
+            Transform current = null;
+            for (int i = 0; i < count; ++i)
             {
-                for (int i = 0; i < _collection.Count; ++i)
+                if ((current = transforms[i]) != null)
                 {
-                    var xform = _collection[i]?.transform;
-                    if (xform != null)
-                    {
-                        xform.localPosition = GetDefaultPositionAtIndex(i);
-                    }
+                    current.position = GetDefaultPositionAtIndex(circle, i, count);
                 }
-            }
-        }
-
-        public override IShapeData GetShapeData()
-        {
-            return _circleData;
-        }
-
-        public override void SetShapeData(IShapeData shapeData)
-        {
-            if (shapeData is CircleData circle)
-            {
-                Center = circle.Center;
-                Radius = circle.Radius;
             }
         }
     }

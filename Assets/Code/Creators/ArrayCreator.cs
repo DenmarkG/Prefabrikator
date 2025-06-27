@@ -47,10 +47,10 @@ namespace Prefabrikator
 
         protected bool _refreshOnCountChange = false;
 
-        private BaseShape _baseShape;
+        private IShapeComponent _baseShape;
 
         public abstract ShapeType Shape { get; }
-        public IShapeData ShapeData { get; }
+        public IShape ShapeData { get; }
         public OpenMode Mode { get; }
 
 

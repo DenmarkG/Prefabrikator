@@ -4,7 +4,7 @@ namespace Prefabrikator.Shapes
 {
     public class ShapeFactory
     {
-        public static BaseShape CreateShape(ShapeType type)
+        public static IShapeComponent CreateShape(ShapeType type)
         {
             switch (type)
             {
