@@ -13,11 +13,8 @@ public class ArrayAnimator : MonoBehaviour
 
     void Update()
     {
-        if (_lineArray != null)
-        {
-            float step = Time.deltaTime * _incrementAmount;
-            Vector3 offset = _lineArray.Offset + (direction * step);
-            _lineArray.SetOffset(offset);
-        }
+        float step = Time.deltaTime * _incrementAmount;
+        Vector3 offset = _lineArray.Offset + (direction * step);
+        _lineArray.Offset = offset;
     }
 }

@@ -18,6 +18,8 @@ namespace Prefabrikator.Runtime
         [SerializeField] private List<Transform> _collection = new List<Transform>();
 
         public override List<Modifier> Modifiers => _modifiers;
+
+
         [SerializeReference] private List<Modifier> _modifiers = new();
 
 
@@ -36,6 +38,7 @@ namespace Prefabrikator.Runtime
             _line.Refresh(Collection);
         }
 
+        public override IShape GetShapeData() => _line;
 
 #if UNITY_EDITOR
 

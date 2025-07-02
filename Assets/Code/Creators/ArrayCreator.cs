@@ -47,23 +47,23 @@ namespace Prefabrikator
 
         protected bool _refreshOnCountChange = false;
 
-        private IShapeComponent _baseShape;
+        private ShapeComponent _baseShapeComponent;
 
         public abstract ShapeType Shape { get; }
         public IShape ShapeData { get; }
         public OpenMode Mode { get; }
 
 
-        public ArrayCreator(GameObject target, int defaultCount, CustomShape shape, OpenMode openMode)
+        public ArrayCreator(GameObject target, int defaultCount, ShapeComponent shape, OpenMode openMode)
         {
-            Original = shape.Seletion;
+            Original = shape.Selection;
             ShapeData = shape.GetShapeData();
             _cloneParent = shape.gameObject; // #DG: TODO: Add option to not reparent
             Mode = openMode;
 
             _clones = shape.Collection;
-            _baseShape = shape.Shape;
-            _modifierStack = _baseShape.Modifiers;
+            _baseShapeComponent = shape;
+            _modifierStack = _baseShapeComponent.Modifiers;
 
             _targetCount.Set(Mathf.Max(defaultCount, _clones.Count));
             void OnCountChange(int current, int previous)

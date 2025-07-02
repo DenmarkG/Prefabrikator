@@ -2,5 +2,8 @@
 
 namespace Prefabrikator.Runtime
 {
-    public interface IShape { }
+    public interface IShape
+    {
+        ShapeType BaseShapeType { get; }
+    }
 }

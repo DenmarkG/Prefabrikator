@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using Prefabrikator.Runtime;
+using Prefabrikator.Shapes;
 
 namespace Prefabrikator
 {
@@ -29,7 +30,7 @@ namespace Prefabrikator
 
         private SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
 
-        public CircularArrayCreator(GameObject target, CustomShape shape, OpenMode openMode)
+        public CircularArrayCreator(GameObject target, ShapeComponent shape, OpenMode openMode)
             : base(target, DefaultCount, shape, openMode)
         {
             _center.Set(Original.transform.position);

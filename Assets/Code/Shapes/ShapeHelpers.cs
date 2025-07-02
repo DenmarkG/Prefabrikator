@@ -8,7 +8,7 @@ namespace Prefabrikator.Shapes
     {
         public static readonly int DefaultMaxCount;
 
-        public static void AddTranform(this IShapeComponent shape, Transform xform)
+        public static void AddTranform(this ShapeComponent shape, Transform xform)
         {
             if (xform == null)
                 return;
@@ -16,7 +16,7 @@ namespace Prefabrikator.Shapes
             shape.Collection.Add(xform);
         }
 
-        public static void AddRange(this IShapeComponent shape, IEnumerable<Transform> xforms)
+        public static void AddRange(this ShapeComponent shape, IEnumerable<Transform> xforms)
         {
             if (xforms == null)
                 return;
@@ -25,7 +25,7 @@ namespace Prefabrikator.Shapes
         }
 
         // #DG: add option to delete? 
-        public static void SetTransforms(this IShapeComponent shape, IEnumerable<Transform> xforms)
+        public static void SetTransforms(this ShapeComponent shape, IEnumerable<Transform> xforms)
         {
             shape.Collection.Clear();
 
@@ -35,7 +35,7 @@ namespace Prefabrikator.Shapes
             shape.Collection.AddRange(xforms);
         }
 
-        public static void RemoveTransformAtIndex(this IShapeComponent shape, int index)
+        public static void RemoveTransformAtIndex(this ShapeComponent shape, int index)
         {
             if (index < 0 || index > shape.Count)
                 return;
@@ -43,7 +43,7 @@ namespace Prefabrikator.Shapes
             shape.Collection.RemoveAt(index);
         }
 
-        public static void ApplyToAll(this IShapeComponent shape, ApplicatorDelegate applicator)
+        public static void ApplyToAll(this ShapeComponent shape, ApplicatorDelegate applicator)
         {
             int numObjs = shape.Collection.Count;
             for (int i = 0; i < numObjs; ++i)
@@ -52,7 +52,7 @@ namespace Prefabrikator.Shapes
             }
         }
 
-        public static void ApplyToAll(this IShapeComponent shape, IndexedApplicatorDelegate applicator)
+        public static void ApplyToAll(this ShapeComponent shape, IndexedApplicatorDelegate applicator)
         {
             int numObjs = shape.Collection.Count;
             for (int i = 0; i < numObjs; ++i)
@@ -75,11 +75,11 @@ namespace Prefabrikator.Shapes
             switch (shapeType)
             {
                 case ShapeType.Line:
-                    return LineData.Default;
+                    return Line.Default;
                 case ShapeType.Grid:
                     break;
                 case ShapeType.Circle:
-                    return CircleData.Default;
+                    return Circle.Default;
                 case ShapeType.Arc:
                     break;
                 case ShapeType.Sphere:

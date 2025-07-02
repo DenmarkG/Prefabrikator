@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using Prefabrikator.Runtime;
+using Prefabrikator.Shapes;
 
 namespace Prefabrikator
 {
@@ -20,7 +21,7 @@ namespace Prefabrikator
         private ArcHandle _arcHandle = new ArcHandle();
         private SphereBoundsHandle _radiusHandle = new SphereBoundsHandle();
 
-        public ArcArrayCreator(GameObject target, CustomShape shape, OpenMode openMode)
+        public ArcArrayCreator(GameObject target, ShapeComponent shape, OpenMode openMode)
             : base(target, shape, openMode)
         {
             _arcHandle.SetColorWithoutRadiusHandle(Color.gray, .25f);

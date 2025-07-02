@@ -3,6 +3,7 @@ using UnityEditor;
 using System.Collections.Generic;
 using UnityEditor.IMGUI.Controls;
 using Prefabrikator.Runtime;
+using Prefabrikator.Shapes;
 
 namespace Prefabrikator
 {
@@ -52,7 +53,7 @@ namespace Prefabrikator
 
         private BoxBoundsHandle _boundsHandle = new BoxBoundsHandle();
 
-        public GridArrayCreator(GameObject target, CustomShape shape, OpenMode openMode)
+        public GridArrayCreator(GameObject target, ShapeComponent shape, OpenMode openMode)
             : base(target, DefaultCount * DefaultCount, shape, openMode)
         {
             _center.Set(target.transform.position);

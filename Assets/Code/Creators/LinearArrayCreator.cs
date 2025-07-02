@@ -15,15 +15,15 @@ namespace Prefabrikator
         public override float MaxWindowHeight => 300f;
         public override string Name => "Line";
 
-        private Shared<Vector3> Offset => LineDataInternal.Offset;
+        private Shared<Vector3> Offset => LineInternal.SharedOffset;
         private Vector3Property _offsetProperty = null;
 
-        private Shared<Vector3> Start => LineDataInternal.Start;
+        private Shared<Vector3> Start => LineInternal.SharedStart;
         private Vector3Property _startProperty = null;
 
-        private Line LineDataInternal => (Line)ShapeData;
+        private Line LineInternal => (Line)ShapeData;
 
-        public LinearArrayCreator(GameObject target, CustomShape shape, OpenMode openMode)
+        public LinearArrayCreator(GameObject target, ShapeComponent shape, OpenMode openMode)
             : base(target, DefaultCount, shape, openMode)
         {
             if (openMode == OpenMode.Create)

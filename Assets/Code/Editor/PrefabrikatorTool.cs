@@ -13,13 +13,9 @@ namespace Prefabrikator
 
         private ArrayCreator _creator = null;
         private ShapeType _shapeType = ShapeType.Line;
-        private CustomShape _customShape;
 
-        private GameObject SelectedObject
-        {
-            get => _customShape?.Seletion;
-            set => _customShape?.SetSelection(value);
-        }
+        private GameObject SelectedObject { get; set; }
+        private ShapeComponent _customShape; // #DG: for editing existing
 
         private bool IsInEditMode => _openMode == OpenMode.Edit;
         private OpenMode _openMode;
@@ -36,26 +32,27 @@ namespace Prefabrikator
             Open();
         }
 
-        public static void Open(CustomShape shape = null)
+        public static void Open(ShapeComponent shape = null)
         {
             PrefabrikatorTool window = ScriptableObject.CreateInstance<PrefabrikatorTool>();
             window.maxSize = new Vector2(Constants.MaxWidth, Constants.MaxHeght);
             window.minSize = window.maxSize;
             window.titleContent = new GUIContent(WindowName);
 
-            window._customShape = shape;
+            //window._customShape = shape;
             window._openMode = shape == null ? OpenMode.Create : OpenMode.Edit;
 
             if (window._openMode == OpenMode.Edit)
             {
-                window._shapeType = shape.BaseShapeType;
-                window.SelectedObject = window._customShape.Seletion;
+                // #DG: Reimplement
+                window._shapeType = shape.GetShapeData().BaseShapeType;
+                window.SelectedObject = window._customShape.Selection;
                 window._creator = window.GetCreator(window._shapeType, window.SelectedObject, window._customShape, window._openMode);
             }
             else if (Selection.activeObject is GameObject selectedObj)
             {
                 GameObject proxy = new GameObject("Custom Shape");
-                window._customShape = proxy.AddComponent<CustomShape>();
+                window._customShape = ShapeFactory.AddShapeComponent(proxy, window._shapeType); // #DG: Get from shape factory
 
                 window.SelectedObject = selectedObj;
                 window._creator = window.GetCreator(window._shapeType, selectedObj, window._customShape, window._openMode);
@@ -68,7 +65,8 @@ namespace Prefabrikator
             else
             {
                 GameObject proxy = new GameObject("Custom Shape");
-                window._customShape = proxy.AddComponent<CustomShape>();
+                // #DG: TODO: Get specific shape type component
+                window._customShape = ShapeFactory.AddShapeComponent(proxy, window._shapeType);
             }
 
             window.Show();
@@ -247,7 +245,7 @@ namespace Prefabrikator
             this.minSize = this.maxSize;
         }
 
-        public ArrayCreator GetCreator(ShapeType type, GameObject target, CustomShape shape, OpenMode openMode)
+        public ArrayCreator GetCreator(ShapeType type, GameObject target, ShapeComponent shape, OpenMode openMode)
         {
             if (_creator != null)
             {

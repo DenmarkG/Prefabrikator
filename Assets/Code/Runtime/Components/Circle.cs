@@ -1,6 +1,7 @@
 ﻿using Prefabrikator.Shapes;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace Prefabrikator.Runtime
@@ -8,14 +9,19 @@ namespace Prefabrikator.Runtime
     [System.Serializable]
     public class Circle : IShape
     {
+        public ShapeType BaseShapeType => ShapeType.Circle;
         public float Radius;
         public Vector3 Center;
+        public ref float GetRadius() => ref Radius;
+        public ref Vector3 GetCenter() => ref Center;
 
         public void Deconstruct(out float radius, out Vector3 center)
         {
             radius = Radius;
             center = Center;
         }
+
+        public static Circle Default = new Circle() { Radius = 2f };
     }
 
     public static class CirlceExtensions

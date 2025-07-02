@@ -1,10 +1,19 @@
 ﻿using Prefabrikator.Runtime;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Prefabrikator.Shapes
 {
     public class ShapeFactory
     {
-        public static IShapeComponent CreateShape(ShapeType type)
+        public delegate ShapeComponent ComponentCreator(GameObject obj);
+        private static readonly Dictionary<ShapeType, ComponentCreator> kCreatorByShapeType = new()
+        {
+            { ShapeType.Line, (obj) => obj.AddComponent<LineComponent>() },
+            { ShapeType.Circle, (obj) => obj.AddComponent<CircleComponent>() },
+        };
+
+        public static IShape CreateShape(ShapeType type)
         {
             switch (type)
             {
@@ -13,7 +22,7 @@ namespace Prefabrikator.Shapes
                 case ShapeType.Grid:
                     break;
                 case ShapeType.Circle:
-                    break;
+                    return new Circle();
                 case ShapeType.Arc:
                     break;
                 case ShapeType.Sphere:
@@ -32,5 +41,11 @@ namespace Prefabrikator.Shapes
 
             return default;
         }
+
+        public static ShapeComponent AddShapeComponent(GameObject obj, ShapeType type)
+        {
+            return kCreatorByShapeType[type].Invoke(obj);
+        }
+
     }
 }

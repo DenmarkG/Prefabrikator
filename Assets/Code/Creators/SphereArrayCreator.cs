@@ -3,6 +3,7 @@ using UnityEditor;
 using System.Collections.Generic;
 using UnityEditor.Graphs;
 using Prefabrikator.Runtime;
+using Prefabrikator.Shapes;
 
 namespace Prefabrikator
 {
@@ -38,7 +39,7 @@ namespace Prefabrikator
         private List<RotationInfo> _rotations = null;
 
 
-        public SphereArrayCreator(GameObject target, CustomShape shape, OpenMode openMode)
+        public SphereArrayCreator(GameObject target, ShapeComponent shape, OpenMode openMode)
             : base(target, shape, openMode)
         {
             SetTargetCount(GetTargetCount());
