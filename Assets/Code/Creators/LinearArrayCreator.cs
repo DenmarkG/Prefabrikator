@@ -21,7 +21,9 @@ namespace Prefabrikator
         private Shared<Vector3> Start => LineInternal.SharedStart;
         private Vector3Property _startProperty = null;
 
-        private Line LineInternal => (Line)ShapeData;
+        private LineComponent LineInternal => (LineComponent)TargetComponent;
+
+
 
         public LinearArrayCreator(GameObject target, ShapeComponent shape, OpenMode openMode)
             : base(target, DefaultCount, shape, openMode)
@@ -30,8 +32,6 @@ namespace Prefabrikator
             {
                 Start.Set(target.transform.position);
             }
-
-            Debug.Log($"Offset = {Offset.Get()}");
 
             SetupProperties();            
 

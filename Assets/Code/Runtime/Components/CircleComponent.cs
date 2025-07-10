@@ -27,9 +27,9 @@ namespace Prefabrikator.Runtime
             _circle.Refresh(_collection);
         }
 
-        public override IShape GetShapeData() => _circle;
 
 #if UNITY_EDITOR
+        public override IShape GetShapeData() => _circle;
 
         [ContextMenu("Reset Center")]
         private void ResetStart()

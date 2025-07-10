@@ -14,7 +14,7 @@ namespace Prefabrikator.Shapes
         public abstract List<Transform> Collection { get; }
         public abstract List<Modifier> Modifiers { get; }
         public abstract void OnRefresh();
-        public abstract IShape GetShapeData();
+        
 
 
         public void AddTransform(Transform xform)
@@ -38,5 +38,11 @@ namespace Prefabrikator.Shapes
         {
             _objectToClone = selection;
         }
+
+
+#if UNITY_EDITOR
+        //public delegate void ModifierFunction<T>(T shape) where T : IShape;
+        public abstract IShape GetShapeData();
+#endif
     }
 }

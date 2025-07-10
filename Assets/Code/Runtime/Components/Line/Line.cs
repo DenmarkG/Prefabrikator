@@ -14,14 +14,6 @@ namespace Prefabrikator.Runtime
         public Vector3 Start;
         public Vector3 Offset;
 
-#if UNITY_EDITOR
-        public Shared<Vector3> SharedStart => _sharedStart ??= new(Offset);
-        private Shared<Vector3> _sharedStart;
-
-        public Shared<Vector3> SharedOffset => _sharedOffset ??= new(Start);
-        private Shared<Vector3> _sharedOffset;
-#endif
-
         public void Deconstruct(out Vector3 start, out Vector3 offset)
         {
             start = Start;

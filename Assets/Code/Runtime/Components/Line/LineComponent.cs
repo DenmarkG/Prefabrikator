@@ -38,9 +38,19 @@ namespace Prefabrikator.Runtime
             _line.Refresh(Collection);
         }
 
-        public override IShape GetShapeData() => _line;
 
 #if UNITY_EDITOR
+
+        public override IShape GetShapeData() => _line;
+
+        public Shared<Vector3> SharedStart => _sharedStart ??= new(Offset, OnSetOffset);
+        private Shared<Vector3> _sharedStart;
+
+        public Shared<Vector3> SharedOffset => _sharedOffset ??= new(Start, OnSetStart);
+        private Shared<Vector3> _sharedOffset;
+
+        private void OnSetOffset(Vector3 offset) => _line.Offset = offset;
+        private void OnSetStart(Vector3 start) => _line.Start = start;
 
         [ContextMenu("Reset Start")]
         private void ResetStart()

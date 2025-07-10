@@ -45,6 +45,7 @@ namespace Prefabrikator
             if (window._openMode == OpenMode.Edit)
             {
                 // #DG: Reimplement
+                window._customShape = shape;
                 window._shapeType = shape.GetShapeData().BaseShapeType;
                 window.SelectedObject = window._customShape.Selection;
                 window._creator = window.GetCreator(window._shapeType, window.SelectedObject, window._customShape, window._openMode);
