@@ -23,10 +23,8 @@ namespace Prefabrikator
 
         private LineComponent LineInternal => (LineComponent)TargetComponent;
 
-
-
         public LinearArrayCreator(GameObject target, ShapeComponent shape, OpenMode openMode)
-            : base(target, DefaultCount, shape, openMode)
+            : base(target, DefaultCount, shape ?? target.AddComponent<LineComponent>(), openMode)
         {
             if (openMode == OpenMode.Create)
             {

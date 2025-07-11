@@ -12,7 +12,11 @@ namespace Prefabrikator
         {
             if (GUILayout.Button("Edit"))
             {
-                PrefabrikatorTool.Open(target as ShapeComponent);
+                if (target is LineComponent line)
+                {
+                    line.ResetSharedData();
+                    PrefabrikatorTool.Open(line);
+                }
             }
             base.OnInspectorGUI();
 

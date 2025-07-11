@@ -43,10 +43,10 @@ namespace Prefabrikator.Runtime
 
         public override IShape GetShapeData() => _line;
 
-        public Shared<Vector3> SharedStart => _sharedStart ??= new(Offset, OnSetOffset);
+        public Shared<Vector3> SharedStart => _sharedStart ??= new(Start, OnSetStart);
         private Shared<Vector3> _sharedStart;
 
-        public Shared<Vector3> SharedOffset => _sharedOffset ??= new(Start, OnSetStart);
+        public Shared<Vector3> SharedOffset => _sharedOffset ??= new(Offset, OnSetOffset);
         private Shared<Vector3> _sharedOffset;
 
         private void OnSetOffset(Vector3 offset) => _line.Offset = offset;
@@ -56,6 +56,12 @@ namespace Prefabrikator.Runtime
         private void ResetStart()
         {
             _line.Start = this.transform.position;
+        }
+
+        public void ResetSharedData()
+        {
+            _sharedStart = new(Start, OnSetStart);
+            _sharedOffset = new(Offset, OnSetOffset);
         }
 
 #endif // UNITY_EDITOR
