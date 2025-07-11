@@ -52,8 +52,9 @@ namespace Prefabrikator
             }
             else if (Selection.activeObject is GameObject selectedObj)
             {
-                GameObject proxy = new GameObject("Custom Shape");
+                GameObject proxy = new GameObject(window._shapeType.ToString());
                 window._customShape = ShapeFactory.AddShapeComponent(proxy, window._shapeType); // #DG: Get from shape factory
+                window._customShape.SetSelection(selectedObj);
 
                 window.SelectedObject = selectedObj;
                 window._creator = window.GetCreator(window._shapeType, selectedObj, window._customShape, window._openMode);
@@ -65,8 +66,7 @@ namespace Prefabrikator
             }
             else
             {
-                GameObject proxy = new GameObject("Custom Shape");
-                // #DG: TODO: Get specific shape type component
+                GameObject proxy = new GameObject(window._shapeType.ToString());
                 window._customShape = ShapeFactory.AddShapeComponent(proxy, window._shapeType);
             }
 
