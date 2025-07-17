@@ -11,7 +11,7 @@ namespace Prefabrikator
 
         //private bool _reverseDirection = false;
 
-        public IncrementalModifier(ArrayCreator owner, Vector3 defaultValue)
+        public IncrementalModifier(IShape owner, Vector3 defaultValue)
             : base(owner)
         {
             Target = new Shared<Vector3>(defaultValue);

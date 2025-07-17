@@ -11,7 +11,7 @@ namespace Prefabrikator
     {
         private static readonly string WindowName = "Prefabrikator";
 
-        private ArrayCreator _creator = null;
+        private IShape _creator = null;
         private ShapeType _shapeType = ShapeType.Line;
 
         private GameObject SelectedObject { get; set; }
@@ -239,21 +239,21 @@ namespace Prefabrikator
             }
         }
 
-        private void ResizeWindow(ArrayCreator creator)
+        private void ResizeWindow(IShape creator)
         {
             float maxHeight = Mathf.Max(creator.MaxWindowHeight, this.maxSize.y);
             this.maxSize = new Vector2(Constants.MaxWidth, maxHeight);
             this.minSize = this.maxSize;
         }
 
-        public ArrayCreator GetCreator(ShapeType type, GameObject target, ShapeComponent shape, OpenMode openMode)
+        public IShape GetCreator(ShapeType type, GameObject target, ShapeComponent shape, OpenMode openMode)
         {
             if (_creator != null)
             {
                 _creator.Teardown();
             }
 
-            ArrayCreator creator = null;
+            IShape creator = null;
 
             switch (type)
             {

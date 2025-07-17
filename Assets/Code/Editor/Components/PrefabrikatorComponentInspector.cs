@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Prefabrikator
 {
     [CustomEditor(typeof(ShapeComponent), editorForChildClasses: true)]
-    public class PrefabrikatorComponentInspector : Editor
+    public class PrefabrikatorComponentInspector : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {

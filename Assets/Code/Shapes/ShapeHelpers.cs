@@ -70,7 +70,7 @@ namespace Prefabrikator.Shapes
             }
         }
 
-        public static IShape CreateDefaultData(ShapeType shapeType)
+        public static Runtime.IShape CreateDefaultData(ShapeType shapeType)
         {
             switch (shapeType)
             {

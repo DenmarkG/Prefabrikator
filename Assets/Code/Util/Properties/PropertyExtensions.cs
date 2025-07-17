@@ -4,6 +4,7 @@ using UnityEditor;
 
 namespace Prefabrikator
 {
+    [System.Serializable]
     public class Vector3Property : CustomProperty<Vector3>
     {
         public Vector3Property(string label, Shared<Vector3> startValue, OnValueSetDelegate onValueSet)

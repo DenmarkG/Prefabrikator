@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Code\Editor\PropertyDrawers\SharedVectorPropertyDrawer.cs" />
+    <Compile Include="Assets\Code\Editor\Modifiers\ModifierPropertyDrawer.cs" />
     <Compile Include="Assets\Code\Editor\PropertyDrawers\SharedIntPropertyDrawer.cs" />
     <Compile Include="Assets\Code\Editor\PropertyDrawers\SharedFloatPropertyDrawer.cs" />
     <Compile Include="Assets\Code\Editor\UndoRedo\UndoStack.cs" />

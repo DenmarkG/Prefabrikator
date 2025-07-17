@@ -15,7 +15,7 @@ namespace Prefabrikator
         [SerializeField] protected Shared<bool> _constrainProportions = new();
         [SerializeField] protected ToggleProperty _constrainProperty = null;
 
-        public UniformModifier(ArrayCreator owner, string label, float defaultConstainedValue)
+        public UniformModifier(IShape owner, string label, float defaultConstainedValue)
             : base(owner)
         {
             _target = new Shared<Vector3>(new Vector3(defaultConstainedValue, defaultConstainedValue, defaultConstainedValue));

@@ -8,7 +8,7 @@ namespace Prefabrikator
     {
         protected override string DisplayName => "Incremental Scale";
 
-        public IncrementalScaleModifier(ArrayCreator owner)
+        public IncrementalScaleModifier(IShape owner)
             : base(owner, new Vector3(2f, 2f, 2f))
         {
             //

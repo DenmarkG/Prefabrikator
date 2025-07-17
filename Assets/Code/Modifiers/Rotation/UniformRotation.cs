@@ -8,7 +8,7 @@ namespace Prefabrikator
     {
         protected override string DisplayName => "Uniform Rotation";
 
-        public UniformRotation(ArrayCreator owner)
+        public UniformRotation(IShape owner)
             : base(owner, "Rotation", 0f)
         {
             //

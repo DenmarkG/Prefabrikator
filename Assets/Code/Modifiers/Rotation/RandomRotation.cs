@@ -9,10 +9,11 @@ namespace Prefabrikator
         protected override string DisplayName => "Random Rotation";        
         [SerializeField] private Vector3[] _rotations = null;
 
+        // #DG: move to editor only code and replace with member variables
         [SerializeField] private Vector3Property _minProperty = null;
         [SerializeField] private Vector3Property _maxProperty = null;
 
-        public RandomRotation(ArrayCreator owner)
+        public RandomRotation(IShape owner)
             : base(owner)
         {
             _min = new Shared<Vector3>(new Vector3(-179f, -179f, -179f));

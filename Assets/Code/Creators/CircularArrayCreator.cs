@@ -7,7 +7,7 @@ using Prefabrikator.Shapes;
 namespace Prefabrikator
 {
     // #DG: TODO create object to act as center, 
-    public class CircularArrayCreator : ArrayCreator, IRadial
+    public class CircularArrayCreator : IShape, IRadial
     {
         public override ShapeType Shape => ShapeType.Circle;
 

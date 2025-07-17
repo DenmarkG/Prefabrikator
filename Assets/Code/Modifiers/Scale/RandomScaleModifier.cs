@@ -25,7 +25,7 @@ namespace Prefabrikator
 
         [SerializeField] private Shared<bool> _keepAspectRatio = new Shared<bool>(false);
 
-        public RandomScaleModifier(ArrayCreator owner)
+        public RandomScaleModifier(IShape owner)
             : base(owner)
         {
             _min = new Shared<Vector3>(new Vector3(DefaultMin, DefaultMin, DefaultMin));

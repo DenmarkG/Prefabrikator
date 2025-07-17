@@ -21,7 +21,7 @@ namespace Prefabrikator
 
         [SerializeField] private Quaternion[] _rotations = null;
 
-        public FollowCurveModifier(ArrayCreator owner)
+        public FollowCurveModifier(IShape owner)
             : base(owner)
         {
             if (owner is EllipseArrayCreator)

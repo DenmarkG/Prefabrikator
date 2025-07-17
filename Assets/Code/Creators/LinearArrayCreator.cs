@@ -6,7 +6,7 @@ namespace Prefabrikator
     using Runtime;
     using Shapes;
 
-    public class LinearArrayCreator : ArrayCreator
+    public class LinearArrayCreator : IShape
     {
         public override ShapeType Shape => ShapeType.Line;
         public override int MinCount => 2;

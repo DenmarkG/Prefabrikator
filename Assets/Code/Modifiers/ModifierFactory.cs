@@ -5,7 +5,7 @@ namespace Prefabrikator
 {
     public static class ModifierFactory
     {
-        public delegate Modifier CreatorFucntion(ArrayCreator creator);
+        public delegate Modifier CreatorFucntion(IShape creator);
         private static Dictionary<string, CreatorFucntion> _creators = new Dictionary<string, CreatorFucntion>()
         {
             { ModifierType.ScaleRandom, (array) => { return new RandomScaleModifier(array); } },
@@ -20,7 +20,7 @@ namespace Prefabrikator
             { ModifierType.DropToFloor, (array) => { return new DropModifier(array); } },
         };
 
-        public static Modifier CreateModifier(string modifierName, ArrayCreator array)
+        public static Modifier CreateModifier(string modifierName, IShape array)
         {
             if (_creators.TryGetValue(modifierName, out CreatorFucntion func))
             {

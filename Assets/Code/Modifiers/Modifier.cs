@@ -20,12 +20,12 @@ namespace Prefabrikator
     [System.Serializable]
     public abstract class Modifier
     {
-        protected ArrayCreator Owner => _owner;
-        private ArrayCreator _owner = null;
+        protected IShape Owner => _owner;
+        private IShape _owner = null;
 
         protected abstract string DisplayName { get; }
 
-        public Modifier(ArrayCreator owner)
+        public Modifier(IShape owner)
         {
             _owner = owner;
         }
@@ -42,6 +42,7 @@ namespace Prefabrikator
         protected abstract void OnInspectorUpdate();
         public abstract TransformProxy[] Process(TransformProxy[] proxies);
 
+        // #DG: Modifiers are removed when saving
         public abstract void OnRemoved();
         public abstract void Teardown();
 

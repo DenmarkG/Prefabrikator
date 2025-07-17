@@ -6,11 +6,11 @@ namespace Prefabrikator
 {
     internal abstract class CreatorCommand : ICommand
     {
-        protected ArrayCreator Creator => _creator;
-        private ArrayCreator _creator = null;
+        protected IShape Creator => _creator;
+        private IShape _creator = null;
         public abstract string Name { get; }
 
-        public CreatorCommand(ArrayCreator creator)
+        public CreatorCommand(IShape creator)
         {
             _creator = creator;
         }
@@ -72,7 +72,7 @@ namespace Prefabrikator
         public override string Name => "Array count changed";
 
 
-        public CountChangeCommand(ArrayCreator creator, int previousCount, int nextCount)
+        public CountChangeCommand(IShape creator, int previousCount, int nextCount)
             : base(creator)
         {
             _previousCount = previousCount;
@@ -95,10 +95,10 @@ namespace Prefabrikator
     internal class ModifierAddCommand : ICommand
     {
         private Modifier _modifier = null;
-        private ArrayCreator _creator = null;
+        private IShape _creator = null;
         public string Name => "Add {0} modifier";
 
-        public ModifierAddCommand(Modifier modifier, ArrayCreator creator)
+        public ModifierAddCommand(Modifier modifier, IShape creator)
         {
             _creator = creator;
             _modifier = modifier;
@@ -119,10 +119,10 @@ namespace Prefabrikator
     internal class ModifierRemoveCommand : ICommand
     {
         private Modifier _modifier = null;
-        private ArrayCreator _creator = null;
+        private IShape _creator = null;
         public string Name => "Modifier {0} removed";
 
-        public ModifierRemoveCommand(Modifier modifier, ArrayCreator creator)
+        public ModifierRemoveCommand(Modifier modifier, IShape creator)
         {
             _creator = creator;
             _modifier = modifier;

@@ -7,7 +7,7 @@ namespace Prefabrikator
     {
         protected override string DisplayName => "Incremental Rotation";
 
-        public IncrementalRotationModifier(ArrayCreator owner)
+        public IncrementalRotationModifier(IShape owner)
             : base(owner, new Vector3(0f, 90f, 0f))
         {
             //

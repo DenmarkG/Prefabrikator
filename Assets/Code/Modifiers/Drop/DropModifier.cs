@@ -46,7 +46,7 @@ namespace Prefabrikator
 
         [SerializeField] private bool _dropped = false;
 
-        public DropModifier(ArrayCreator creator)
+        public DropModifier(IShape creator)
             : base(creator)
         {
             SetupProperties();

@@ -7,7 +7,7 @@ using Prefabrikator.Shapes;
 
 namespace Prefabrikator
 {
-    public abstract class ArrayCreator
+    public abstract class IShape
     {
         public event System.Action<ICommand> OnCommandExecuted = null;
 
@@ -53,8 +53,7 @@ namespace Prefabrikator
         public abstract ShapeType Shape { get; }
         public OpenMode Mode { get; }
 
-
-        public ArrayCreator(GameObject target, int defaultCount, ShapeComponent shape, OpenMode openMode)
+        public IShape(GameObject target, int defaultCount, ShapeComponent shape, OpenMode openMode)
         {
             Original = shape.Selection;
             _cloneParent = shape.gameObject; // #DG: TODO: Add option to not reparent

@@ -7,7 +7,7 @@ using Prefabrikator.Shapes;
 
 namespace Prefabrikator
 {
-    public class GridArrayCreator : ArrayCreator
+    public class GridArrayCreator : IShape
     {
         public override ShapeType Shape => ShapeType.Grid;
         public enum Dimension

@@ -8,7 +8,7 @@ namespace Prefabrikator
 
         private Shared<Vector3> _offset = new Shared<Vector3>();
 
-        public CheckerBoardModifier(ArrayCreator owner)
+        public CheckerBoardModifier(IShape owner)
             : base(owner)
         {
             //

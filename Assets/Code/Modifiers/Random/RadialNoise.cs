@@ -17,7 +17,7 @@ namespace Prefabrikator
         [SerializeField] private FloatProperty _minProperty = null;
         [SerializeField] private FloatProperty _maxProperty = null;
 
-        public RadialNoise(ArrayCreator owner)
+        public RadialNoise(IShape owner)
             : base(owner) 
         {
             _radialShape = owner as IRadial;

@@ -19,7 +19,7 @@ namespace Prefabrikator
         [SerializeField] private Vector3Property _minProperty = null;
         [SerializeField] private Vector3Property _maxProperty = null;
 
-        public PositionNoiseModifier(ArrayCreator owner)
+        public PositionNoiseModifier(IShape owner)
             : base(owner)
         {
             SetupProperties();

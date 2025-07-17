@@ -13,7 +13,7 @@ namespace Prefabrikator.Shapes
             { ShapeType.Circle, (obj) => obj.AddComponent<CircleComponent>() },
         };
 
-        public static IShape CreateShape(ShapeType type)
+        public static Runtime.IShape CreateShape(ShapeType type)
         {
             switch (type)
             {

@@ -7,7 +7,7 @@ using Prefabrikator.Shapes;
 
 namespace Prefabrikator
 {
-    public abstract class ScatterVolumeCreator : ArrayCreator
+    public abstract class ScatterVolumeCreator : IShape
     {
         protected enum Dimension
         {

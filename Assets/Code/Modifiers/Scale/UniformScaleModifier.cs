@@ -8,7 +8,7 @@ namespace Prefabrikator
     {
         protected override string DisplayName => "Uniform Scale";
 
-        public UniformScaleModifier(ArrayCreator owner)
+        public UniformScaleModifier(IShape owner)
             : base(owner, "Scale", 1f)
         {
             //
