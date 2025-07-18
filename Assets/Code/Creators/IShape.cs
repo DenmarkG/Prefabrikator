@@ -104,7 +104,8 @@ namespace Prefabrikator
                 mod.Teardown();
             }
 
-            _modifierStack.Clear();
+            // #DG: need to account for pre-exisint modifiers
+            //_modifierStack.Clear();
 
             DestroyAll();
         }
@@ -159,13 +160,13 @@ namespace Prefabrikator
         {
             switch (closeMode)
             {
-                case ToolCloseMode.SaveAndClose:
+                case ToolCloseMode.Save:
                     SaveAndClose();
                     break;
-                case ToolCloseMode.SaveAndContinue:
+                case ToolCloseMode.Continue:
                     SaveAndContinue();
                     break;
-                case ToolCloseMode.CancelAndClose:
+                case ToolCloseMode.Cancel:
                     CancelAndClose();
                     break;
                 default:

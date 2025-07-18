@@ -17,6 +17,12 @@ namespace Prefabrikator
         public static readonly string DropToFloor = "Drop to Floor";
     }
 
+
+    //public class ModifierCollection
+    //{
+    //    public 
+    //}
+
     [System.Serializable]
     public abstract class Modifier
     {

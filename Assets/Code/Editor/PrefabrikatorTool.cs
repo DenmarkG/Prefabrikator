@@ -6,6 +6,7 @@ namespace Prefabrikator
 {
     using Runtime;
     using Shapes;
+    using System.Xml.Linq;
 
     public class PrefabrikatorTool : EditorWindow
     {
@@ -22,7 +23,8 @@ namespace Prefabrikator
 
         private Vector2 _scrollPosition = new Vector2();
 
-        private bool _isSaving = false;
+        private bool _isSaving => (_closeOption & ToolCloseMode.Save) != 0;
+        private ToolCloseMode _closeOption = ToolCloseMode.None;
 
         private UndoStack _undoStack = null;
 
@@ -70,6 +72,7 @@ namespace Prefabrikator
                 window._customShape = ShapeFactory.AddShapeComponent(proxy, window._shapeType);
             }
 
+            window._closeOption = ToolCloseMode.None;
             window.Show();
         }
 
@@ -80,13 +83,13 @@ namespace Prefabrikator
 
         private void SaveAndClose()
         {
-            _isSaving = true;
+            _closeOption |= ToolCloseMode.Save;
             this.Close();
         }
 
         private void SaveAndContinue()
         {
-            _creator.OnCloseWindow(ToolCloseMode.SaveAndContinue);
+            _creator.OnCloseWindow(ToolCloseMode.Save);
         }
 
         private void Cancel()
@@ -95,13 +98,13 @@ namespace Prefabrikator
             {
                 if (IsInEditMode)
                 {
-                    _isSaving = true;
+                    _closeOption |= ToolCloseMode.Save;
                     _creator.CancelPendingEdits();
-                    _isSaving = true;
+                    _closeOption |= ToolCloseMode.Save;
                 }
                 else
                 {
-                    _isSaving = false;
+                    _closeOption = ToolCloseMode.Cancel;
                 }
             }
 
@@ -114,14 +117,14 @@ namespace Prefabrikator
             {
                 if (EditorUtility.DisplayDialog("Save and Close", "Would you like to save changes?", "Save", "Close"))
                 {
-                    _isSaving = true;
+                    _closeOption |= ToolCloseMode.Save;
                 }
             }
 
             if (_creator != null)
             {
                 _creator.ClearSceneGUI();
-                _creator.OnCloseWindow(_isSaving ? ToolCloseMode.SaveAndClose : ToolCloseMode.CancelAndClose);
+                _creator.OnCloseWindow(_closeOption);
             }
 
             // #DG: ensure this works each close
