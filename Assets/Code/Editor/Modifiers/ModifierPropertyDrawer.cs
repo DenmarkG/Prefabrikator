@@ -14,7 +14,9 @@ namespace Prefabrikator.Editor
             // Create a root container
             var root = new VisualElement();
 
-            var label = new Label(property.displayName);
+            string name = ((Modifier)property.boxedValue)?.DisplayName;
+
+            var label = new Label(ObjectNames.NicifyVariableName(name ?? property.name));
             root.Add(label);
             return root;
 

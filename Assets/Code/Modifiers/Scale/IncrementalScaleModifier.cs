@@ -6,7 +6,7 @@ namespace Prefabrikator
 {
     public class IncrementalScaleModifier : IncrementalModifier
     {
-        protected override string DisplayName => "Incremental Scale";
+        public override string DisplayName => "Incremental Scale";
 
         public IncrementalScaleModifier(IShape owner)
             : base(owner, new Vector3(2f, 2f, 2f))

@@ -6,7 +6,7 @@ namespace Prefabrikator
 {
     public class UniformScaleModifier : UniformModifier
     {
-        protected override string DisplayName => "Uniform Scale";
+        public override string DisplayName => "Uniform Scale";
 
         public UniformScaleModifier(IShape owner)
             : base(owner, "Scale", 1f)

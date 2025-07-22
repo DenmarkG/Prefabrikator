@@ -6,7 +6,7 @@ namespace Prefabrikator
 {
     public class RandomRotation : RandomModifier<Vector3>
     {
-        protected override string DisplayName => "Random Rotation";        
+        public override string DisplayName => "Random Rotation";        
         [SerializeField] private Vector3[] _rotations = null;
 
         // #DG: move to editor only code and replace with member variables

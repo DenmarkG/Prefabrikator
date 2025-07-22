@@ -7,7 +7,7 @@ namespace Prefabrikator
     // Also store max and min as two vectors for simplicity
     public class RandomScaleModifier : RandomModifier<Vector3>
     {
-        protected override string DisplayName => ModifierType.ScaleRandom;
+        public override string DisplayName => ModifierType.ScaleRandom;
 
         [SerializeField] private Vector3[] _scales = null;
 

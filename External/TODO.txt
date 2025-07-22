@@ -7,13 +7,13 @@ https://forum.unity.com/threads/optional-package-dependencis.719321/
 
 [x] Fix layout for float fields
 [x] fix undo/redo for scale changes
-[x] process modfiers after each change
+[x] process modifiers after each change
 
 [x] Allow original object to be removed
 
 [x] Add "keep proportions" option to random scale
 Automate the process for calling the modifier update and process calls
-    - should not need to be called manually by each createor
+    - should not need to be called manually by each creator
 
 
 [x] Add Tooltips
@@ -39,8 +39,8 @@ BUGS:
 [] Editor Property Factory to reduce repeated code
 [] Make Setup properties a virtual call
 [] Support Undo for Shape Change
-[] Re-add Suppport Editing existing shapes
-    [] Add Component based support
+[-] Re-add Support Editing existing shapes
+    [-] Add Component based support
         [] one component per shape
         [] use to allow runtime editing
         [] Performance pass

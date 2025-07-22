@@ -6,7 +6,7 @@ namespace Prefabrikator
 {
     public class PositionNoiseModifier : Modifier
     {
-        protected override string DisplayName => "Position Noise";
+        public override string DisplayName => "Position Noise";
 
         [SerializeField] private Vector3[] _positions = null;
 

@@ -4,7 +4,7 @@ namespace Prefabrikator
 {
     class CheckerBoardModifier : Modifier
     {
-        protected override string DisplayName => throw new System.NotImplementedException();
+        public override string DisplayName => throw new System.NotImplementedException();
 
         private Shared<Vector3> _offset = new Shared<Vector3>();
 

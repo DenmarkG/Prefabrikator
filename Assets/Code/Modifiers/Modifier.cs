@@ -29,7 +29,7 @@ namespace Prefabrikator
         protected IShape Owner => _owner;
         private IShape _owner = null;
 
-        protected abstract string DisplayName { get; }
+        public abstract string DisplayName { get; }
 
         public Modifier(IShape owner)
         {

@@ -21,7 +21,7 @@ namespace Prefabrikator
         //    public MeshFilter[] Meshes;
         //}
 
-        protected override string DisplayName => ModifierType.DropToFloor;
+        public override string DisplayName => ModifierType.DropToFloor;
 
         [SerializeField] private Shared<LayerMask> _layer = new Shared<LayerMask>(LayerMask.NameToLayer("Default"));
         [SerializeField] private LayerMaskProperty _layerProperty = null;

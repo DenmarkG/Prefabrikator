@@ -6,7 +6,7 @@ namespace Prefabrikator
 {
     public class UniformRotation : UniformModifier
     {
-        protected override string DisplayName => "Uniform Rotation";
+        public override string DisplayName => "Uniform Rotation";
 
         public UniformRotation(IShape owner)
             : base(owner, "Rotation", 0f)

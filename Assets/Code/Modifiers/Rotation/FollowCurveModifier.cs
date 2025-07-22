@@ -12,7 +12,7 @@ namespace Prefabrikator
             Ellipse,
         }
 
-        protected override string DisplayName => ModifierType.FollowCurve;
+        public override string DisplayName => ModifierType.FollowCurve;
         [SerializeField] private CurveMode _curveMode = CurveMode.Circle;
 
         [SerializeField] private Shared<Axis> _axis = new(Axis.Z);

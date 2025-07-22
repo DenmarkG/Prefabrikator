@@ -6,7 +6,7 @@ namespace Prefabrikator
 {
     public class RadialNoise : RandomModifier<float>
     {
-        protected override string DisplayName => ModifierType.RadialNoise;
+        public override string DisplayName => ModifierType.RadialNoise;
 
         [SerializeField] private IRadial _radialShape = null;
         [SerializeField] private float[] _radialDelta = null;
