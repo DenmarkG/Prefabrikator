@@ -15,8 +15,6 @@ namespace Prefabrikator.Shapes
         public abstract List<Modifier> Modifiers { get; }
         public abstract void OnRefresh();
         
-
-
         public void AddTransform(Transform xform)
         {
             Collection.Add(xform);

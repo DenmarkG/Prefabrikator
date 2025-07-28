@@ -9,29 +9,28 @@ namespace Prefabrikator
         private Shared<Vector3> _offset = new Shared<Vector3>();
 
         public CheckerBoardModifier(IShape owner)
-            : base(owner)
         {
             //
         }
 
-        public override void OnRemoved()
+        public override void OnRemoved(IShape target)
         {
-            Teardown();
+            Teardown(target);
         }
 
-        public override TransformProxy[] Process(TransformProxy[] proxies)
+        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
         {
             return proxies;
         }
 
-        protected override void OnInspectorUpdate()
+        protected override void OnInspectorUpdate(IShape target)
         {
             //
         }
 
-        public override void Teardown()
+        public override void Teardown(IShape target)
         {
-            Owner.ApplyToAll((go, index) => { go.transform.position = Owner.GetDefaultPositionAtIndex(index); });
+            target.ApplyToAll((shape, go, index) => { go.transform.position = target.GetDefaultPositionAtIndex(index); });
         }
     }
 }

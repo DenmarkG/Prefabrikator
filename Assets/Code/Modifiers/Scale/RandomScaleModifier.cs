@@ -25,27 +25,26 @@ namespace Prefabrikator
 
         [SerializeField] private Shared<bool> _keepAspectRatio = new Shared<bool>(false);
 
-        public RandomScaleModifier(IShape owner)
-            : base(owner)
+        public RandomScaleModifier(IShape target)
         {
             _min = new Shared<Vector3>(new Vector3(DefaultMin, DefaultMin, DefaultMin));
             _max = new Shared<Vector3>(new Vector3(DefaultMax, DefaultMax, DefaultMax));
 
-            SetupProperties();
+            SetupProperties(target);
 
-            int numObjs = Owner.Clones.Count;
+            int numObjs = target.Clones.Count;
             _scales = new Vector3[numObjs];
             for (int i = 0; i < numObjs; ++i)
             {
                 _scales[i] = new Vector3(1f, 1f, 1f);
             }
 
-            Randomize();
+            Randomize(target);
         }
 
-        public override TransformProxy[] Process(TransformProxy[] proxies)
+        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
         {
-            UpdateArray(proxies);
+            UpdateArray(target, proxies);
 
             int numObjs = proxies.Length;
             Vector3 scale = Vector3.one;
@@ -53,7 +52,7 @@ namespace Prefabrikator
             {
                 if (_keepAspectRatio)
                 {
-                    scale = Owner.GetDefaultScale() * Mathf.Lerp(_minFloat, _maxFloat, _scales[i].x);
+                    scale = target.GetDefaultScale() * Mathf.Lerp(_minFloat, _maxFloat, _scales[i].x);
                 }
                 else
                 {
@@ -66,17 +65,17 @@ namespace Prefabrikator
             return proxies;
         }
 
-        public override void OnRemoved()
+        public override void OnRemoved(IShape target)
         {
-            Teardown();
+            Teardown(target);
         }
 
-        protected override void OnInspectorUpdate()
+        protected override void OnInspectorUpdate(IShape target)
         {
             bool keepApsectRatio = EditorGUILayout.ToggleLeft("Keep Aspect Ratio", _keepAspectRatio);
             if (keepApsectRatio != _keepAspectRatio)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<bool>(_keepAspectRatio, _keepAspectRatio, keepApsectRatio));
+                target.CommandQueue.Enqueue(new GenericCommand<bool>(_keepAspectRatio, _keepAspectRatio, keepApsectRatio));
             }
 
             if (_keepAspectRatio)
@@ -95,11 +94,11 @@ namespace Prefabrikator
 
             if (GUILayout.Button("Randomize"))
             {
-                Randomize();
+                Randomize(target);
             }
         }
 
-        protected override void Randomize(int startingIndex = 0)
+        protected override void Randomize(IShape target, int startingIndex = 0)
         {
             int numObjs = _scales.Length;
             Vector3[] previousValues = new Vector3[_scales.Length];
@@ -118,40 +117,40 @@ namespace Prefabrikator
             if (startingIndex == 0)
             {
                 var valueChanged = new ValueChangedCommand<Vector3[]>(previousValues, _scales, ApplyScales);
-                Owner.CommandQueue.Enqueue(valueChanged);
+                target.CommandQueue.Enqueue(valueChanged);
             }
         }
 
-        private void SetupProperties()
+        private void SetupProperties(IShape target)
         {
             const string Min = "Min";
             const string Max = "Max";
             void OnMinVectorChanged(Vector3 current, Vector3 previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_min, previous, current));
+                target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_min, previous, current));
             }
             _minProperty = new Vector3Property(Min, _min, OnMinVectorChanged);
 
             void OnMaxVectorChanged(Vector3 current, Vector3 previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_max, previous, current));
+                target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_max, previous, current));
             }
             _maxProperty = new Vector3Property(Max, _max, OnMaxVectorChanged);
 
             void OnMinFloatChanged(float current, float previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<float>(_minFloat, previous, current));
+                target.CommandQueue.Enqueue(new GenericCommand<float>(_minFloat, previous, current));
             }
             _minFloatProperty = new FloatProperty(Min, _minFloat, OnMinFloatChanged);
 
             void OnMaxFloatChanged(float current, float previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<float>(_maxFloat, previous, current));
+                target.CommandQueue.Enqueue(new GenericCommand<float>(_maxFloat, previous, current));
             }
             _maxFloatProperty = new FloatProperty(Max, _maxFloat, OnMaxFloatChanged);
         }
 
-        private void UpdateArray(TransformProxy[] proxies)
+        private void UpdateArray(IShape target, TransformProxy[] proxies)
         {
             int numObjs = proxies.Length;
 
@@ -163,7 +162,7 @@ namespace Prefabrikator
                     _scales[i] = new Vector3(1f, 1f, 1f);
                 }
 
-                Randomize();
+                Randomize(target);
             }
             else if (numObjs != _scales.Length)
             {
@@ -175,7 +174,7 @@ namespace Prefabrikator
                     startingIndex = _scales.Length;
                     _scales.CopyTo(temp, 0);
                     _scales = temp;
-                    Randomize(startingIndex);
+                    Randomize(target, startingIndex);
                 }
                 else if (_scales.Length > numObjs)
                 {
@@ -189,10 +188,10 @@ namespace Prefabrikator
             }
         }
 
-        public override void Teardown()
+        public override void Teardown(IShape target)
         {
-            Vector3 defaultScale = Owner.GetDefaultScale();
-            Owner.ApplyToAll((go) => { go.transform.localScale = defaultScale; });
+            Vector3 defaultScale = target.GetDefaultScale();
+            target.ApplyToAll((go) => { go.transform.localScale = defaultScale; });
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Prefabrikator
     [System.Serializable]
     public class Vector3Property : CustomProperty<Vector3>
     {
-        public Vector3Property(string label, Shared<Vector3> startValue, OnValueSetDelegate onValueSet)
+        public Vector3Property(string label, Shared<Vector3> startValue, OnValueSetDelegate<Vector3> onValueSet)
             : base(label, startValue, onValueSet)
         {
             _shouldShowLabel = true;
@@ -30,7 +30,7 @@ namespace Prefabrikator
 
     public class QuaternionProperty : CustomProperty<Quaternion>
     {
-        public QuaternionProperty(string label, Quaternion startValue, OnValueSetDelegate onValueSet)
+        public QuaternionProperty(string label, Quaternion startValue, OnValueSetDelegate<Quaternion> onValueSet)
             : base(label, startValue, onValueSet)
         {
             //
@@ -47,7 +47,7 @@ namespace Prefabrikator
 
     public class FloatProperty : CustomProperty<float>
     {
-        public FloatProperty(string label, Shared<float> startValue, OnValueSetDelegate onValueSet)
+        public FloatProperty(string label, Shared<float> startValue, OnValueSetDelegate<float> onValueSet)
             : base(label, startValue, onValueSet)
         {
             _shouldShowLabel = false;
@@ -64,7 +64,7 @@ namespace Prefabrikator
         public float Max = .999f;
         public float Min = .01f;
 
-        public FloatSlider(string label, Shared<float> startValue, OnValueSetDelegate onValueSet)
+        public FloatSlider(string label, Shared<float> startValue, OnValueSetDelegate<float> onValueSet)
             : base(label, startValue, onValueSet)
         {
             _shouldShowLabel = false;
@@ -78,7 +78,7 @@ namespace Prefabrikator
 
     public class IntProperty : CustomProperty<int>
     {
-        public IntProperty(string label, Shared<int> startValue, OnValueSetDelegate onValueSet, ValidateInputDelegate onValidate)
+        public IntProperty(string label, Shared<int> startValue, OnValueSetDelegate<int> onValueSet, ValidateInputDelegate onValidate)
             : base(label, startValue, onValueSet, onValidate)
         {
             _shouldShowLabel = false;
@@ -92,7 +92,7 @@ namespace Prefabrikator
 
     public class LayerMaskProperty : CustomProperty<LayerMask>
     {
-        public LayerMaskProperty(string label, Shared<LayerMask> startValue, OnValueSetDelegate onValueSet)
+        public LayerMaskProperty(string label, Shared<LayerMask> startValue, OnValueSetDelegate<LayerMask> onValueSet)
             : base(label, startValue, onValueSet)
         {
             _shouldShowLabel = false;
@@ -123,7 +123,7 @@ namespace Prefabrikator
 
     public class BoolProperty : CustomProperty<bool>
     {
-        public BoolProperty(string label, Shared<bool> startValue, OnValueSetDelegate onValueSet)
+        public BoolProperty(string label, Shared<bool> startValue, OnValueSetDelegate<bool> onValueSet)
             : base(label, startValue, onValueSet)
         {
             _shouldShowLabel = false;
@@ -137,7 +137,7 @@ namespace Prefabrikator
 
     public class ToggleProperty : CustomProperty<bool>
     {
-        public ToggleProperty(GUIContent content, Shared<bool> startValue, OnValueSetDelegate onValueSet)
+        public ToggleProperty(GUIContent content, Shared<bool> startValue, OnValueSetDelegate<bool> onValueSet)
             : base(content, startValue, onValueSet)
         {
             _shouldShowLabel = false;
@@ -153,7 +153,7 @@ namespace Prefabrikator
     {
         private bool _unfold = false;
 
-        public BezierProperty(string label, Shared<ControlPoint> startValue, OnValueSetDelegate onValueSet)
+        public BezierProperty(string label, Shared<ControlPoint> startValue, OnValueSetDelegate<ControlPoint> onValueSet)
             : base(label, startValue, onValueSet)
         {
             //

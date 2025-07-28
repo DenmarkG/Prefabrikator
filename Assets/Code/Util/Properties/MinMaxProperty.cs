@@ -5,7 +5,7 @@ namespace Prefabrikator
 {
     public class MinMaxProperty : CustomProperty<MinMax>
     {
-        public MinMaxProperty(string label, MinMax startValue, OnValueSetDelegate onValueSet)
+        public MinMaxProperty(string label, MinMax startValue, OnValueSetDelegate<MinMax> onValueSet)
             : base(label, startValue, onValueSet)
         {
             //

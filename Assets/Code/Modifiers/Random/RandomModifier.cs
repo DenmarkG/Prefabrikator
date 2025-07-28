@@ -10,12 +10,6 @@ namespace Prefabrikator
         [SerializeField] protected Shared<T> _min = new Shared<T>();
         [SerializeField] protected Shared<T> _max = new Shared<T>();
 
-        public RandomModifier(IShape owner)
-            : base(owner)
-        {
-            //
-        }
-
-        protected abstract void Randomize(int startingIndex = 0);
+        protected abstract void Randomize(IShape target, int startingIndex = 0);
     }
 }

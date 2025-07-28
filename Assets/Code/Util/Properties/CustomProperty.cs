@@ -10,6 +10,8 @@ namespace Prefabrikator
         Cancel
     }
 
+    public delegate void OnValueSetDelegate<T>(T current, T previous);
+
     public abstract class CustomProperty<T> where T : struct
     {
         protected enum EditMode
@@ -34,9 +36,9 @@ namespace Prefabrikator
 
         private EditMode _editMode = EditMode.Disabled;
 
-        public delegate void OnValueSetDelegate(T current, T previous);
+        
         public delegate T ValidateInputDelegate(T current);
-        private OnValueSetDelegate OnValueSet = null;
+        private OnValueSetDelegate<T> OnValueSet = null;
         private ValidateInputDelegate OnValidate = null;
 
         protected bool _shouldShowLabel = true;
@@ -68,25 +70,25 @@ namespace Prefabrikator
         }
         private List<CustomButton> _customButtons = null;
 
-        public CustomProperty(string label, T startValue, OnValueSetDelegate onValueSet, ValidateInputDelegate onValidate = null)
+        public CustomProperty(string label, T startValue, OnValueSetDelegate<T> onValueSet, ValidateInputDelegate onValidate = null)
         {
             _setValue.Set(startValue);
             Init(label, _setValue, onValueSet, onValidate);
         }
 
-        public CustomProperty(string label, Shared<T> startValue, OnValueSetDelegate onValueSet, ValidateInputDelegate onValidate = null)
+        public CustomProperty(string label, Shared<T> startValue, OnValueSetDelegate<T> onValueSet, ValidateInputDelegate onValidate = null)
         {
             _setValue = startValue;
             Init(label, _setValue, onValueSet, onValidate);
         }
 
-        public CustomProperty(GUIContent content, Shared<T> startValue, OnValueSetDelegate onValueSet, ValidateInputDelegate onValidate = null)
+        public CustomProperty(GUIContent content, Shared<T> startValue, OnValueSetDelegate<T> onValueSet, ValidateInputDelegate onValidate = null)
             : this(content.text, startValue, onValueSet, onValidate)
         {
             _guiContent = content;
         }
 
-        private void Init(string label, T startValue, OnValueSetDelegate onValueSet, ValidateInputDelegate onValidate)
+        private void Init(string label, T startValue, OnValueSetDelegate<T> onValueSet, ValidateInputDelegate onValidate)
         {
             _label = label;
             _workingValue = _setValue;

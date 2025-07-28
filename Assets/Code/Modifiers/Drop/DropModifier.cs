@@ -46,17 +46,19 @@ namespace Prefabrikator
 
         [SerializeField] private bool _dropped = false;
 
-        public DropModifier(IShape creator)
-            : base(creator)
+        // #DG: remove this after separating editor code into separate class
+        private IShape _target;
+
+        public DropModifier(IShape target)
         {
             SetupProperties();
-
+            this._target = target;
             SceneView.duringSceneGui += OnSceneGUI;
         }
 
-        public override void Teardown()
+        public override void Teardown(IShape target)
         {
-            Owner.ApplyToAll((go, index) => { go.transform.position = Owner.GetDefaultPositionAtIndex(index); });
+            _target.ApplyToAll((_, go, index) => { go.transform.position = _target.GetDefaultPositionAtIndex(index); });
             SceneView.duringSceneGui -= OnSceneGUI;
 
             if (_dropTarget != null)
@@ -66,12 +68,12 @@ namespace Prefabrikator
             }
         }
 
-        public override void OnRemoved()
+        public override void OnRemoved(IShape target)
         {
-            Teardown();
+            Teardown(target);
         }
 
-        public override TransformProxy[] Process(TransformProxy[] proxies)
+        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
         {
             if (_dropped)
             {
@@ -89,14 +91,14 @@ namespace Prefabrikator
                 {
                     current = proxies[i];
                     Vector3 start = current.Position;
-                    Collider collider = Owner.Clones[i].GetComponent<Collider>();
+                    Collider collider = _target.Clones[i].GetComponent<Collider>();
 
                     float offset = _verticalOffset;
                     if (collider != null)
                     {
                         if (_useCollider)
                         {
-                            offset = Owner.Clones[i].transform.InverseTransformPoint(collider.bounds.min).y;
+                            offset = _target.Clones[i].transform.InverseTransformPoint(collider.bounds.min).y;
                             start -= Vector3.down * offset;
                         }
 
@@ -117,7 +119,7 @@ namespace Prefabrikator
             return proxies;
         }
 
-        protected override void OnInspectorUpdate()
+        protected override void OnInspectorUpdate(IShape target)
         {
             _dropDistance.Set(_dropDistanceProperty.Update());
             _useCollider.Set(_colliderProperty.Update());
@@ -130,7 +132,7 @@ namespace Prefabrikator
             CollisionType collisionType = (CollisionType)EditorGUILayout.EnumPopup("Detection Type", _collisionType);
             if (collisionType != _collisionType)
             {
-                Owner.CommandQueue.Enqueue(new ValueChangedCommand<CollisionType>(_collisionType, collisionType, x => { _collisionType = x; }));
+                _target.CommandQueue.Enqueue(new ValueChangedCommand<CollisionType>(_collisionType, collisionType, x => { _collisionType = x; }));
             }
 
             if (_collisionType == CollisionType.VisibleGeometry)
@@ -138,7 +140,7 @@ namespace Prefabrikator
                 MeshFilter targetMesh = EditorGUILayout.ObjectField("Mesh", _targetMesh, typeof(MeshFilter), true) as MeshFilter;
                 if (targetMesh != _targetMesh)
                 {
-                    Owner.CommandQueue.Enqueue(new ValueChangedCommand<MeshFilter>(_targetMesh, targetMesh, x => { _targetMesh = x; }));
+                    _target.CommandQueue.Enqueue(new ValueChangedCommand<MeshFilter>(_targetMesh, targetMesh, x => { _targetMesh = x; }));
                 }
             }
 
@@ -167,7 +169,7 @@ namespace Prefabrikator
         private void Apply(Vector3[] positions)
         {
             _dropped = !_dropped;
-            Owner.ApplyToAll((go, index) => { go.transform.position = positions[index]; });
+            _target.ApplyToAll((_, go, index) => { go.transform.position = positions[index]; });
         }
 
         private void GenerateCollision()
@@ -212,7 +214,7 @@ namespace Prefabrikator
             if (_editMode.HasFlag(EditMode.Center))
             {
                 Handles.color = Color.cyan;
-                foreach (Transform obj in Owner.Clones)
+                foreach (Transform obj in _target.Clones)
                 {
                     Handles.DrawLine(obj.transform.position, obj.transform.position + (Vector3.up * _verticalOffset));
                 }
@@ -220,10 +222,10 @@ namespace Prefabrikator
 
             if (_dropped)
             {
-                int numObjs = Owner.Clones.Count;
+                int numObjs = _target.Clones.Count;
                 for (int i = 0; i < numObjs; ++i)
                 {
-                    Transform current = Owner.Clones[i];
+                    Transform current = _target.Clones[i];
                     Vector3 start = current.transform.position;
                     Collider collider = current.GetComponent<Collider>();
                     float offset = _verticalOffset;
@@ -254,19 +256,19 @@ namespace Prefabrikator
         {
             void OnDropDistanceChanged(float current, float previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<float>(_dropDistance, previous, current));
+                _target.CommandQueue.Enqueue(new GenericCommand<float>(_dropDistance, previous, current));
             }
             _dropDistanceProperty = new FloatProperty("Max Drop Distance", _dropDistance, OnDropDistanceChanged);
 
             void OnLayerMaskChanged(LayerMask current, LayerMask previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<LayerMask>(_layer, previous, current));
+                _target.CommandQueue.Enqueue(new GenericCommand<LayerMask>(_layer, previous, current));
             }
             _layerProperty = new LayerMaskProperty("LayerMask", _layer, OnLayerMaskChanged);
 
             void OnOffsetChanged(float current, float previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<float>(_verticalOffset, previous, current));
+                _target.CommandQueue.Enqueue(new GenericCommand<float>(_verticalOffset, previous, current));
             }
             _offsetProperty = new FloatProperty("Vertical Offset", _verticalOffset, OnOffsetChanged);
             _offsetProperty.OnEditModeEnter += () => { _editMode = EditMode.Center; };
@@ -274,7 +276,7 @@ namespace Prefabrikator
 
             void OnUseColliderChanged(bool current, bool previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<bool>(_useCollider, previous, current));
+                _target.CommandQueue.Enqueue(new GenericCommand<bool>(_useCollider, previous, current));
             }
 
             const string tooltip = "Set this to TRUE to use the bottom of the collider bounds to detect as the drop point";

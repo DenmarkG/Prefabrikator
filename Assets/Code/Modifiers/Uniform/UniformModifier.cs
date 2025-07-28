@@ -15,35 +15,36 @@ namespace Prefabrikator
         [SerializeField] protected Shared<bool> _constrainProportions = new();
         [SerializeField] protected ToggleProperty _constrainProperty = null;
 
-        public UniformModifier(IShape owner, string label, float defaultConstainedValue)
-            : base(owner)
+        public UniformModifier(IShape target, string label, float defaultConstainedValue)
         {
             _target = new Shared<Vector3>(new Vector3(defaultConstainedValue, defaultConstainedValue, defaultConstainedValue));
-            _targetProperty = new Vector3Property(label, _target, OnValueChanged);
+            
+            OnValueSetDelegate<Vector3> onValueChanged = (current, previous) => target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_target, previous, current));
+                _targetProperty = new Vector3Property(label, _target, onValueChanged);
 
             _constrainedValue = new Shared<float>(defaultConstainedValue);
-            _constrainProperty = new ToggleProperty(new GUIContent("Lock Axes"), _constrainProportions, CreateCommand(_constrainProportions));
-            _constrainedProperty = new FloatProperty(label, _constrainedValue, CreateCommand(_constrainedValue));
+            _constrainProperty = new ToggleProperty(new GUIContent("Lock Axes"), _constrainProportions, CreateCommand(_constrainProportions, target));
+            _constrainedProperty = new FloatProperty(label, _constrainedValue, CreateCommand(_constrainedValue, target));
         }
 
-        public override sealed TransformProxy[] Process(TransformProxy[] proxies)
+        public override sealed TransformProxy[] Process(IShape target, TransformProxy[] proxies)
         {
-            ApplyModifier(proxies);
+            ApplyModifier(target, proxies);
 
             return proxies;
         }
 
-        public sealed override void OnRemoved()
+        public sealed override void OnRemoved(IShape target)
         {
-            Teardown();
+            Teardown(target);
         }
 
-        public sealed override void Teardown()
+        public sealed override void Teardown(IShape target)
         {
-            Owner.ApplyToAll(RestoreDefault);
+            target.ApplyToAll(RestoreDefault);
         }
 
-        protected sealed override void OnInspectorUpdate()
+        protected sealed override void OnInspectorUpdate(IShape target)
         {
             _constrainProportions.Set(_constrainProperty.Update());
 
@@ -58,12 +59,7 @@ namespace Prefabrikator
             }
         }
 
-        protected void OnValueChanged(Vector3 current, Vector3 previous)
-        {
-            Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_target, previous, current));
-        }
-
-        protected abstract void RestoreDefault(Transform obj);
-        protected abstract void ApplyModifier(TransformProxy[] proxies);
+        protected abstract void RestoreDefault(IShape target, Transform obj);
+        protected abstract void ApplyModifier(IShape target, TransformProxy[] proxies);
     }
 }

@@ -76,7 +76,7 @@ namespace Prefabrikator
                             _positions[i] += center - _center;
                         }
 
-                        ApplyToAll((obj, index) => obj.transform.position = _positions[index]);
+                        ApplyToAll((shape, obj, index) => obj.transform.position = _positions[index]);
 
                         _center.Set(center);
                     }
@@ -222,7 +222,7 @@ namespace Prefabrikator
                 _positions[i] -= moveDelta;
             }
 
-            ApplyToAll((obj, index) => obj.transform.position = _positions[index]);
+            ApplyToAll((_, obj, index) => obj.transform.position = _positions[index]);
         }
 
         protected override Vector3 GetInitialPosition()

@@ -21,14 +21,13 @@ namespace Prefabrikator
 
         [SerializeField] private Quaternion[] _rotations = null;
 
-        public FollowCurveModifier(IShape owner)
-            : base(owner)
+        public FollowCurveModifier(IShape target)
         {
-            if (owner is EllipseArrayCreator)
+            if (target is EllipseArrayCreator)
             {
                 _curveMode = CurveMode.Ellipse;
             }
-            else if (owner is CircularArrayCreator)
+            else if (target is CircularArrayCreator)
             {
                 _curveMode = CurveMode.Circle;
             }
@@ -45,17 +44,17 @@ namespace Prefabrikator
 
             void OnNegateChanged(bool current, bool previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<bool>(_negateAxis, previous, current));
+                target.CommandQueue.Enqueue(new GenericCommand<bool>(_negateAxis, previous, current));
             }
             _negateProperty = new BoolProperty("Flip Axis", _negateAxis, OnNegateChanged);
         }
 
-        public override void OnRemoved()
+        public override void OnRemoved(IShape target)
         {
-            Teardown();
+            Teardown(target);
         }
 
-        public override TransformProxy[] Process(TransformProxy[] proxies)
+        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
         {
             if (_rotations == null || _rotations.Length != proxies.Length)
             {
@@ -70,31 +69,31 @@ namespace Prefabrikator
                     break;
 #endif
                 case CurveMode.Ellipse:
-                    SetRotationFromEllipse(proxies);
+                    SetRotationFromEllipse(target, proxies);
                     break;
                 case CurveMode.Circle:
                 default:
-                    SetRoationFromCircle(proxies);
+                    SetRoationFromCircle(target, proxies);
                     break;
             }
 
             return proxies;
         }
 
-        protected override void OnInspectorUpdate()
+        protected override void OnInspectorUpdate(IShape target)
         {
             Axis axis = (Axis)EditorGUILayout.EnumPopup("Follow Axis", _axis);
             if (axis != _axis)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Axis>(_axis, _axis.Get(), axis));
+                target.CommandQueue.Enqueue(new GenericCommand<Axis>(_axis, _axis.Get(), axis));
             }
 
             _negateAxis.Set(_negateProperty.Update());
         }
 
-        private void SetRoationFromCircle(TransformProxy[] proxies)
+        private void SetRoationFromCircle(IShape target, TransformProxy[] proxies)
         {
-            CircularArrayCreator circle = Owner as CircularArrayCreator;
+            CircularArrayCreator circle = target as CircularArrayCreator;
             if (circle != null)
             {
                 int numObjs = proxies.Length;
@@ -108,7 +107,7 @@ namespace Prefabrikator
                     Vector3 relativePosition = (position - center).normalized;
                     float directionScalar = _negateAxis.Get() ? -1 : 1;
 
-                    if (Owner is SphereArrayCreator sphere)
+                    if (target is SphereArrayCreator sphere)
                     {
                         
 
@@ -150,9 +149,9 @@ namespace Prefabrikator
             }
         }
 
-        private void SetRotationFromEllipse(TransformProxy[] proxies)
+        private void SetRotationFromEllipse(IShape target, TransformProxy[] proxies)
         {
-            EllipseArrayCreator ellipse = Owner as EllipseArrayCreator;
+            EllipseArrayCreator ellipse = target as EllipseArrayCreator;
             if (ellipse != null)
             {
                 int numObjs = proxies.Length;
@@ -215,9 +214,9 @@ namespace Prefabrikator
             return _rotations[index];
         }
 
-        public override void Teardown()
+        public override void Teardown(IShape target)
         {
-            Owner.ApplyToAll((go) => { go.transform.rotation = Owner.GetDefaultRotation(); });
+            target.ApplyToAll((go) => { go.transform.rotation = target.GetDefaultRotation(); });
         }
     }
 }

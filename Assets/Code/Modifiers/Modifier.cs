@@ -26,35 +26,27 @@ namespace Prefabrikator
     [System.Serializable]
     public abstract class Modifier
     {
-        protected IShape Owner => _owner;
-        private IShape _owner = null;
-
         public abstract string DisplayName { get; }
 
-        public Modifier(IShape owner)
-        {
-            _owner = owner;
-        }
-
-        public void UpdateInspector()
+        public void UpdateInspector(IShape target)
         {
             EditorGUILayout.BeginVertical(new GUIStyle("Tooltip"), GUILayout.MaxWidth(Constants.MaxWidth - Constants.IndentSize), GUILayout.ExpandWidth(false));
             {
-                OnInspectorUpdate();
+                OnInspectorUpdate(target);
             }
             EditorGUILayout.EndVertical();
         }
 
-        protected abstract void OnInspectorUpdate();
-        public abstract TransformProxy[] Process(TransformProxy[] proxies);
+        protected abstract void OnInspectorUpdate(IShape target);
+        public abstract TransformProxy[] Process(IShape target, TransformProxy[] proxies);
 
         // #DG: Modifiers are removed when saving
-        public abstract void OnRemoved();
-        public abstract void Teardown();
+        public abstract void OnRemoved(IShape target);
+        public abstract void Teardown(IShape target);
 
-        public CustomProperty<T>.OnValueSetDelegate CreateCommand<T>(Shared<T> field) where T : struct
+        public OnValueSetDelegate<T> CreateCommand<T>(Shared<T> field, IShape target) where T : struct
         {
-            return (T current, T previous) => { Owner.CommandQueue.Enqueue(new GenericCommand<T>(field, previous, current)); };
+            return (T current, T previous) => { target.CommandQueue.Enqueue(new GenericCommand<T>(field, previous, current)); };
         }
     }
 }

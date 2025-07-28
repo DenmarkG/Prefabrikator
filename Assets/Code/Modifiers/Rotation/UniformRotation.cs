@@ -14,13 +14,13 @@ namespace Prefabrikator
             //
         }
 
-        protected override void RestoreDefault(Transform obj)
+        protected override void RestoreDefault(IShape target, Transform obj)
         {
-            Quaternion defaultRotation = Owner.GetDefaultRotation();
+            Quaternion defaultRotation = target.GetDefaultRotation();
             obj.transform.rotation = defaultRotation;
         }
 
-        protected override void ApplyModifier(TransformProxy[] proxies)
+        protected override void ApplyModifier(IShape target, TransformProxy[] proxies)
         {
             int numObjs = proxies.Length;
             for (int i = 0; i < numObjs; ++i)

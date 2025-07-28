@@ -17,28 +17,27 @@ namespace Prefabrikator
         [SerializeField] private FloatProperty _minProperty = null;
         [SerializeField] private FloatProperty _maxProperty = null;
 
-        public RadialNoise(IShape owner)
-            : base(owner) 
+        public RadialNoise(IShape target)
         {
-            _radialShape = owner as IRadial;
+            _radialShape = target as IRadial;
             Debug.Assert(_radialShape != null, "Not a radial Shape. Cannot add radial noise");
 
-            _radialDelta = new float[Owner.Clones.Count];
+            _radialDelta = new float[target.Clones.Count];
 
             float radius = _radialShape.Radius;
             _min.Set(DefaultMin);
             _max.Set(DefaultMax);
 
-            SetupProperties();
-            Randomize();
+            SetupProperties(target);
+            Randomize(target);
         }
 
-        public override void OnRemoved()
+        public override void OnRemoved(IShape target)
         {
-            Teardown();
+            Teardown(target);
         }
 
-        public override TransformProxy[] Process(TransformProxy[] proxies)
+        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
         {
             Vector3 center = _radialShape.Center;
             float radius = _radialShape.Radius;
@@ -57,26 +56,26 @@ namespace Prefabrikator
             return proxies;
         }
 
-        public override void Teardown()
+        public override void Teardown(IShape target)
         {
-            Owner.ApplyToAll((go, index) =>
+            target.ApplyToAll((_, go, index) =>
             {
-                go.transform.position = Owner.GetDefaultPositionAtIndex(index);
+                go.transform.position = target.GetDefaultPositionAtIndex(index);
             });
         }
 
-        protected override void OnInspectorUpdate()
+        protected override void OnInspectorUpdate(IShape target)
         {
             _min.Set(_minProperty.Update());
             _max.Set(_maxProperty.Update());
 
             if (GUILayout.Button("Randomize"))
             {
-                Randomize();
+                Randomize(target);
             }
         }
 
-        protected override void Randomize(int startingIndex = 0)
+        protected override void Randomize(IShape target, int startingIndex = 0)
         {
             int numObjs = _radialDelta.Length;
             float[] previous = new float[numObjs];
@@ -94,24 +93,24 @@ namespace Prefabrikator
             if (startingIndex == 0)
             {
                 var valueChanged = new ValueChangedCommand<float[]>(previous, _radialDelta, ApplyScales);
-                Owner.CommandQueue.Enqueue(valueChanged);
+                target.CommandQueue.Enqueue(valueChanged);
             }
         }
 
-        private void SetupProperties()
+        private void SetupProperties(IShape target)
         {
             const string Min = "Min";
             const string Max = "Max";
 
             void OnMinChanged(float current, float previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<float>(_min, previous, current));
+                target.CommandQueue.Enqueue(new GenericCommand<float>(_min, previous, current));
             }
             _minProperty = new FloatProperty(Min, _min, OnMinChanged);
 
             void OnMaxChanged(float current, float previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<float>(_max, previous, current));
+                target.CommandQueue.Enqueue(new GenericCommand<float>(_max, previous, current));
             }
             _maxProperty = new FloatProperty(Max, _max, OnMaxChanged);
         }

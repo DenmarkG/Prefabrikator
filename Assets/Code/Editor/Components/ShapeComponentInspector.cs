@@ -1,6 +1,7 @@
 using Prefabrikator.Runtime;
 using Prefabrikator.Shapes;
 using System.Threading;
+using System.Collections;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -19,18 +20,20 @@ namespace Prefabrikator
 
             var iterator = serializedObject.GetIterator();
 
-            bool isFirst = true;
-            while (iterator.NextVisible(isFirst))
-            {
-                //if (SerializedProperty.EqualContents(iterator, property))
-                //    continue; // Skip the root itself
 
-                var field = new PropertyField(iterator);
-                field.BindProperty(iterator);
-                main.Add(field);
+            var lineProperty = serializedObject.FindProperty("_line");
+            var collection = serializedObject.FindProperty("_collection");
+            var modifiers = serializedObject.FindProperty("_modifiers");
 
-                isFirst = false;
-            }
+            main.Add(new PropertyField(lineProperty));
+            main.Add(new PropertyField(collection));
+
+            var list = new ListView();
+            list.showAddRemoveFooter = false;
+            list.BindProperty(modifiers);
+
+            main.Add(list);
+
 
             return main;
         }

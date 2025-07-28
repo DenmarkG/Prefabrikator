@@ -14,13 +14,13 @@ namespace Prefabrikator
             //
         }
 
-        protected override void RestoreDefault(Transform obj)
+        protected override void RestoreDefault(IShape target, Transform obj)
         {
-            Vector3 defaultScale = Owner.GetDefaultScale();
+            Vector3 defaultScale = target.GetDefaultScale();
             obj.transform.localScale = defaultScale;
         }
 
-        protected override void ApplyModifier(TransformProxy[] proxies)
+        protected override void ApplyModifier(IShape target, TransformProxy[] proxies)
         {
             int numObjs = proxies.Length;
             for (int i = 0; i < numObjs; ++i)

@@ -19,34 +19,33 @@ namespace Prefabrikator
         [SerializeField] private Vector3Property _minProperty = null;
         [SerializeField] private Vector3Property _maxProperty = null;
 
-        public PositionNoiseModifier(IShape owner)
-            : base(owner)
+        public PositionNoiseModifier(IShape target)
         {
-            SetupProperties();
+            SetupProperties(target);
 
-            int numObjs = Owner.Clones.Count;
+            int numObjs = target.Clones.Count;
             _positions = new Vector3[numObjs];
             for (int i = 0; i < numObjs; ++i)
             {
                 _positions[i] = new Vector3(1f, 1f, 1f);
             }
 
-            Randomize();
+            Randomize(target);
         }
 
-        public override void OnRemoved()
+        public override void OnRemoved(IShape target)
         {
-            Teardown();
+            Teardown(target);
         }
 
-        public override void Teardown()
+        public override void Teardown(IShape target)
         {
-            Owner.ApplyToAll((go, index) => { go.transform.position = Owner.GetDefaultPositionAtIndex(index); });
+            target.ApplyToAll((_, go, index) => { go.transform.position = target.GetDefaultPositionAtIndex(index); });
         }
 
-        public override TransformProxy[] Process(TransformProxy[] proxies)
+        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
         {
-            UpdateArray(proxies);
+            UpdateArray(target, proxies);
 
             int numObjs = proxies.Length;
             Vector3 position = Vector3.zero;
@@ -60,33 +59,33 @@ namespace Prefabrikator
             return proxies;
         }
 
-        protected override void OnInspectorUpdate()
+        protected override void OnInspectorUpdate(IShape target)
         {
             _minVector.Set(_minProperty.Update());
             _maxVector.Set(_maxProperty.Update());
 
             if (GUILayout.Button("Randomize"))
             {
-                Randomize();
+                Randomize(target);
             }
         }
 
-        private void SetupProperties()
+        private void SetupProperties(IShape target)
         {
             void OnMinVectorChanged(Vector3 current, Vector3 previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_minVector, previous, current));
+                target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_minVector, previous, current));
             }
             _minProperty = new Vector3Property("Min", _minVector, OnMinVectorChanged);
 
             void OnMaxVectorChanged(Vector3 current, Vector3 previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_maxVector, previous, current));
+                target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_maxVector, previous, current));
             }
             _maxProperty = new Vector3Property("Max", _maxVector, OnMaxVectorChanged);
         }
 
-        private void Randomize(int startingIndex = 0)
+        private void Randomize(IShape target, int startingIndex = 0)
         {
             int numObjs = _positions.Length;
             Vector3[] previousValues = new Vector3[_positions.Length];
@@ -105,12 +104,12 @@ namespace Prefabrikator
             if (startingIndex == 0)
             {
                 var valueChanged = new ValueChangedCommand<Vector3[]>(previousValues, _positions, ApplyPositions);
-                Owner.CommandQueue.Enqueue(valueChanged);
+                target.CommandQueue.Enqueue(valueChanged);
             }
         }
 
         // #DG: fix this
-        private void UpdateArray(TransformProxy[] proxies)
+        private void UpdateArray(IShape target, TransformProxy[] proxies)
         {
             int numObjs = proxies.Length;
 
@@ -122,7 +121,7 @@ namespace Prefabrikator
                     _positions[i] = new Vector3(1f, 1f, 1f);
                 }
 
-                Randomize();
+                Randomize(target    );
             }
             else if (numObjs != _positions.Length)
             {
@@ -134,7 +133,7 @@ namespace Prefabrikator
                     startingIndex = _positions.Length;
                     _positions.CopyTo(temp, 0);
                     _positions = temp;
-                    Randomize(startingIndex);
+                    Randomize(target, startingIndex);
                 }
                 else if (_positions.Length > numObjs)
                 {

@@ -101,7 +101,7 @@ namespace Prefabrikator
             for (int i = 0; i < numMods; ++i)
             {
                 var mod = _modifierStack[i];
-                mod.Teardown();
+                mod.Teardown(this);
             }
 
             // #DG: need to account for pre-exisint modifiers
@@ -357,7 +357,7 @@ namespace Prefabrikator
                 int numObjs = _clones.Count;
                 for (int i = 0; i < numObjs; ++i)
                 {
-                    applicator(_clones[i]);
+                    applicator(this, _clones[i]);
                 }
             }
         }
@@ -367,7 +367,7 @@ namespace Prefabrikator
             int numObjs = _clones.Count;
             for (int i = 0; i < numObjs; ++i)
             {
-                applicator(_clones[i], i);
+                applicator(this, _clones[i], i);
             }
         }
 
@@ -443,7 +443,7 @@ namespace Prefabrikator
                     _modifierDisplay.DoLayoutList();
                     if (_activeModifierSelection != null)
                     {
-                        _activeModifierSelection.UpdateInspector();
+                        _activeModifierSelection.UpdateInspector(this);
                     }
                 }
                 EditorGUILayout.EndVertical();
@@ -496,7 +496,7 @@ namespace Prefabrikator
             int numMods = _modifierStack.Count;
             for (int i = 0; i < numMods; ++i)
             {
-                proxies = _modifierStack[i].Process(proxies);
+                proxies = _modifierStack[i].Process(this, proxies);
             }
 
             return proxies;
@@ -521,7 +521,7 @@ namespace Prefabrikator
         {
             if (_activeModifierSelection != null)
             {
-                _activeModifierSelection.OnRemoved();
+                _activeModifierSelection.OnRemoved(this);
                 CommandQueue.Enqueue(new ModifierRemoveCommand(_activeModifierSelection, this));
             }
 
@@ -542,7 +542,7 @@ namespace Prefabrikator
                 _activeModifierSelection = null;
             }
 
-            mod.OnRemoved();
+            mod.OnRemoved(this);
         }
 
         public void RemoveModifier(Modifier modifier)

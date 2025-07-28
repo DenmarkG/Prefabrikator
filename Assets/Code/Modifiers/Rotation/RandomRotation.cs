@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.UI.GridLayoutGroup;
 
 namespace Prefabrikator
 {
@@ -13,39 +14,38 @@ namespace Prefabrikator
         [SerializeField] private Vector3Property _minProperty = null;
         [SerializeField] private Vector3Property _maxProperty = null;
 
-        public RandomRotation(IShape owner)
-            : base(owner)
+        public RandomRotation(IShape target)
         {
             _min = new Shared<Vector3>(new Vector3(-179f, -179f, -179f));
             _max = new Shared<Vector3>(new Vector3(180f, 180f, 180f));
 
-            int numObjs = Owner.Clones.Count;
+            int numObjs = target.Clones.Count;
             _rotations = new Vector3[numObjs];
             for (int i = 0; i < numObjs; ++i)
             {
                 _rotations[i] = Random.insideUnitSphere;
             }
 
-            SetupProperties();
+            SetupProperties(target);
         }
 
-        public override void OnRemoved()
+        public override void OnRemoved(IShape target)
         {
-            Teardown();
+            Teardown(target);
         }
 
-        public override void Teardown()
+        public override void Teardown(IShape target)
         {
-            Quaternion defaultRotation = Owner.GetDefaultRotation();
-            Owner.ApplyToAll((go) => { go.transform.rotation = defaultRotation; });
+            Quaternion defaultRotation = target.GetDefaultRotation();
+            target.ApplyToAll((_, go) => { go.transform.rotation = defaultRotation; });
         }
 
-        public override TransformProxy[] Process(TransformProxy[] proxies)
+        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
         {
-            UpdateArray(proxies);
+            UpdateArray(target, proxies);
 
             IRotator rotator = null;
-            bool isAdditive = IsAdditive(out rotator);
+            bool isAdditive = IsAdditive(target, out rotator);
 
             int numObjs = proxies.Length;
             for (int i = 0; i < numObjs; ++i)
@@ -69,33 +69,33 @@ namespace Prefabrikator
             return proxies;
         }
 
-        protected override void OnInspectorUpdate()
+        protected override void OnInspectorUpdate(IShape target)
         {
             _min.Set(_minProperty.Update());
             _max.Set(_maxProperty.Update());
 
             if (GUILayout.Button("Randomize"))
             {
-                Randomize();
+                Randomize(target);
             }
         }
 
-        private void SetupProperties()
+        private void SetupProperties(IShape target)
         {
             void OnMinChanged(Vector3 current, Vector3 previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_min, previous, current));
+                target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_min, previous, current));
             }
             _minProperty = new Vector3Property("Min", _min, OnMinChanged);
 
             void OnMaxChanged(Vector3 current, Vector3 previous)
             {
-                Owner.CommandQueue.Enqueue(new GenericCommand<Vector3>(_max, previous, current));
+                target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_max, previous, current));
             }
             _maxProperty = new Vector3Property("Max", _max, OnMaxChanged);
         }
 
-        protected override void Randomize(int startingIndex = 0)
+        protected override void Randomize(IShape target, int startingIndex = 0)
         {
             int numObjs = _rotations.Length;
             Vector3[] previousValues = new Vector3[_rotations.Length];
@@ -114,12 +114,12 @@ namespace Prefabrikator
             if (startingIndex == 0)
             {
                 var valueChanged = new ValueChangedCommand<Vector3[]>(previousValues, _rotations, ApplyRotations);
-                Owner.CommandQueue.Enqueue(valueChanged);
+                target.CommandQueue.Enqueue(valueChanged);
             }
         }
 
         // #DG: Move this to parent. 
-        private void UpdateArray(TransformProxy[] proxies)
+        private void UpdateArray(IShape target, TransformProxy[] proxies)
         {
             int numObjs = proxies.Length;
 
@@ -131,7 +131,7 @@ namespace Prefabrikator
                     _rotations[i] = new Vector3(1f, 1f, 1f);
                 }
 
-                Randomize();
+                Randomize(target);
             }
             else if (numObjs != _rotations.Length)
             {
@@ -143,7 +143,7 @@ namespace Prefabrikator
                     startingIndex = _rotations.Length;
                     _rotations.CopyTo(temp, 0);
                     _rotations = temp;
-                    Randomize(startingIndex);
+                    Randomize(target, startingIndex);
                 }
                 else if (_rotations.Length > numObjs)
                 {
@@ -157,12 +157,12 @@ namespace Prefabrikator
             }
         }
 
-        private bool IsAdditive(out IRotator rotator)
+        private bool IsAdditive(IShape target, out IRotator rotator)
         {
-            int? index = Owner.GetIndexOfModifier(this);
+            int? index = target.GetIndexOfModifier(this);
             if (index != null)
             {
-                rotator = Owner.GetUpstreamModifierOfType<IRotator>(index.Value);
+                rotator = target.GetUpstreamModifierOfType<IRotator>(index.Value);
                 if (rotator != null)
                 {
                     return true;

@@ -149,7 +149,7 @@ namespace Prefabrikator
             void Apply(Vector3[] positions)
             {
                 _positions = new List<Vector3>(positions);
-                ApplyToAll((go, index) => { go.transform.position = _positions[index]; });
+                ApplyToAll((_, go, index) => { go.transform.position = _positions[index]; });
             }
             var valueChanged = new ValueChangedCommand<Vector3[]>(previous, _positions.ToArray(), Apply);
             CommandQueue.Enqueue(valueChanged);

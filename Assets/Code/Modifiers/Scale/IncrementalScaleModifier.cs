@@ -14,10 +14,10 @@ namespace Prefabrikator
             //
         }
         
-        public override TransformProxy[] Process(TransformProxy[] proxies)
+        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
         {
             // #DG: make this account for change to starting scale
-            Vector3 defaultScale = Owner.GetDefaultScale();
+            Vector3 defaultScale = target.GetDefaultScale();
             int numObjs = proxies.Length;
             for (int i = 0; i < numObjs; ++i)
             {
@@ -29,15 +29,15 @@ namespace Prefabrikator
             return proxies;
         }
 
-        public override void OnRemoved()
+        public override void OnRemoved(IShape target)
         {
-            Teardown();
+            Teardown(target);
         }
 
-        public override void Teardown()
+        public override void Teardown(IShape target)
         {
-            Vector3 defaultScale = Owner.GetDefaultScale();
-            Owner.ApplyToAll((go) => { go.transform.localScale = defaultScale; });
+            Vector3 defaultScale = target.GetDefaultScale();
+            target.ApplyToAll((_, go) => { go.transform.localScale = defaultScale; });
         }
     }
 }

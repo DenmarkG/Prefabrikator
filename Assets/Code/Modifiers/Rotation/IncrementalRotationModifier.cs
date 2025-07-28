@@ -13,11 +13,11 @@ namespace Prefabrikator
             //
         }
 
-        public override TransformProxy[] Process(TransformProxy[] proxies)
+        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
         {
             int numObjs = proxies.Length;
             // #DG: make this account for changes to the starting rotation (uniform mod)
-            Quaternion defaultRotation = Owner.GetDefaultRotation();
+            Quaternion defaultRotation = target.GetDefaultRotation();
             for (int i = 0; i < numObjs; ++i)
             {
                 float t = (float)i / (numObjs - 1);
@@ -28,15 +28,15 @@ namespace Prefabrikator
             return proxies;
         }
 
-        public override void OnRemoved()
+        public override void OnRemoved(IShape target)
         {
-            Teardown();
+            Teardown(target);
         }
 
-        public override void Teardown()
+        public override void Teardown(IShape target)
         {
-            Quaternion defaultRotation = Owner.GetDefaultRotation();
-            Owner.ApplyToAll((go) => { go.transform.rotation = defaultRotation; });
+            Quaternion defaultRotation = target.GetDefaultRotation();
+            target.ApplyToAll((_, go) => { go.transform.rotation = defaultRotation; });
         }
     }
 }

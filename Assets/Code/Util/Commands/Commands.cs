@@ -140,7 +140,7 @@ namespace Prefabrikator
         }
     }
 
-    internal class ValueChangedCommand<T> : ICommand
+    public class ValueChangedCommand<T> : ICommand
     {
         private System.Action<T> OnValueChanged = null;
 
