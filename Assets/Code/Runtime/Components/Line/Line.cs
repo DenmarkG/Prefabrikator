@@ -7,7 +7,7 @@ namespace Prefabrikator.Runtime
 {
 
     [System.Serializable]
-    public struct Line : IShape
+    public struct Line : IRuntimeShape
     {
         public ShapeType BaseShapeType => ShapeType.Line;
 

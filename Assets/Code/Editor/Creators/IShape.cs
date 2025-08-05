@@ -5,7 +5,7 @@ using UnityEditorInternal;
 using Prefabrikator.Runtime;
 using Prefabrikator.Shapes;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     public abstract class IShape
     {
@@ -443,7 +443,11 @@ namespace Prefabrikator
                     _modifierDisplay.DoLayoutList();
                     if (_activeModifierSelection != null)
                     {
-                        _activeModifierSelection.UpdateInspector(this);
+                        ModifierInspectorFunction inspector = GetModifierInspetor(_activeModifierSelection);
+                        if (inspector != null)
+                        {
+                            inspector.Invoke(_activeModifierSelection);
+                        }
                     }
                 }
                 EditorGUILayout.EndVertical();
@@ -483,6 +487,19 @@ namespace Prefabrikator
 
         public TransformProxy[] ProcessModifiers()
         {
+            TransformProxy[] proxies = GetProxies();
+
+            int numMods = _modifierStack.Count;
+            for (int i = 0; i < numMods; ++i)
+            {
+                proxies = _modifierStack[i].Process(GetRuntimeShape(), proxies);
+            }
+
+            return proxies;
+        }
+
+        private TransformProxy[] GetProxies()
+        {
             TransformProxy[] proxies = new TransformProxy[_clones.Count];
             for (int i = 0; i < _clones.Count; ++i)
             {
@@ -491,12 +508,6 @@ namespace Prefabrikator
                 Vector3 scale = GetDefaultScale();
 
                 proxies[i] = new TransformProxy(position, rotation, scale);
-            }
-
-            int numMods = _modifierStack.Count;
-            for (int i = 0; i < numMods; ++i)
-            {
-                proxies = _modifierStack[i].Process(this, proxies);
             }
 
             return proxies;
@@ -521,7 +532,7 @@ namespace Prefabrikator
         {
             if (_activeModifierSelection != null)
             {
-                _activeModifierSelection.OnRemoved(this);
+                _activeModifierSelection.OnRemoved(GetRuntimeShape(), _clones);
                 CommandQueue.Enqueue(new ModifierRemoveCommand(_activeModifierSelection, this));
             }
 
@@ -542,7 +553,7 @@ namespace Prefabrikator
                 _activeModifierSelection = null;
             }
 
-            mod.OnRemoved(this);
+            mod.OnRemoved(GetRuntimeShape(), _clones);
         }
 
         public void RemoveModifier(Modifier modifier)
@@ -583,6 +594,20 @@ namespace Prefabrikator
             return default(T);
         }
 
+
+        private delegate void ModifierInspectorFunction(Modifier mod);
+        private ModifierInspectorFunction GetModifierInspetor(Modifier mod)
+        {
+            switch (mod.GetType())
+            {
+                default:
+                    return null;
+            }
+        }
+
         #endregion // Modifiers
+
+        // #DG: [TEMP] converter until refactor is complete
+        public IRuntimeShape GetRuntimeShape() => _component.GetShapeData();
     }
 }

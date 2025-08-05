@@ -1,7 +1,8 @@
+using Prefabrikator.Runtime;
 using UnityEngine;
 
-namespace Prefabrikator
+namespace Prefabrikator.Runtime
 {
-    public delegate void ApplicatorDelegate(IShape target, Transform go);
-    public delegate void IndexedApplicatorDelegate(IShape target, Transform go, int index);
+    public delegate void RuntimeApplicatorDelegate(IRuntimeShape target, Transform go);
+    public delegate void RuntimeIndexedApplicatorDelegate(IRuntimeShape runtimeShape, Transform proxy, int index);
 }

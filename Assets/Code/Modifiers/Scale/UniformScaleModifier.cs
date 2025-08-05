@@ -1,3 +1,4 @@
+using Prefabrikator.Runtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,28 +9,28 @@ namespace Prefabrikator
     {
         public override string DisplayName => "Uniform Scale";
 
-        public UniformScaleModifier(IShape owner)
-            : base(owner, "Scale", 1f)
+        public UniformScaleModifier(IRuntimeShape target)
+            : base(target, "Scale", 1f)
         {
             //
         }
 
-        protected override void RestoreDefault(IShape target, Transform obj)
+        protected override void RestoreDefault(IRuntimeShape target, Transform obj)
         {
             Vector3 defaultScale = target.GetDefaultScale();
             obj.transform.localScale = defaultScale;
         }
 
-        protected override void ApplyModifier(IShape target, TransformProxy[] proxies)
+        protected override void ApplyModifier(IRuntimeShape target, TransformProxy[] proxies)
         {
             int numObjs = proxies.Length;
             for (int i = 0; i < numObjs; ++i)
             {
                 Vector3 scale = proxies[i].Scale;
 
-                scale.x *= Mathf.Abs(((Vector3)_target).x);
-                scale.y *= Mathf.Abs(((Vector3)_target).y);
-                scale.z *= Mathf.Abs(((Vector3)_target).z);
+                scale.x *= Mathf.Abs(((Vector3)_uniformValue).x);
+                scale.y *= Mathf.Abs(((Vector3)_uniformValue).y);
+                scale.z *= Mathf.Abs(((Vector3)_uniformValue).z);
 
                 proxies[i].Scale = scale;
             }

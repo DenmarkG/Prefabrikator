@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Prefabrikator.Runtime;
+using System;
 using UnityEngine;
 using RNG = UnityEngine.Random;
 
 namespace Prefabrikator
 {
+    using Shapes;
+
     public class RadialNoise : RandomModifier<float>
     {
         public override string DisplayName => ModifierType.RadialNoise;
@@ -32,39 +35,44 @@ namespace Prefabrikator
             Randomize(target);
         }
 
-        public override void OnRemoved(IShape target)
+        public override void OnRemoved(IRuntimeShape target, Transform[] proxies)
         {
-            Teardown(target);
+            Teardown(target, proxies);
         }
 
-        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
+        public override Transform[] Process(IRuntimeShape target, Transform[] proxies)
         {
             Vector3 center = _radialShape.Center;
             float radius = _radialShape.Radius;
 
-            TransformProxy current;
+            Transform current;
             int count = proxies.Length;
             for (int i = 0; i < count; ++i)
             {
                 current = proxies[i];
-                Vector3 direction = current.Position - center;
+                Vector3 direction = current.position - center;
                 direction.Normalize();
                 direction *= _radialDelta[i] + radius;
-                proxies[i].Position = center + direction;
+                proxies[i].position = center + direction;
             }
 
             return proxies;
         }
 
-        public override void Teardown(IShape target)
+        public override void Teardown(IRuntimeShape target, Transform[] proxies)
         {
-            target.ApplyToAll((_, go, index) =>
+            target.ApplyToAll(proxies, (target, proxy, index) =>
             {
                 go.transform.position = target.GetDefaultPositionAtIndex(index);
             });
         }
 
-        protected override void OnInspectorUpdate(IShape target)
+        private Quaternion GetInverseRotationAtIndex(int index)
+        {
+            return Quaternion.identity;
+        }
+
+        protected override void OnInspectorUpdate(IRuntimeShape target)
         {
             _min.Set(_minProperty.Update());
             _max.Set(_maxProperty.Update());
@@ -75,7 +83,7 @@ namespace Prefabrikator
             }
         }
 
-        protected override void Randomize(IShape target, int startingIndex = 0)
+        protected override void Randomize(IRuntimeShape target, int startingIndex = 0)
         {
             int numObjs = _radialDelta.Length;
             float[] previous = new float[numObjs];

@@ -41,7 +41,7 @@ namespace Prefabrikator.Runtime
 
 #if UNITY_EDITOR
 
-        public override IShape GetShapeData() => _line;
+        public override IRuntimeShape GetShapeData() => _line;
 
         public Shared<Vector3> SharedStart => _sharedStart ??= new(Start, OnSetStart);
         private Shared<Vector3> _sharedStart;

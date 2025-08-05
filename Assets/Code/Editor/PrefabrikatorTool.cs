@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     using Runtime;
     using Shapes;

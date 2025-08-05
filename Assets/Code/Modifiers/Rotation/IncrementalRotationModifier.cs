@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Prefabrikator.Runtime;
+using System.Collections;
 using UnityEngine;
 
 namespace Prefabrikator
@@ -7,7 +8,7 @@ namespace Prefabrikator
     {
         public override string DisplayName => "Incremental Rotation";
 
-        public IncrementalRotationModifier(IShape owner)
+        public IncrementalRotationModifier(IRuntimeShape owner)
             : base(owner, new Vector3(0f, 90f, 0f))
         {
             //

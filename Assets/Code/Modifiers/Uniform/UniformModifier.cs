@@ -1,3 +1,5 @@
+using Prefabrikator.Runtime;
+using Prefabrikator.Shapes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,60 +8,45 @@ namespace Prefabrikator
 {
     public abstract class UniformModifier : Modifier
     {
-        [SerializeField] protected Shared<Vector3> _target = null;
-        [SerializeField] protected Vector3Property _targetProperty = null;
+        public Shared<Vector3> UniformValue => _uniformValue;
+        [SerializeField] protected Shared<Vector3> _uniformValue = null;
 
+        public Shared<float> ConstrainedValue => _constrainedValue;
         [SerializeField] protected Shared<float> _constrainedValue = null;
-        [SerializeField] protected FloatProperty _constrainedProperty = null;
 
+        public Shared<bool> ShouldConstrain => _constrainProportions;
         [SerializeField] protected Shared<bool> _constrainProportions = new();
-        [SerializeField] protected ToggleProperty _constrainProperty = null;
 
-        public UniformModifier(IShape target, string label, float defaultConstainedValue)
+        public UniformModifier(IRuntimeShape target, string label, float defaultConstainedValue)
         {
-            _target = new Shared<Vector3>(new Vector3(defaultConstainedValue, defaultConstainedValue, defaultConstainedValue));
+            _uniformValue = new Shared<Vector3>(new Vector3(defaultConstainedValue, defaultConstainedValue, defaultConstainedValue));
             
-            OnValueSetDelegate<Vector3> onValueChanged = (current, previous) => target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_target, previous, current));
-                _targetProperty = new Vector3Property(label, _target, onValueChanged);
+            //OnValueSetDelegate<Vector3> onValueChanged = (current, previous) => target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_target, previous, current));
+            //    _targetProperty = new Vector3Property(label, _target, onValueChanged);
 
-            _constrainedValue = new Shared<float>(defaultConstainedValue);
-            _constrainProperty = new ToggleProperty(new GUIContent("Lock Axes"), _constrainProportions, CreateCommand(_constrainProportions, target));
-            _constrainedProperty = new FloatProperty(label, _constrainedValue, CreateCommand(_constrainedValue, target));
+            //_constrainedValue = new Shared<float>(defaultConstainedValue);
+            //_constrainProperty = new ToggleProperty(new GUIContent("Lock Axes"), _constrainProportions, CreateCommand(_constrainProportions, target));
+            //_constrainedProperty = new FloatProperty(label, _constrainedValue, CreateCommand(_constrainedValue, target));
         }
 
-        public override sealed TransformProxy[] Process(IShape target, TransformProxy[] proxies)
+        public override sealed TransformProxy[] Process(IRuntimeShape target, TransformProxy[] proxies)
         {
             ApplyModifier(target, proxies);
 
             return proxies;
         }
 
-        public sealed override void OnRemoved(IShape target)
+        public sealed override void OnRemoved(IRuntimeShape target, Transform[] proxies)
         {
-            Teardown(target);
+            Teardown(target, proxies);
         }
 
-        public sealed override void Teardown(IShape target)
+        public sealed override void Teardown(IRuntimeShape target, Transform[] proxies)
         {
-            target.ApplyToAll(RestoreDefault);
+            target.ApplyToAll(proxies, RestoreDefault);
         }
 
-        protected sealed override void OnInspectorUpdate(IShape target)
-        {
-            _constrainProportions.Set(_constrainProperty.Update());
-
-            if (_constrainProportions)
-            {
-                float scale = _constrainedProperty.Update();
-                _target.Set(new Vector3(scale, scale, scale));
-            }
-            else
-            {
-                _target.Set(_targetProperty.Update());
-            }
-        }
-
-        protected abstract void RestoreDefault(IShape target, Transform obj);
-        protected abstract void ApplyModifier(IShape target, TransformProxy[] proxies);
+        protected abstract void RestoreDefault(IRuntimeShape target, Transform obj);
+        protected abstract void ApplyModifier(IRuntimeShape target, TransformProxy[] proxies);
     }
 }

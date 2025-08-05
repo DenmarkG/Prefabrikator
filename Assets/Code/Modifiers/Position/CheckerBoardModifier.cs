@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Prefabrikator.Runtime;
+using UnityEngine;
 
 namespace Prefabrikator
 {
@@ -8,27 +9,27 @@ namespace Prefabrikator
 
         private Shared<Vector3> _offset = new Shared<Vector3>();
 
-        public CheckerBoardModifier(IShape owner)
+        public CheckerBoardModifier(IRuntimeShape owner)
         {
             //
         }
 
-        public override void OnRemoved(IShape target)
+        public override void OnRemoved(IRuntimeShape target)
         {
             Teardown(target);
         }
 
-        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
+        public override TransformProxy[] Process(IRuntimeShape target, TransformProxy[] proxies)
         {
             return proxies;
         }
 
-        protected override void OnInspectorUpdate(IShape target)
+        protected override void OnInspectorUpdate(IRuntimeShape target)
         {
             //
         }
 
-        public override void Teardown(IShape target)
+        public override void Teardown(IRuntimeShape target)
         {
             target.ApplyToAll((shape, go, index) => { go.transform.position = target.GetDefaultPositionAtIndex(index); });
         }

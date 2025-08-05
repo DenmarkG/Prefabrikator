@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using Prefabrikator.Runtime;
 using UnityEngine;
-using static UnityEngine.UI.GridLayoutGroup;
 
 namespace Prefabrikator
 {
@@ -14,7 +12,7 @@ namespace Prefabrikator
         [SerializeField] private Vector3Property _minProperty = null;
         [SerializeField] private Vector3Property _maxProperty = null;
 
-        public RandomRotation(IShape target)
+        public RandomRotation(IRuntimeShape target)
         {
             _min = new Shared<Vector3>(new Vector3(-179f, -179f, -179f));
             _max = new Shared<Vector3>(new Vector3(180f, 180f, 180f));
@@ -29,18 +27,18 @@ namespace Prefabrikator
             SetupProperties(target);
         }
 
-        public override void OnRemoved(IShape target)
+        public override void OnRemoved(IRuntimeShape target, Transform[] xforms)
         {
-            Teardown(target);
+            Teardown(target, xforms);
         }
 
-        public override void Teardown(IShape target)
+        public override void Teardown(IRuntimeShape target, Transform[] xforms)
         {
             Quaternion defaultRotation = target.GetDefaultRotation();
             target.ApplyToAll((_, go) => { go.transform.rotation = defaultRotation; });
         }
 
-        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
+        public override TransformProxy[] Process(IRuntimeShape target, TransformProxy[] proxies)
         {
             UpdateArray(target, proxies);
 
@@ -69,7 +67,7 @@ namespace Prefabrikator
             return proxies;
         }
 
-        protected override void OnInspectorUpdate(IShape target)
+        protected override void OnInspectorUpdate(IRuntimeShape target, Transform[] xforms)
         {
             _min.Set(_minProperty.Update());
             _max.Set(_maxProperty.Update());
@@ -95,7 +93,7 @@ namespace Prefabrikator
             _maxProperty = new Vector3Property("Max", _max, OnMaxChanged);
         }
 
-        protected override void Randomize(IShape target, int startingIndex = 0)
+        protected override void Randomize(IRuntimeShape target, int startingIndex = 0)
         {
             int numObjs = _rotations.Length;
             Vector3[] previousValues = new Vector3[_rotations.Length];
@@ -119,7 +117,7 @@ namespace Prefabrikator
         }
 
         // #DG: Move this to parent. 
-        private void UpdateArray(IShape target, TransformProxy[] proxies)
+        private void UpdateArray(IRuntimeShape target, TransformProxy[] proxies)
         {
             int numObjs = proxies.Length;
 
@@ -157,7 +155,7 @@ namespace Prefabrikator
             }
         }
 
-        private bool IsAdditive(IShape target, out IRotator rotator)
+        private bool IsAdditive(IRuntimeShape target, out IRotator rotator)
         {
             int? index = target.GetIndexOfModifier(this);
             if (index != null)

@@ -40,7 +40,7 @@ namespace Prefabrikator.Shapes
 
 #if UNITY_EDITOR
         //public delegate void ModifierFunction<T>(T shape) where T : IShape;
-        public abstract Runtime.IShape GetShapeData();
+        public abstract Runtime.IRuntimeShape GetShapeData();
 #endif
     }
 }

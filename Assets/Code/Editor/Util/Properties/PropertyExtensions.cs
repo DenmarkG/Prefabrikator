@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     [System.Serializable]
     public class Vector3Property : CustomProperty<Vector3>

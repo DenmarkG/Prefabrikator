@@ -25,7 +25,7 @@ namespace Prefabrikator
             int numObjs = proxies.Length;
             for (int i = 0; i < numObjs; ++i)
             {
-                proxies[i].Rotation *= Quaternion.Euler(_target);
+                proxies[i].Rotation *= Quaternion.Euler(_uniformValue);
             }
         }
     }

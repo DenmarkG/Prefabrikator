@@ -43,21 +43,40 @@ namespace Prefabrikator.Shapes
             shape.Collection.RemoveAt(index);
         }
 
-        public static void ApplyToAll(this ShapeComponent shape, ApplicatorDelegate applicator)
+        public static void ApplyToAll(this ShapeComponent shape, RuntimeApplicatorDelegate applicator)
         {
             int numObjs = shape.Collection.Count;
             for (int i = 0; i < numObjs; ++i)
             {
-                applicator(shape.Collection[i]);
+                applicator(shape.GetShapeData(), shape.Collection[i]);
             }
         }
 
-        public static void ApplyToAll(this ShapeComponent shape, IndexedApplicatorDelegate applicator)
+
+        public static void ApplyToAll(this IRuntimeShape shape, Transform[] xforms, RuntimeApplicatorDelegate applicator)
+        {
+            int numObjs = xforms.Length;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                applicator(shape, xforms[i]);
+            }
+        }
+
+        public static void ApplyToAll(this ShapeComponent shape, RuntimeIndexedApplicatorDelegate applicator)
         {
             int numObjs = shape.Collection.Count;
             for (int i = 0; i < numObjs; ++i)
             {
-                applicator(shape.Collection[i], i);
+                applicator(shape.GetShapeData(), shape.Collection[i], i);
+            }
+        }
+
+        public static void ApplyToAll(this IRuntimeShape shape, Transform[] xforms, RuntimeIndexedApplicatorDelegate applicator)
+        {
+            int numObjs = xforms.Length;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                applicator(shape, xforms[i], i);
             }
         }
 
@@ -70,7 +89,7 @@ namespace Prefabrikator.Shapes
             }
         }
 
-        public static Runtime.IShape CreateDefaultData(ShapeType shapeType)
+        public static IRuntimeShape CreateDefaultData(ShapeType shapeType)
         {
             switch (shapeType)
             {

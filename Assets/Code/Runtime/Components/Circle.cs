@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Prefabrikator.Runtime
 {
     [System.Serializable]
-    public class Circle : IShape
+    public class Circle : IRuntimeShape
     {
         public ShapeType BaseShapeType => ShapeType.Circle;
         public float Radius;

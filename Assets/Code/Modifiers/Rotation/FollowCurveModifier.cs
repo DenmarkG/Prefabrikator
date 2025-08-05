@@ -216,7 +216,7 @@ namespace Prefabrikator
 
         public override void Teardown(IShape target)
         {
-            target.ApplyToAll((go) => { go.transform.rotation = target.GetDefaultRotation(); });
+            target.ApplyToAll(target, (go) => { go.transform.rotation = target.GetDefaultRotation(); });
         }
     }
 }

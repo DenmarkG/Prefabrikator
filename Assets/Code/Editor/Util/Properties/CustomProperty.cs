@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     public enum ExitMode
     {

@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 using UnityEditor;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     internal abstract class CreatorCommand : ICommand
     {

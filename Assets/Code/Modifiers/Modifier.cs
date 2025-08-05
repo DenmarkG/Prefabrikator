@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEditor;
+using Prefabrikator.Runtime;
+using System.Collections.Generic;
 
 namespace Prefabrikator
 {
@@ -28,25 +30,10 @@ namespace Prefabrikator
     {
         public abstract string DisplayName { get; }
 
-        public void UpdateInspector(IShape target)
-        {
-            EditorGUILayout.BeginVertical(new GUIStyle("Tooltip"), GUILayout.MaxWidth(Constants.MaxWidth - Constants.IndentSize), GUILayout.ExpandWidth(false));
-            {
-                OnInspectorUpdate(target);
-            }
-            EditorGUILayout.EndVertical();
-        }
+        public abstract TransformProxy[] Process(IRuntimeShape target, TransformProxy[] proxies);
 
-        protected abstract void OnInspectorUpdate(IShape target);
-        public abstract TransformProxy[] Process(IShape target, TransformProxy[] proxies);
-
-        // #DG: Modifiers are removed when saving
-        public abstract void OnRemoved(IShape target);
-        public abstract void Teardown(IShape target);
-
-        public OnValueSetDelegate<T> CreateCommand<T>(Shared<T> field, IShape target) where T : struct
-        {
-            return (T current, T previous) => { target.CommandQueue.Enqueue(new GenericCommand<T>(field, previous, current)); };
-        }
+        // #DG: TODO: Modifiers are removed when saving
+        public abstract void OnRemoved(IRuntimeShape target, IEnumerable<Transform> proxies);
+        public abstract void Teardown(IRuntimeShape target, IEnumerable<Transform> proxies);
     }
 }

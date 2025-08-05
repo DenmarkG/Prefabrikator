@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     public static class ModifierFactory
     {

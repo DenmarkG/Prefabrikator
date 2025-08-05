@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     public class MinMaxProperty : CustomProperty<MinMax>
     {
