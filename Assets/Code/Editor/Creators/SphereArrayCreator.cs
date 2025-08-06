@@ -5,7 +5,7 @@ using UnityEditor.Graphs;
 using Prefabrikator.Runtime;
 using Prefabrikator.Shapes;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     public class SphereArrayCreator : CircularArrayCreator
     {

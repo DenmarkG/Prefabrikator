@@ -1,4 +1,6 @@
 ﻿using Prefabrikator.Runtime;
+using Prefabrikator.Shapes;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Prefabrikator
@@ -14,9 +16,9 @@ namespace Prefabrikator
             //
         }
 
-        public override void OnRemoved(IRuntimeShape target)
+        public override void OnRemoved(IRuntimeShape target, Transform[] proxies)
         {
-            Teardown(target);
+            Teardown(target, proxies);
         }
 
         public override TransformProxy[] Process(IRuntimeShape target, TransformProxy[] proxies)
@@ -24,14 +26,10 @@ namespace Prefabrikator
             return proxies;
         }
 
-        protected override void OnInspectorUpdate(IRuntimeShape target)
+        public override void Teardown(IRuntimeShape target, Transform[] proxies)
         {
-            //
-        }
-
-        public override void Teardown(IRuntimeShape target)
-        {
-            target.ApplyToAll((shape, go, index) => { go.transform.position = target.GetDefaultPositionAtIndex(index); });
+            // #DG: Instead, apply the inverse of the transform of this modifier
+            //target.ApplyToAll(proxies, (shape, proxy, index) => { proxy.position = target.GetDefaultPositionAtIndex(index); });
         }
     }
 }

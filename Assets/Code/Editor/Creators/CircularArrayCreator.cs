@@ -4,7 +4,7 @@ using UnityEditor.IMGUI.Controls;
 using Prefabrikator.Runtime;
 using Prefabrikator.Shapes;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     // #DG: TODO create object to act as center, 
     public class CircularArrayCreator : IShape, IRadial

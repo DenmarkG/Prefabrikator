@@ -4,7 +4,7 @@ using UnityEditor.IMGUI.Controls;
 using Prefabrikator.Runtime;
 using Prefabrikator.Shapes;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
 
     public class ArcArrayCreator : CircularArrayCreator

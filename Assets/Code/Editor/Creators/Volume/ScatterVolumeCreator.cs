@@ -5,7 +5,7 @@ using UnityEditor;
 using Prefabrikator.Runtime;
 using Prefabrikator.Shapes;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     public abstract class ScatterVolumeCreator : IShape
     {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using Prefabrikator.Runtime;
 
 namespace Prefabrikator
 {
@@ -47,18 +48,18 @@ namespace Prefabrikator
         [SerializeField] private bool _dropped = false;
 
         // #DG: remove this after separating editor code into separate class
-        private IShape _target;
+        private IRuntimeShape _target;
 
-        public DropModifier(IShape target)
+        public DropModifier(IRuntimeShape target)
         {
             SetupProperties();
             this._target = target;
             SceneView.duringSceneGui += OnSceneGUI;
         }
 
-        public override void Teardown(IShape target)
+        public override void Teardown(IRuntimeShape target, Transform[] proxies)
         {
-            _target.ApplyToAll((_, go, index) => { go.transform.position = _target.GetDefaultPositionAtIndex(index); });
+            _target.ApplyToAll(proxies (_, go, index) => { go.transform.position = _target.GetDefaultPositionAtIndex(index); });
             SceneView.duringSceneGui -= OnSceneGUI;
 
             if (_dropTarget != null)

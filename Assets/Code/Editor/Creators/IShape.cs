@@ -101,7 +101,7 @@ namespace Prefabrikator.Editor
             for (int i = 0; i < numMods; ++i)
             {
                 var mod = _modifierStack[i];
-                mod.Teardown(this);
+                mod.Teardown(this.GetRuntimeShape(), Clones.ToArray());
             }
 
             // #DG: need to account for pre-exisint modifiers
@@ -515,7 +515,7 @@ namespace Prefabrikator.Editor
 
         private void AddModifier(string modifierName)
         {
-            Modifier mod = ModifierFactory.CreateModifier(modifierName, this);
+            Modifier mod = ModifierFactory.CreateModifier(modifierName, this.GetRuntimeShape());
 
             if (mod != null)
             {
@@ -532,7 +532,7 @@ namespace Prefabrikator.Editor
         {
             if (_activeModifierSelection != null)
             {
-                _activeModifierSelection.OnRemoved(GetRuntimeShape(), _clones);
+                _activeModifierSelection.OnRemoved(GetRuntimeShape(), _clones.ToArray());
                 CommandQueue.Enqueue(new ModifierRemoveCommand(_activeModifierSelection, this));
             }
 
@@ -553,7 +553,7 @@ namespace Prefabrikator.Editor
                 _activeModifierSelection = null;
             }
 
-            mod.OnRemoved(GetRuntimeShape(), _clones);
+            mod.OnRemoved(GetRuntimeShape(), _clones.ToArray());
         }
 
         public void RemoveModifier(Modifier modifier)

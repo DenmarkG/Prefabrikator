@@ -1,3 +1,4 @@
+using Prefabrikator.Runtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,6 @@ namespace Prefabrikator
         [SerializeField] protected Shared<T> _min = new Shared<T>();
         [SerializeField] protected Shared<T> _max = new Shared<T>();
 
-        protected abstract void Randomize(IShape target, int startingIndex = 0);
+        protected abstract void Randomize(IRuntimeShape target, int startingIndex = 0);
     }
 }

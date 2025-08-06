@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 using Prefabrikator.Runtime;
 using Prefabrikator.Shapes;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     public class ScatterPlaneCreator : ScatterVolumeCreator
     {

@@ -62,6 +62,15 @@ namespace Prefabrikator.Shapes
             }
         }
 
+        public static void ApplyToAll(this IRuntimeShape shape, List<Transform> xforms, RuntimeApplicatorDelegate applicator)
+        {
+            int numObjs = xforms.Count;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                applicator(shape, xforms[i]);
+            }
+        }
+
         public static void ApplyToAll(this ShapeComponent shape, RuntimeIndexedApplicatorDelegate applicator)
         {
             int numObjs = shape.Collection.Count;
@@ -74,6 +83,15 @@ namespace Prefabrikator.Shapes
         public static void ApplyToAll(this IRuntimeShape shape, Transform[] xforms, RuntimeIndexedApplicatorDelegate applicator)
         {
             int numObjs = xforms.Length;
+            for (int i = 0; i < numObjs; ++i)
+            {
+                applicator(shape, xforms[i], i);
+            }
+        }
+
+        public static void ApplyToAll(this IRuntimeShape shape, List<Transform> xforms, RuntimeIndexedApplicatorDelegate applicator)
+        {
+            int numObjs = xforms.Count;
             for (int i = 0; i < numObjs; ++i)
             {
                 applicator(shape, xforms[i], i);

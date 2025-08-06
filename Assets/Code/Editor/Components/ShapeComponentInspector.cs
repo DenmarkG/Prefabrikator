@@ -7,7 +7,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     [CustomEditor(typeof(ShapeComponent), editorForChildClasses: true)]
     public class ShapeComponentInspector : UnityEditor.Editor

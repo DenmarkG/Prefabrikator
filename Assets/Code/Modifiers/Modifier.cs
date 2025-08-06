@@ -33,7 +33,7 @@ namespace Prefabrikator
         public abstract TransformProxy[] Process(IRuntimeShape target, TransformProxy[] proxies);
 
         // #DG: TODO: Modifiers are removed when saving
-        public abstract void OnRemoved(IRuntimeShape target, IEnumerable<Transform> proxies);
-        public abstract void Teardown(IRuntimeShape target, IEnumerable<Transform> proxies);
+        public abstract void OnRemoved(IRuntimeShape target, Transform[] proxies);
+        public abstract void Teardown(IRuntimeShape target, Transform[] proxies);
     }
 }

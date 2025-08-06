@@ -62,11 +62,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Code\Editor\PropertyDrawers\SharedVectorPropertyDrawer.cs" />
-    <Compile Include="Assets\Code\Editor\Modifiers\IncrementalModifierEditor.cs" />
     <Compile Include="Assets\Code\Editor\Util\Properties\MinMaxProperty.cs" />
     <Compile Include="Assets\Code\Editor\Components\ShapeComponentInspector.cs" />
     <Compile Include="Assets\Code\Editor\Creators\BezierArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\ModifierPropertyDrawer.cs" />
+    <Compile Include="Assets\Code\Editor\Util\Extensions.cs" />
+    <Compile Include="Assets\Code\Editor\Util\ToolCloseMode.cs" />
+    <Compile Include="Assets\Code\Editor\Util\OpenMode.cs" />
     <Compile Include="Assets\Code\Editor\Util\EditorDelegates.cs" />
     <Compile Include="Assets\Code\Editor\Creators\Interfaces\IRadial.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\ModifierEditor.cs" />
@@ -81,6 +83,7 @@
     <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterBoxCreator.cs" />
     <Compile Include="Assets\Code\Editor\Creators\GridArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Util\Commands\Command.cs" />
+    <Compile Include="Assets\Code\Editor\Util\ToolExtensions.cs" />
     <Compile Include="Assets\Code\Editor\Creators\Volume\ScatterVolumeCreator.cs" />
     <Compile Include="Assets\Code\Editor\Creators\CircularArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Creators\ArcArrayCreator.cs" />
@@ -88,7 +91,6 @@
     <Compile Include="Assets\Code\Editor\Creators\EllipseArrayCreator.cs" />
     <Compile Include="Assets\Code\Editor\Modifiers\ModifierFactory.cs" />
     <Compile Include="Assets\Code\Editor\PrefabrikatorTool.cs" />
-    <Compile Include="Assets\Code\Editor\Modifiers\UniformModifierEditor.cs" />
     <Compile Include="Assets\Code\Editor\Util\Commands\Commands.cs" />
     <Compile Include="Assets\Code\Editor\Util\Properties\CustomProperty.cs" />
   </ItemGroup>

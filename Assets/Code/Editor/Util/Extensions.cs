@@ -3,7 +3,7 @@ using UnityEditor;
 using RNG = UnityEngine.Random;
 using System.Collections.Generic;
 
-namespace Prefabrikator
+namespace Prefabrikator.Editor
 {
     public static class Extensions
     {

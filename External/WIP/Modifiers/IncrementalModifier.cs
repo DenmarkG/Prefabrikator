@@ -7,13 +7,13 @@ namespace Prefabrikator
 {
     public abstract class IncrementalModifier : Modifier
     {
-        protected Shared<Vector3> Target { get; private set; }
+        protected Shared<Vector3> IncrementValue { get; private set; }
 
         //private bool _reverseDirection = false;
 
         public IncrementalModifier(IRuntimeShape target, Vector3 defaultValue)
         {
-            Target = new Shared<Vector3>(defaultValue);
+            IncrementValue = new Shared<Vector3>(defaultValue);
         }
     }
 }

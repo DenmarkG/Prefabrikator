@@ -1,3 +1,4 @@
+using Prefabrikator.Runtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,34 +17,34 @@ namespace Prefabrikator
         [SerializeField] private Shared<Vector3> _minVector = new Shared<Vector3>(new Vector3(DefaultMin, DefaultMin, DefaultMin));
         [SerializeField] private Shared<Vector3> _maxVector = new Shared<Vector3>(new Vector3(DefaultMax, DefaultMax, DefaultMax));
 
-        [SerializeField] private Vector3Property _minProperty = null;
-        [SerializeField] private Vector3Property _maxProperty = null;
+        //[SerializeField] private Vector3Property _minProperty = null;
+        //[SerializeField] private Vector3Property _maxProperty = null;
 
-        public PositionNoiseModifier(IShape target)
+        public PositionNoiseModifier(IRuntimeShape target)
         {
-            SetupProperties(target);
+            //SetupProperties(target);
 
-            int numObjs = target.Clones.Count;
-            _positions = new Vector3[numObjs];
-            for (int i = 0; i < numObjs; ++i)
-            {
-                _positions[i] = new Vector3(1f, 1f, 1f);
-            }
+            //int numObjs = target.Clones.Count;
+            //_positions = new Vector3[numObjs];
+            //for (int i = 0; i < numObjs; ++i)
+            //{
+            //    _positions[i] = new Vector3(1f, 1f, 1f);
+            //}
 
             Randomize(target);
         }
 
-        public override void OnRemoved(IShape target)
+        public override void OnRemoved(IRuntimeShape target, Transform[] proxies)
         {
-            Teardown(target);
+            Teardown(target, proxies);
         }
 
-        public override void Teardown(IShape target)
+        public override void Teardown(IRuntimeShape target, Transform[] proxies)
         {
-            target.ApplyToAll((_, go, index) => { go.transform.position = target.GetDefaultPositionAtIndex(index); });
+            //target.ApplyToAll((_, go, index) => { go.transform.position = target.GetDefaultPositionAtIndex(index); });
         }
 
-        public override TransformProxy[] Process(IShape target, TransformProxy[] proxies)
+        public override TransformProxy[] Process(IRuntimeShape target, TransformProxy[] proxies)
         {
             UpdateArray(target, proxies);
 
@@ -59,33 +60,33 @@ namespace Prefabrikator
             return proxies;
         }
 
-        protected override void OnInspectorUpdate(IShape target)
-        {
-            _minVector.Set(_minProperty.Update());
-            _maxVector.Set(_maxProperty.Update());
+        //protected override void OnInspectorUpdate(IRuntimeShape target, Transform[] proxies)
+        //{
+        //    _minVector.Set(_minProperty.Update());
+        //    _maxVector.Set(_maxProperty.Update());
 
-            if (GUILayout.Button("Randomize"))
-            {
-                Randomize(target);
-            }
-        }
+        //    if (GUILayout.Button("Randomize"))
+        //    {
+        //        Randomize(target);
+        //    }
+        //}
 
-        private void SetupProperties(IShape target)
-        {
-            void OnMinVectorChanged(Vector3 current, Vector3 previous)
-            {
-                target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_minVector, previous, current));
-            }
-            _minProperty = new Vector3Property("Min", _minVector, OnMinVectorChanged);
+        //private void SetupProperties(IRuntimeShape target)
+        //{
+        //    void OnMinVectorChanged(Vector3 current, Vector3 previous)
+        //    {
+        //        target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_minVector, previous, current));
+        //    }
+        //    _minProperty = new Vector3Property("Min", _minVector, OnMinVectorChanged);
 
-            void OnMaxVectorChanged(Vector3 current, Vector3 previous)
-            {
-                target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_maxVector, previous, current));
-            }
-            _maxProperty = new Vector3Property("Max", _maxVector, OnMaxVectorChanged);
-        }
+        //    void OnMaxVectorChanged(Vector3 current, Vector3 previous)
+        //    {
+        //        target.CommandQueue.Enqueue(new GenericCommand<Vector3>(_maxVector, previous, current));
+        //    }
+        //    _maxProperty = new Vector3Property("Max", _maxVector, OnMaxVectorChanged);
+        //}
 
-        private void Randomize(IShape target, int startingIndex = 0)
+        private void Randomize(IRuntimeShape target, int startingIndex = 0)
         {
             int numObjs = _positions.Length;
             Vector3[] previousValues = new Vector3[_positions.Length];
@@ -103,13 +104,13 @@ namespace Prefabrikator
 
             if (startingIndex == 0)
             {
-                var valueChanged = new ValueChangedCommand<Vector3[]>(previousValues, _positions, ApplyPositions);
-                target.CommandQueue.Enqueue(valueChanged);
+                //    var valueChanged = new ValueChangedCommand<Vector3[]>(previousValues, _positions, ApplyPositions);
+                //    target.CommandQueue.Enqueue(valueChanged);
             }
         }
 
         // #DG: fix this
-        private void UpdateArray(IShape target, TransformProxy[] proxies)
+        private void UpdateArray(IRuntimeShape target, TransformProxy[] proxies)
         {
             int numObjs = proxies.Length;
 
